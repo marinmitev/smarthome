@@ -25,7 +25,9 @@ import org.eclipse.smarthome.config.core.ConfigDescriptionParameter;
  * {@link Input}s and {@link Output}s of
  * created {@link Action} instances.
  *
- * @author Yordan Mihaylov, Ana Dimova, Vasil Ilchev - Initial Contribution
+ * @author Yordan Mihaylov - Initial Contribution
+ * @author Ana Dimova - Initial Contribution
+ * @author Vasil Ilchev - Initial Contribution
  */
 public class ActionType extends ModuleType {
 

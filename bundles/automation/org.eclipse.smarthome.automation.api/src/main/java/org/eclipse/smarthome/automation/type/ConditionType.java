@@ -23,7 +23,9 @@ import org.eclipse.smarthome.config.core.ConfigDescriptionParameter;
  * id in scope of the rule engine and defines {@link ConfigDescriptionParameter} s and {@link Input}s of the
  * {@link Condition} instance.
  *
- * @author Yordan Mihaylov, Ana Dimova, Vasil Ilchev - Initial Contribution
+ * @author Yordan Mihaylov - Initial Contribution
+ * @author Ana Dimova - Initial Contribution
+ * @author Vasil Ilchev - Initial Contribution
  */
 public class ConditionType extends ModuleType {
 

@@ -23,6 +23,10 @@ import org.eclipse.smarthome.config.core.ConfigDescriptionParameter;
  * CompositeActionType is as {@link ActionType} which logically combines {@link Action} instances. The composite action
  * hides internal logic and inner
  * connections between participating actions and it can be used as a regular {@link Action} module.
+ *
+ * @author Yordan Mihaylov - Initial Contribution
+ * @author Ana Dimova - Initial Contribution
+ * @author Vasil Ilchev - Initial Contribution
  */
 public class CompositeActionType extends ActionType {
 

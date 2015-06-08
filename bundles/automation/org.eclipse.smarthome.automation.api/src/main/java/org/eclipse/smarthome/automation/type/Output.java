@@ -33,7 +33,9 @@ import org.eclipse.smarthome.automation.Rule;
  * s. The {@link Output} can be connected
  * to more then one {@link Input} of the same data type.<br>
  *
- * @author Yordan Mihaylov, Ana Dimova, Vasil Ilchev - Initial Contribution
+ * @author Yordan Mihaylov - Initial Contribution
+ * @author Ana Dimova - Initial Contribution
+ * @author Vasil Ilchev - Initial Contribution
  */
 public class Output {
 
@@ -183,4 +185,8 @@ public class Output {
         this.type = type;
     }
 
+    @Override
+    public String toString() {
+        return "Output " + name;
+    }
 }

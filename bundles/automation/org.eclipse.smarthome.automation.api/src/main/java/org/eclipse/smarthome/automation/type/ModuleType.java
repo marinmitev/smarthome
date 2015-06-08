@@ -155,6 +155,9 @@ public abstract class ModuleType {
      * @return visibility of ModuleType
      */
     public Visibility getVisibility() {
+        if (visibility == null) {
+            return Visibility.PUBLIC;
+        }
         return visibility;
     }
 

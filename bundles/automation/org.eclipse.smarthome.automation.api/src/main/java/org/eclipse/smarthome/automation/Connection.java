@@ -24,7 +24,7 @@ import org.eclipse.smarthome.automation.type.Output;
  * defined by id of the module and name
  * of the output.
  *
- * @author Yordan Mihaylov
+ * @author Yordan Mihaylov - Initial Contribution
  */
 public class Connection {
 
@@ -89,5 +89,10 @@ public class Connection {
         if (id == null || id.length() == 0) {
             throw new IllegalArgumentException("Invalid identifier for " + field);
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Connection " + ouputModuleId + "." + outputName + "->" + inputName;
     }
 }

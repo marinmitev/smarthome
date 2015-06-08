@@ -24,6 +24,9 @@ import org.eclipse.smarthome.config.core.ConfigDescriptionParameter;
  * condition hides internal logic
  * between participating conditions and it can be used as a regular {@link Condition} module.
  *
+ * @author Yordan Mihaylov - Initial Contribution
+ * @author Ana Dimova - Initial Contribution
+ * @author Vasil Ilchev - Initial Contribution
  */
 public class CompositeConditionType extends ConditionType {
 

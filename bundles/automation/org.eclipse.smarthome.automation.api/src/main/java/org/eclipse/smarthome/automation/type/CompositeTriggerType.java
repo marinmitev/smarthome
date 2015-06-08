@@ -23,6 +23,9 @@ import org.eclipse.smarthome.config.core.ConfigDescriptionParameter;
  * trigger hides internal logic between
  * participating actions and it can be used as a regular {@link Trigger} module.
  *
+ * @author Yordan Mihaylov - Initial Contribution
+ * @author Ana Dimova - Initial Contribution
+ * @author Vasil Ilchev - Initial Contribution
  */
 public class CompositeTriggerType extends TriggerType {
 

@@ -33,7 +33,9 @@ import org.eclipse.smarthome.config.core.ConfigDescriptionParameter;
  * <p>
  * Templates can have <code>tags</code> - non-hierarchical keywords or terms for describing them.
  *
- * @author Yordan Mihaylov, Ana Dimova, Vasil Ilchev - Initial Contribution
+ * @author Yordan Mihaylov - Initial Contribution
+ * @author Ana Dimova - Initial Contribution
+ * @author Vasil Ilchev - Initial Contribution
  */
 public class RuleTemplate implements Template {
 
@@ -89,6 +91,8 @@ public class RuleTemplate implements Template {
      */
     @Override
     public Set<String> getTags() {
+        if (tags == null || tags.isEmpty())
+            return null;
         return new HashSet<String>(tags);
     }
 
@@ -100,6 +104,8 @@ public class RuleTemplate implements Template {
      */
     @Override
     public void setTags(Set<String> tags) {
+        if (tags == null || tags.isEmpty())
+            return;
         tags = new HashSet<String>(tags);
     }
 
@@ -156,6 +162,9 @@ public class RuleTemplate implements Template {
      */
     @Override
     public Visibility getVisibility() {
+        if (visibility == null) {
+            return Visibility.PUBLIC;
+        }
         return visibility;
     }
 
@@ -199,5 +208,4 @@ public class RuleTemplate implements Template {
         }
         return null;
     }
-
 }

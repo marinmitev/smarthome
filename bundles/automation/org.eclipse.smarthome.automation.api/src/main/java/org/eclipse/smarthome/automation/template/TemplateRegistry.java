@@ -21,7 +21,9 @@ import java.util.Locale;
  * When the parameter is not specified or there is no such localization
  * resources the returned template is localized with default locale.
  *
- * @author Yordan Mihaylov, Ana Dimova, Vasil Ilchev - Initial Contribution
+ * @author Yordan Mihaylov - Initial Contribution
+ * @author Ana Dimova - Initial Contribution
+ * @author Vasil Ilchev - Initial Contribution
  */
 public interface TemplateRegistry {
 
@@ -43,12 +45,11 @@ public interface TemplateRegistry {
     public <T extends Template> Collection<T> getByTag(String tag, Locale locale);
 
     /**
-     * This method is used for getting the templates, specified by type module,
-     * i.e. {@link ActionTemplate}, {@link ConditionTemplate}, {@link TriggerTemplate} and etc.
+     * This method is used for getting all templates, localized by specified locale,
      *
      * @param moduleType the class of module which is looking for.
      * @return collection of templates, corresponding to specified type
      */
-    public <T extends Template> Collection<T> get(Class<T> moduleType, Locale locale);
+    public <T extends Template> Collection<T> getAll(Locale locale);
 
 }

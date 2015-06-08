@@ -42,6 +42,7 @@ public class Input {
     private String description;
     private boolean required = false;
     private Set<String> tags;
+    private String reference;
     private Object defaultValue;
 
     /**
@@ -53,7 +54,7 @@ public class Input {
      * @param name unique name of the Input.
      */
     public Input(String name, String type) {
-        this(name, type, null, null, null, false, null);
+        this(name, type, null, null, null, false, null, null);
     }
 
     /**
@@ -73,11 +74,13 @@ public class Input {
      *            then the input must have at least one of these output's tags (i.e.
      *            "temperature") to connect this input to the selected output.
      * @param required determining if the Input is required or optional
+     * @param reference reference to the input of parent module type or null. If this input is part of the system module
+     *            the reference should be null.
      * @param defaultValue default value takes place when there is no value for
      *            this Input. Type of the default value must be the type the Input.
      */
     public Input(String name, String type, String label, String description, Set<String> tags, boolean required,
-            Object defaultValue) {
+            String reference, Object defaultValue) {
         if (name == null)
             throw new IllegalArgumentException("The name of the input must not be NULL!");
         this.name = name;
@@ -86,6 +89,7 @@ public class Input {
         this.description = description;
         this.tags = tags;
         this.required = required;
+        this.reference = reference;
         this.defaultValue = defaultValue;
     }
 
@@ -154,6 +158,17 @@ public class Input {
     }
 
     /**
+     * This method is used for getting the reference to data source. It is used
+     * to link custom inputs (inputs of custom module type) to system input (defined by
+     * the system module type. The system module type uses only system inputs).
+     *
+     * @return reference to data source.
+     */
+    public String getReference() {
+        return reference;
+    }
+
+    /**
      * This method is used for getting the default value of the Input. Default
      * value takes place when there is no value for this Input. Type of the
      * default value must be the type the Input.
@@ -175,4 +190,8 @@ public class Input {
         this.type = type;
     }
 
+    @Override
+    public String toString() {
+        return "Input " + name;
+    }
 }
