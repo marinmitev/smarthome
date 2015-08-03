@@ -7,8 +7,6 @@
  */
 package org.eclipse.smarthome.model.sitemap;
 
-import java.util.Set;
-
 
 public interface SitemapProvider {
 
@@ -20,10 +18,4 @@ public interface SitemapProvider {
      */
     public Sitemap getSitemap(String sitemapName);
 
-    /**
-     * Returns the names of all available sitemaps
-     * 
-     * @return names of provided sitemaps
-     */
-    public Set<String> getSitemapNames();
 }

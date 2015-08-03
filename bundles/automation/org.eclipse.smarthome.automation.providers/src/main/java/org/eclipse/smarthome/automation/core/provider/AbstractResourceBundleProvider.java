@@ -23,14 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.smarthome.automation.Rule;
-import org.eclipse.smarthome.automation.parser.Parser;
-import org.eclipse.smarthome.automation.parser.Status;
-import org.eclipse.smarthome.automation.provider.ModuleTypeProvider;
-import org.eclipse.smarthome.automation.provider.TemplateProvider;
-import org.eclipse.smarthome.automation.provider.util.AbstractPersistentProvider;
-import org.eclipse.smarthome.automation.template.RuleTemplate;
-import org.eclipse.smarthome.automation.type.ModuleType;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
@@ -39,6 +31,15 @@ import org.osgi.util.tracker.BundleTrackerCustomizer;
 import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
 import org.slf4j.Logger;
+
+import org.eclipse.smarthome.automation.Rule;
+import org.eclipse.smarthome.automation.parser.Parser;
+import org.eclipse.smarthome.automation.parser.Status;
+import org.eclipse.smarthome.automation.provider.ModuleTypeProvider;
+import org.eclipse.smarthome.automation.provider.TemplateProvider;
+import org.eclipse.smarthome.automation.provider.util.AbstractPersistentProvider;
+import org.eclipse.smarthome.automation.template.RuleTemplate;
+import org.eclipse.smarthome.automation.type.ModuleType;
 
 /**
  * This class is base for {@link ModuleTypeProvider}, {@link TemplateProvider} and RuleImporter which are responsible
@@ -178,7 +179,7 @@ public abstract class AbstractResourceBundleProvider<E, PE> extends AbstractPers
             while (i.hasNext()) {
                 Long bundleId = (Long) i.next();
                 Bundle bundle = waitingProviders.get(bundleId);
-                String parserType = (String) bundle.getHeaders().get(
+                String parserType = bundle.getHeaders().get(
                         AutomationResourceBundlesEventQueue.AUTOMATION_RESOURCES_HEADER);
                 Parser parser = parsers.get(parserType);
                 if (parser != null && bundle.getState() != Bundle.UNINSTALLED) {
@@ -278,7 +279,7 @@ public abstract class AbstractResourceBundleProvider<E, PE> extends AbstractPers
      *            objects.
      */
     protected void processAutomationProvider(Bundle bundle) {
-        String parserType = (String) bundle.getHeaders().get(AutomationResourceBundlesEventQueue.AUTOMATION_RESOURCES_HEADER);
+        String parserType = bundle.getHeaders().get(AutomationResourceBundlesEventQueue.AUTOMATION_RESOURCES_HEADER);
         Parser parser = parsers.get(parserType);
         if (parser == null) {
             synchronized (waitingProviders) {

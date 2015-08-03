@@ -12,8 +12,8 @@
 
 package org.eclipse.smarthome.automation.provider.util;
 
-import org.eclipse.smarthome.automation.AutomationFactory;
 import org.eclipse.smarthome.automation.Rule;
+import org.eclipse.smarthome.automation.AutomationFactory;
 import org.eclipse.smarthome.automation.template.Template;
 import org.eclipse.smarthome.automation.template.TemplateProvider;
 import org.eclipse.smarthome.automation.type.ModuleType;
@@ -69,7 +69,7 @@ public abstract class AbstractPersistentProvider<E, PE> extends AbstractManagedP
     /**
      * Tracks the {@link AutomationFactory} and {@link StorageService} services.
      */
-    private ServiceTracker/*<Object, Object>*/ tracker;
+    private ServiceTracker<Object, Object> tracker;
 
     public AbstractPersistentProvider(BundleContext context, final Class<?> logClass) {
         bc = context;
@@ -77,10 +77,10 @@ public abstract class AbstractPersistentProvider<E, PE> extends AbstractManagedP
         try {
             Filter filter = bc.createFilter("(|(objectClass=" + AutomationFactory.class.getName() + ")(objectClass="
                     + StorageService.class.getName() + "))");
-            tracker = new ServiceTracker/*<Object, Object>*/(bc, filter, new ServiceTrackerCustomizer () {
+            tracker = new ServiceTracker<Object, Object>(bc, filter, new ServiceTrackerCustomizer<Object, Object>() {
 
                 @Override
-                public Object addingService(ServiceReference/*<Object> */reference) {
+                public Object addingService(ServiceReference<Object> reference) {
                     Object service = bc.getService(reference);
                     if (service != null) {
                         if (factory == null && service instanceof AutomationFactory) {
@@ -99,11 +99,11 @@ public abstract class AbstractPersistentProvider<E, PE> extends AbstractManagedP
                 }
 
                 @Override
-                public void modifiedService(ServiceReference/*<Object>*/ reference, Object service) {
+                public void modifiedService(ServiceReference<Object> reference, Object service) {
                 }
 
                 @Override
-                public void removedService(ServiceReference/*<Object>*/ reference, Object service) {
+                public void removedService(ServiceReference<Object> reference, Object service) {
                     if (service == storage) {
                         unsetStorageService(storage);
                         storage = null;
@@ -112,7 +112,6 @@ public abstract class AbstractPersistentProvider<E, PE> extends AbstractManagedP
                         factory = null;
                     }
                 }
-
             });
             tracker.open();
         } catch (InvalidSyntaxException notPossible) {

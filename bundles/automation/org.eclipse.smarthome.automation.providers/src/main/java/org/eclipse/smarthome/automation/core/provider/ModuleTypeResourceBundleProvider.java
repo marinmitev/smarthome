@@ -19,17 +19,18 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.Set;
 
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
+import org.osgi.util.tracker.ServiceTracker;
+import org.osgi.util.tracker.ServiceTrackerCustomizer;
+import org.slf4j.Logger;
+
 import org.eclipse.smarthome.automation.parser.Parser;
 import org.eclipse.smarthome.automation.parser.Status;
 import org.eclipse.smarthome.automation.provider.ModuleTypeProvider;
 import org.eclipse.smarthome.automation.template.Template;
 import org.eclipse.smarthome.automation.type.ModuleType;
 import org.eclipse.smarthome.automation.type.ModuleTypeRegistry;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
-import org.osgi.util.tracker.ServiceTracker;
-import org.osgi.util.tracker.ServiceTrackerCustomizer;
-import org.slf4j.Logger;
 
 /**
  * This class is implementation of {@link ModuleTypeProvider}. It serves for providing {@link ModuleType}s by loading
@@ -49,7 +50,7 @@ public abstract class ModuleTypeResourceBundleProvider<PE> extends AbstractResou
         ModuleTypeProvider {
 
     protected ModuleTypeRegistry moduleTypeRegistry;
-    private ServiceTracker/*<ModuleTypeRegistry, ModuleTypeRegistry>*/ moduleTypesTracker;
+    private ServiceTracker<ModuleTypeRegistry, ModuleTypeRegistry> moduleTypesTracker;
 
     /**
      * This constructor is responsible for initializing the path to resources and tracking the managing service of the
@@ -62,24 +63,23 @@ public abstract class ModuleTypeResourceBundleProvider<PE> extends AbstractResou
     public ModuleTypeResourceBundleProvider(BundleContext context, Class providerClass) {
         super(context, providerClass);
         path = PATH + "/moduletypes/";
-        moduleTypesTracker = new ServiceTracker/*<ModuleTypeRegistry, ModuleTypeRegistry>*/(context, ModuleTypeRegistry.class.getName(),
-                new ServiceTrackerCustomizer/*<ModuleTypeRegistry, ModuleTypeRegistry>*/() {
+        moduleTypesTracker = new ServiceTracker<ModuleTypeRegistry, ModuleTypeRegistry>(context, ModuleTypeRegistry.class.getName(),
+                new ServiceTrackerCustomizer<ModuleTypeRegistry, ModuleTypeRegistry>() {
 
-                    public ModuleTypeRegistry addingService(ServiceReference/*<ModuleTypeRegistry>*/ reference) {
-                        moduleTypeRegistry = (ModuleTypeRegistry) bc.getService(reference);
+                    public ModuleTypeRegistry addingService(ServiceReference<ModuleTypeRegistry> reference) {
+                        moduleTypeRegistry = bc.getService(reference);
                         if (moduleTypeRegistry != null && isReady && queue != null) {
                             queue.open();
                         }
                         return moduleTypeRegistry;
                     }
 
-                    public void modifiedService(ServiceReference/*<ModuleTypeRegistry>*/ reference, Object service) {
+                    public void modifiedService(ServiceReference<ModuleTypeRegistry> reference, ModuleTypeRegistry service) {
                     }
 
-                    public void removedService(ServiceReference/*<ModuleTypeRegistry>*/ reference, Object service) {
+                    public void removedService(ServiceReference<ModuleTypeRegistry> reference, ModuleTypeRegistry service) {
                         moduleTypeRegistry = null;
                     }
-
                 });
         moduleTypesTracker.open();
     }
