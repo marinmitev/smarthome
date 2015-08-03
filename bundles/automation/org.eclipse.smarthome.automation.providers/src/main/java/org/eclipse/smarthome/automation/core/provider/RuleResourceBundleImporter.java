@@ -21,17 +21,16 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.smarthome.automation.Rule;
+import org.eclipse.smarthome.automation.RuleRegistry;
+import org.eclipse.smarthome.automation.parser.Parser;
+import org.eclipse.smarthome.automation.parser.Status;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
 import org.slf4j.Logger;
-
-import org.eclipse.smarthome.automation.Rule;
-import org.eclipse.smarthome.automation.RuleRegistry;
-import org.eclipse.smarthome.automation.parser.Parser;
-import org.eclipse.smarthome.automation.parser.Status;
 
 /**
  * This class is implementation of {@link RuleResourceBundleImporter}. It serves for providing {@link Rule}s by loading
@@ -64,19 +63,19 @@ public abstract class RuleResourceBundleImporter<PE> extends AbstractResourceBun
         super(context, providerClass);
         path = PATH + "/rules/";
         rulesTracker = new ServiceTracker(context, RuleRegistry.class.getName(),
-                new ServiceTrackerCustomizer<RuleRegistry, RuleRegistry>() {
+                new ServiceTrackerCustomizer/*<RuleRegistry, RuleRegistry>*/() {
 
-                    public RuleRegistry addingService(ServiceReference<RuleRegistry> reference) {
-                        ruleRegistry = bc.getService(reference);
+                    public RuleRegistry addingService(ServiceReference/*<RuleRegistry>*/ reference) {
+                        ruleRegistry = (RuleRegistry) bc.getService(reference);
                         if (isReady && queue != null)
                             queue.open();
                         return ruleRegistry;
                     }
 
-                    public void modifiedService(ServiceReference<RuleRegistry> reference, RuleRegistry service) {
+                    public void modifiedService(ServiceReference/*<RuleRegistry>*/ reference, Object service) {
                     }
 
-                    public void removedService(ServiceReference<RuleRegistry> reference, RuleRegistry service) {
+                    public void removedService(ServiceReference/*<RuleRegistry>*/ reference, Object service) {
                         ruleRegistry = null;
                     }
                 });
@@ -133,7 +132,7 @@ public abstract class RuleResourceBundleImporter<PE> extends AbstractResourceBun
      */
     @Override
     protected void processAutomationProvider(Bundle bundle) {
-        String parserType = bundle.getHeaders().get(AutomationResourceBundlesEventQueue.AUTOMATION_RESOURCES_HEADER);
+        String parserType = (String) bundle.getHeaders().get(AutomationResourceBundlesEventQueue.AUTOMATION_RESOURCES_HEADER);
         Parser parser = parsers.get(parserType);
         if (parser == null || ruleRegistry == null) {
             synchronized (waitingProviders) {
