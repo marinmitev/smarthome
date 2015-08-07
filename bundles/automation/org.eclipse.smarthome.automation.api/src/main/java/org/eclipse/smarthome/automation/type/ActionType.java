@@ -14,12 +14,13 @@ import org.eclipse.smarthome.automation.Module;
 import org.eclipse.smarthome.config.core.ConfigDescriptionParameter;
 
 /**
+ * Test
  * This class provides common functionality for creating {@link Action} instances by supplying types with their
  * meta-information. The {@link Action}s are part of "THEN" section of the Rule. Each {@link ActionType} is defined by
  * unique id in scope of the RuleEngine and defines {@link ConfigDescriptionParameter}s that are meta-information for
  * configuration and meta-information for {@link Input}s and {@link Output}s used for creation of {@link Action}
  * instances.
- * 
+ *
  * @author Yordan Mihaylov - Initial Contribution
  * @author Ana Dimova - Initial Contribution
  * @author Vasil Ilchev - Initial Contribution
@@ -41,7 +42,7 @@ public class ActionType extends ModuleType {
     /**
      * This constructor is responsible to create an instance of {@link ActionType} with base properties - UID, a
      * {@link Set} of configuration descriptions and a {@link Set} of {@link Input} definitions.
-     * 
+     *
      * @param UID is an unique id of the {@link ActionType}, used as reference from the {@link Module}s, to find their
      *            meta-information.
      * @param configDescriptions is a {@link Set} of meta-information configuration descriptions.
@@ -55,7 +56,7 @@ public class ActionType extends ModuleType {
      * This constructor is responsible to create an instance of the {@link ActionType} with UID, a {@link Set} of
      * configuration descriptions, a {@link Set} of {@link Input} definitions and a {@link Set} of {@link Output}
      * descriptions.
-     * 
+     *
      * @param UID is an unique id of the {@link ActionType}, used as reference from the {@link Module}s, to find their
      *            meta-information.
      * @param configDescriptions is a {@link Set} of meta-information configuration descriptions.
@@ -73,7 +74,7 @@ public class ActionType extends ModuleType {
      * This constructor is responsible to create an instance of {@link ActionType} with UID, label, description, a
      * {@link Set} of tags, visibility, a {@link Set} of configuration descriptions, a {@link Set} of {@link Input}
      * descriptions and a {@link Set} of {@link Output} descriptions.
-     * 
+     *
      * @param UID unique id of the {@link ActionType}.
      * @param configDescriptions is a {@link Set} of meta-information configuration descriptions.
      * @param label is a short and accurate name of the {@link ActionType}.
@@ -94,7 +95,7 @@ public class ActionType extends ModuleType {
 
     /**
      * This method is used for getting the meta-information descriptions of {@link Input}s defined by this type.<br/>
-     * 
+     *
      * @return a {@link Set} of {@link Input} definitions.
      */
     public Set<Input> getInputs() {
@@ -103,7 +104,7 @@ public class ActionType extends ModuleType {
 
     /**
      * This method is used for getting the meta-information descriptions of {@link Output}s defined by this type.<br/>
-     * 
+     *
      * @return a {@link Set} of {@link Output} definitions.
      */
     public Set<Output> getOutputs() {
