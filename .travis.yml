@@ -6,4 +6,4 @@ env:
 language: java
 jdk:
   - oraclejdk7
-install: mvn install -f bundles/pom.xml -pl automation -amd
+install: mvn install -f bundles/pom.xml -pl automation,config,core,test -amd
