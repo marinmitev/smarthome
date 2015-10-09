@@ -376,8 +376,7 @@ public class RuleEngine implements ServiceTrackerCustomizer/* <ModuleHandlerFact
         statusMap.put(rUID, status);
         if (statusInfoCallback != null) {
             statusInfoCallback.statusInfoChanged(rUID, status);
-        }
-        
+        }        
     }
 
     /**
@@ -1108,12 +1107,6 @@ public class RuleEngine implements ServiceTrackerCustomizer/* <ModuleHandlerFact
 
     protected void setStatusInfoCallback(StatusInfoCallback statusInfoCallback) {
         this.statusInfoCallback = statusInfoCallback;
-        
-    }
-
-    public void unsetEventPublisher(EventPublisher service) {
-       this.eventPublisher= null;
-        
     }
 
     protected void setModuleTypeManager(ModuleTypeManager mtManager) {
