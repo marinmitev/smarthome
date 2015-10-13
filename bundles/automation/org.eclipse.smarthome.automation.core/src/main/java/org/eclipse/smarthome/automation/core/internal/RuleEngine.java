@@ -455,8 +455,9 @@ public class RuleEngine implements ServiceTrackerCustomizer/* <ModuleHandlerFact
 
                 if (handler != null) {
                     ModuleHandlerFactory factory = getModuleHandlerFactory(m.getTypeUID(), ruleUID);
-                    factory.ungetHandler(m, ruleUID, handler);
-
+                    if (factory != null) {
+                        factory.ungetHandler(m, ruleUID, handler);
+                    }
                     if (m instanceof RuntimeAction) {
                         ((RuntimeAction) m).setModuleHandler(null);
                     } else if (m instanceof RuntimeCondition) {
@@ -564,7 +565,6 @@ public class RuleEngine implements ServiceTrackerCustomizer/* <ModuleHandlerFact
      */
     private RuntimeRule removeRuleEntry(RuntimeRule r) {
         unregister(r);
-        statusMap.remove(r.getUID());
 
         for (Iterator<Map.Entry<String, Set<String>>> it = mapModuleTypeToRules.entrySet().iterator(); it.hasNext();) {
             Map.Entry<String, Set<String>> e = it.next();
@@ -590,6 +590,8 @@ public class RuleEngine implements ServiceTrackerCustomizer/* <ModuleHandlerFact
                 }
             }
         }
+
+        statusMap.remove(r.getUID());
 
         return r;
     }
