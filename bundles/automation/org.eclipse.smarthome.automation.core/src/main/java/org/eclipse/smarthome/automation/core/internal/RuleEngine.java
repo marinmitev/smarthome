@@ -16,6 +16,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import org.eclipse.smarthome.automation.Action;
 import org.eclipse.smarthome.automation.Condition;
@@ -152,6 +156,10 @@ public class RuleEngine implements ServiceTrackerCustomizer/* <ModuleHandlerFact
     private CompositeModuleHandlerFactory compositeFactory;
 
     private int ruleMaxID = 0;
+
+    private Map<String, Future> scheduleTasks = new HashMap<>(31);
+
+    private ScheduledExecutorService executor;
 
     /**
      * Constructor of {@link RuleEngine}. It initializes the logger and starts
@@ -348,6 +356,19 @@ public class RuleEngine implements ServiceTrackerCustomizer/* <ModuleHandlerFact
             register(r);
             // change state to IDLE
             setRuleStatusInfo(r.getUID(), new RuleStatusInfo(RuleStatus.IDLE));
+
+            Future f = scheduleTasks.get(rUID);
+            if (f != null) {
+                if (!f.isDone()) {
+                    f.cancel(true);
+                }
+                scheduleTasks.remove(rUID);
+            }
+
+            if (scheduleTasks.isEmpty()) {
+                executor.shutdown();
+                executor = null;
+            }
 
         } else {
             unregister(r);
@@ -748,11 +769,25 @@ public class RuleEngine implements ServiceTrackerCustomizer/* <ModuleHandlerFact
             }
         }
         if (notInitailizedRules != null) {
-            for (String rUID : notInitailizedRules) {
-                setRule(rUID);
+            for (final String rUID : notInitailizedRules) {
+                scheduleRuleInitialization(rUID);
             }
         }
         return mhf;
+    }
+
+    private synchronized void scheduleRuleInitialization(final String rUID) {
+        Future f = scheduleTasks.get(rUID);
+        if (f == null) {
+            ScheduledExecutorService ex = getScheduledExecutor();
+            f = ex.schedule(new Runnable() {
+                @Override
+                public void run() {
+                    setRule(rUID);
+                }
+            }, 500, TimeUnit.MILLISECONDS);
+            scheduleTasks.put(rUID, f);
+        }
     }
 
     /**
@@ -1000,6 +1035,16 @@ public class RuleEngine implements ServiceTrackerCustomizer/* <ModuleHandlerFact
                 compositeFactory = null;
             }
         }
+
+        for (Future f : scheduleTasks.values()) {
+            f.cancel(true);
+        }
+        scheduleTasks = null;
+        if (scheduleTasks.isEmpty()) {
+            executor.shutdown();
+            executor = null;
+        }
+
         if (contextMap != null) {
             contextMap.clear();
             contextMap = null;
@@ -1096,7 +1141,8 @@ public class RuleEngine implements ServiceTrackerCustomizer/* <ModuleHandlerFact
         }
         if (notInitailizedRules != null) {
             for (String rUID : notInitailizedRules) {
-                setRule(rUID);
+                scheduleRuleInitialization(rUID);
+                // setRule(rUID);
             }
         }
 
@@ -1121,7 +1167,8 @@ public class RuleEngine implements ServiceTrackerCustomizer/* <ModuleHandlerFact
         }
         if (notInitailizedRules != null) {
             for (String rUID : notInitailizedRules) {
-                setRule(rUID);
+                scheduleRuleInitialization(rUID);
+                // setRule(rUID);
             }
         }
 
@@ -1187,6 +1234,13 @@ public class RuleEngine implements ServiceTrackerCustomizer/* <ModuleHandlerFact
                 }
             }
         }
+    }
+
+    private ScheduledExecutorService getScheduledExecutor() {
+        if (executor == null || executor.isShutdown()) {
+            executor = Executors.newSingleThreadScheduledExecutor();
+        }
+        return executor;
     }
 
 }
