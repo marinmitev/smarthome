@@ -96,6 +96,11 @@ public class RuleEngine implements ServiceTrackerCustomizer/* <ModuleHandlerFact
     public static final String ID_PREFIX = "rule_"; //$NON-NLS-1$
 
     /**
+     * Delay between rule's re-initialization tries.
+     */
+    public static final long SCHEDULE_DELAY = 500;
+
+    /**
      * {@link Map} of rule's id to corresponding {@link RuleEngineCallback}s. For each {@link Rule} there is one and
      * only one rule callback.
      */
@@ -785,7 +790,7 @@ public class RuleEngine implements ServiceTrackerCustomizer/* <ModuleHandlerFact
                 public void run() {
                     setRule(rUID);
                 }
-            }, 500, TimeUnit.MILLISECONDS);
+            }, SCHEDULE_DELAY, TimeUnit.MILLISECONDS);
             scheduleTasks.put(rUID, f);
         }
     }
