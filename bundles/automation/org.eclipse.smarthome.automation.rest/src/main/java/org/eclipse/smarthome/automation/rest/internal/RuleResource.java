@@ -8,6 +8,7 @@
 package org.eclipse.smarthome.automation.rest.internal;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
@@ -31,6 +32,7 @@ import org.eclipse.smarthome.automation.Module;
 import org.eclipse.smarthome.automation.Rule;
 import org.eclipse.smarthome.automation.RuleRegistry;
 import org.eclipse.smarthome.automation.Trigger;
+import org.eclipse.smarthome.automation.rest.internal.dto.EnrichedRuleDTO;
 import org.eclipse.smarthome.io.rest.ConfigUtil;
 import org.eclipse.smarthome.io.rest.RESTResource;
 import org.slf4j.Logger;
@@ -62,8 +64,23 @@ public class RuleResource implements RESTResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAll() {
-        Collection<Rule> rules = ruleRegistry.getAll();
+        Collection<EnrichedRuleDTO> rules = enrich(ruleRegistry.getAll());
         return Response.ok(rules).build();
+    }
+
+    private Collection<EnrichedRuleDTO> enrich(Collection<Rule> rules) {
+        Collection<EnrichedRuleDTO> enrichedRules = new ArrayList<>(rules.size());
+        for (Rule rule : rules) {
+            enrichedRules.add(enrich(rule));
+        }
+        return enrichedRules;
+    }
+
+    private EnrichedRuleDTO enrich(Rule rule) {
+        EnrichedRuleDTO enrichedRule = new EnrichedRuleDTO(rule);
+        enrichedRule.enabled = ruleRegistry.isEnabled(rule.getUID());
+        enrichedRule.status = ruleRegistry.getStatus(rule.getUID());
+        return enrichedRule;
     }
 
     @POST
@@ -84,7 +101,7 @@ public class RuleResource implements RESTResource {
     public Response getByUID(@PathParam("ruleUID") String ruleUID) {
         Rule rule = ruleRegistry.get(ruleUID);
         if (rule != null) {
-            return Response.ok(rule).build();
+            return Response.ok(enrich(rule)).build();
         } else {
             return Response.status(Status.NOT_FOUND).build();
         }
@@ -145,6 +162,22 @@ public class RuleResource implements RESTResource {
             return Response.status(Status.NOT_FOUND).build();
         } else {
             rule.setConfiguration(config);
+            ruleRegistry.update(rule);
+            return Response.ok().build();
+        }
+    }
+
+    @POST
+    @Path("/{ruleUID}/enable")
+    @Consumes(MediaType.TEXT_PLAIN)
+    public Response enableRule(@PathParam("ruleUID") String ruleUID, String enabled) throws IOException {
+        Rule rule = ruleRegistry.get(ruleUID);
+        if (rule == null) {
+            logger.info("Received HTTP PUT request for update config at '{}' for the unknown rule '{}'.",
+                    uriInfo.getPath(), ruleUID);
+            return Response.status(Status.NOT_FOUND).build();
+        } else {
+            ruleRegistry.setEnabled(ruleUID, !"false".equalsIgnoreCase(enabled));
             ruleRegistry.update(rule);
             return Response.ok().build();
         }
