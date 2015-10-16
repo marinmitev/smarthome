@@ -33,9 +33,18 @@ import org.eclipse.smarthome.core.thing.ThingRegistry;
 import org.eclipse.smarthome.core.types.Command;
 import org.eclipse.smarthome.core.types.State;
 import org.joda.time.DateTime;
+import org.joda.time.LocalTime;
+import org.openhab.io.multimedia.actions.Audio;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * This is a default scope provider for stuff that is of general interest in an ESH-based solution.
+ * Nonetheless, solutions are free to remove it and have more specific scope providers for their own purposes.
+ *
+ * @author Kai Kreuzer - Initial contribution
+ *
+ */
 public class DefaultScriptScopeProvider implements ScriptScopeProvider {
 
     private final static Logger logger = LoggerFactory.getLogger(DefaultScriptScopeProvider.class);
@@ -91,8 +100,9 @@ public class DefaultScriptScopeProvider implements ScriptScopeProvider {
             elements.put("Command", Command.class);
             try {
                 elements.put("DateTime", DateTime.class);
+                elements.put("LocalTime", LocalTime.class);
             } catch (NoClassDefFoundError e) {
-                logger.debug("Jodatime not present, therefore no support for DateTime in scripts");
+                logger.debug("Jodatime not present, therefore no support for Date/Time in scripts");
             }
             elements.put("StringUtils", StringUtils.class);
             elements.put("URLEncoder", URLEncoder.class);
@@ -129,9 +139,15 @@ public class DefaultScriptScopeProvider implements ScriptScopeProvider {
             elements.put("StringType", StringType.class);
 
             // services
-            elements.put("ir", itemRegistry);
-            elements.put("tr", thingRegistry);
-            elements.put("be", busEvent);
+            elements.put("items", new ItemRegistryDelegate(itemRegistry));
+            elements.put("things", thingRegistry);
+            elements.put("events", busEvent);
+
+            try {
+                elements.put("audio", new Audio());
+            } catch (NoClassDefFoundError e) {
+                logger.debug("Audio support not present, therefore no support for Audio in scripts");
+            }
 
         }
         return elements;
