@@ -7,6 +7,8 @@
  */
 package org.eclipse.smarthome.automation.core.internal;
 
+import java.util.Hashtable;
+
 import org.eclipse.smarthome.automation.RuleProvider;
 import org.eclipse.smarthome.automation.RuleRegistry;
 import org.eclipse.smarthome.automation.core.internal.composite.CompositeModuleHandlerFactory;
@@ -28,6 +30,7 @@ import org.osgi.framework.Constants;
 import org.osgi.framework.Filter;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
+import org.osgi.service.cm.ManagedService;
 import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
 
@@ -61,12 +64,17 @@ public class Activator implements BundleActivator {
     private ServiceRegistration ruleEventFactoryReg;
     @SuppressWarnings("rawtypes")
     private ServiceTracker serviceTracker;
+    private ServiceRegistration<?> configReg;
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public void start(final BundleContext bc) throws Exception {
         this.bc = bc;
         final RuleEngine re = new RuleEngine(bc);
+
+        Hashtable props = new Hashtable(11);
+        props.put(Constants.SERVICE_PID, "smarthome.rule.configuration");
+        configReg = bc.registerService(ManagedService.class.getName(), re, props);
 
         this.tManager = new TemplateManager(bc, re);
         re.setTemplateManager(tManager);
@@ -143,6 +151,11 @@ public class Activator implements BundleActivator {
 
     @Override
     public void stop(BundleContext bc) throws Exception {
+        if (configReg != null) {
+            configReg.unregister();
+            configReg = null;
+        }
+
         if (ruleRegistryReg != null) {
             ruleRegistryReg.unregister();
             ruleRegistry.dispose();

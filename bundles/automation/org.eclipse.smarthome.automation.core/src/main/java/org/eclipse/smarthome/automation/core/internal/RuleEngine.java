@@ -9,6 +9,7 @@ package org.eclipse.smarthome.automation.core.internal;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -54,6 +55,8 @@ import org.eclipse.smarthome.automation.type.TriggerType;
 import org.eclipse.smarthome.config.core.ConfigDescriptionParameter;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
+import org.osgi.service.cm.ConfigurationException;
+import org.osgi.service.cm.ManagedService;
 import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
 import org.slf4j.Logger;
@@ -77,7 +80,8 @@ import org.slf4j.LoggerFactory;
  *
  */
 @SuppressWarnings("rawtypes")
-public class RuleEngine implements ServiceTrackerCustomizer/* <ModuleHandlerFactory, ModuleHandlerFactory> */ {
+public class RuleEngine
+        implements ServiceTrackerCustomizer/* <ModuleHandlerFactory, ModuleHandlerFactory> */, ManagedService {
 
     /**
      * Constant defining separator between parent and custom module types. For example: SampleTrigger:CustomTrigger is a
@@ -96,9 +100,19 @@ public class RuleEngine implements ServiceTrackerCustomizer/* <ModuleHandlerFact
     public static final String ID_PREFIX = "rule_"; //$NON-NLS-1$
 
     /**
+     * Default value of delay between rule's re-initialization tries.
+     */
+    public static final long DEFAULT_REINITIALIZATION_DELAY = 500;
+
+    /**
      * Delay between rule's re-initialization tries.
      */
-    public static final long SCHEDULE_DELAY = 500;
+    public static final String CONFIG_PROPERTY_REINITIALIZATION_DELAY = "rule.reinitialization.delay";
+
+    /**
+     * Delay between rule's re-initialization tries.
+     */
+    private long scheduleReinitializationDelay = DEFAULT_REINITIALIZATION_DELAY;
 
     /**
      * {@link Map} of rule's id to corresponding {@link RuleEngineCallback}s. For each {@link Rule} there is one and
@@ -371,8 +385,10 @@ public class RuleEngine implements ServiceTrackerCustomizer/* <ModuleHandlerFact
             }
 
             if (scheduleTasks.isEmpty()) {
-                executor.shutdown();
-                executor = null;
+                if (executor != null) {
+                    executor.shutdown();
+                    executor = null;
+                }
             }
 
         } else {
@@ -790,7 +806,7 @@ public class RuleEngine implements ServiceTrackerCustomizer/* <ModuleHandlerFact
                 public void run() {
                     setRule(rUID);
                 }
-            }, SCHEDULE_DELAY, TimeUnit.MILLISECONDS);
+            }, scheduleReinitializationDelay, TimeUnit.MILLISECONDS);
             scheduleTasks.put(rUID, f);
         }
     }
@@ -1246,6 +1262,24 @@ public class RuleEngine implements ServiceTrackerCustomizer/* <ModuleHandlerFact
             executor = Executors.newSingleThreadScheduledExecutor();
         }
         return executor;
+    }
+
+    @Override
+    public void updated(Dictionary<String, ?> properties) throws ConfigurationException {
+        if (properties != null) {
+            Object value = properties.get(CONFIG_PROPERTY_REINITIALIZATION_DELAY);
+            if (value != null) {
+                if (value instanceof Number) {
+                    scheduleReinitializationDelay = ((Number) value).longValue();
+                } else {
+                    logger.error("Invalid configuration value: " + value + "It MUST be Number.");
+                }
+            } else {
+                scheduleReinitializationDelay = DEFAULT_REINITIALIZATION_DELAY;
+            }
+        } else {
+            scheduleReinitializationDelay = DEFAULT_REINITIALIZATION_DELAY;
+        }
     }
 
 }
