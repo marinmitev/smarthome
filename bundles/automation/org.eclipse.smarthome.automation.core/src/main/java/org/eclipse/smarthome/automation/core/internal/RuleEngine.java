@@ -1060,11 +1060,11 @@ public class RuleEngine
         for (Future f : scheduleTasks.values()) {
             f.cancel(true);
         }
-        scheduleTasks = null;
         if (scheduleTasks.isEmpty()) {
             executor.shutdown();
             executor = null;
         }
+        scheduleTasks = null;
 
         if (contextMap != null) {
             contextMap.clear();
