@@ -1061,8 +1061,10 @@ public class RuleEngine
             f.cancel(true);
         }
         if (scheduleTasks.isEmpty()) {
-            executor.shutdown();
-            executor = null;
+            if (executor != null) {
+                executor.shutdown();
+                executor = null;
+            }
         }
         scheduleTasks = null;
 
