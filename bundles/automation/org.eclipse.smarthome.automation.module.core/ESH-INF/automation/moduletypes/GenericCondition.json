@@ -1,0 +1,41 @@
+{  
+  "conditions":[
+	  {
+		  "uid":"GenericCompareCondition",
+		  "label":"CompareCondition",
+		  "description":"configurable compare condition",
+		  "configDescriptions":[
+			  {
+				  "name":"inputproperty",
+				  "label":"Input property",
+				  "type":"TEXT",
+				  "description":"property of the input to be compared",
+				  "required":false
+			  },
+			  {
+				  "name":"right",
+				  "type":"TEXT",
+				  "label":"compare with",
+				  "description":"the value to be compared with the input",
+				  "required":true
+			  },
+			  {
+			  	  "name":"operator",
+				  "type":"TEXT",
+				  "description":"the compare operator, allowed are <, >, =",
+				  "required":true,
+				  "defaultValue":"="
+			  }
+		  ],
+	      "inputs": [
+            {
+			  "name":"input",
+              "type": "java.lang.Object",
+              "label": "input",
+              "description": "The input which will be compared.",
+			  "required":true
+            }
+		]
+	  }
+  ]
+}

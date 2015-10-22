@@ -22,6 +22,7 @@ import org.eclipse.smarthome.automation.RuleStatus
 import org.eclipse.smarthome.automation.Trigger
 import org.eclipse.smarthome.automation.type.ModuleTypeRegistry
 import org.eclipse.smarthome.automation.events.RuleStatusInfoEvent
+import org.eclipse.smarthome.automation.module.core.handler.CompareConditionHandler;
 import org.eclipse.smarthome.core.events.Event
 import org.eclipse.smarthome.core.events.EventPublisher
 import org.eclipse.smarthome.core.events.EventSubscriber
@@ -34,6 +35,7 @@ import org.eclipse.smarthome.core.items.events.ItemUpdatedEvent
 import org.eclipse.smarthome.core.library.items.SwitchItem
 import org.eclipse.smarthome.core.library.types.OnOffType
 import org.eclipse.smarthome.core.types.Command
+import org.eclipse.smarthome.core.types.State;
 import org.eclipse.smarthome.core.types.TypeParser
 import org.eclipse.smarthome.test.OSGiTest
 import org.eclipse.smarthome.test.storage.VolatileStorageService
@@ -69,7 +71,10 @@ class RuntimeRuleTest extends OSGiTest{
                     new SwitchItem("myLampItem2"),
                     new SwitchItem("myMotionItem3"),
                     new SwitchItem("myPresenceItem3"),
-                    new SwitchItem("myLampItem3")
+                    new SwitchItem("myLampItem3"),
+                    new SwitchItem("myMotionItem4"),
+                    new SwitchItem("myPresenceItem4"),
+                    new SwitchItem("myLampItem4")
                 ]
             },
             addProviderChangeListener: {},
@@ -196,7 +201,67 @@ class RuntimeRuleTest extends OSGiTest{
             assertThat mtr.get("ItemStateEventCondition"), is(notNullValue())
             assertThat mtr.get("ItemStateEvent_ON_Condition"), is(notNullValue())
             assertThat mtr.get("ItemStateEvent_OFF_Condition"), is(notNullValue())
+            assertThat mtr.get(CompareConditionHandler.MODULE_TYPE), is(notNullValue())
         },3000,100)
+    }
+    
+    @Test
+    public void 'assert that compareCondition works'(){
+        def conditionConfiguration = [right:"ON", operator:"="]
+        def inputs = [input:"someTrigger.someoutput"]
+        def Condition condition = new Condition("id", "GenericCompareCondition", conditionConfiguration, inputs)
+        def handler = new CompareConditionHandler(condition)
+        
+        assertThat handler.isSatisfied([input:OnOffType.ON]), is(true)
+        assertThat handler.isSatisfied([input:"ON"]), is(true)
+        assertThat handler.isSatisfied([input:"OFF"]), is(false)
+        assertThat handler.isSatisfied([input:OnOffType.OFF]), is(false)
+        
+        condition.configuration=[right:"21", operator:"="]
+        
+        assertThat handler.isSatisfied([input:21]), is(true)
+        assertThat handler.isSatisfied([input:22]), is(false)
+        
+        condition.configuration=[right:"21", operator:"<"]
+        assertThat handler.isSatisfied([input:20]), is(true)
+        assertThat handler.isSatisfied([input:22]), is(false)
+        
+        assertThat handler.isSatisfied([input:20l]), is(true)
+        assertThat handler.isSatisfied([input:22l]), is(false)
+        
+        assertThat handler.isSatisfied([input:20.9d]), is(true)
+        assertThat handler.isSatisfied([input:21.1d]), is(false)
+        
+        condition.configuration=[right:"21", operator:">"]
+        assertThat handler.isSatisfied([input:20]), is(false)
+        assertThat handler.isSatisfied([input:22]), is(true)
+        
+        assertThat handler.isSatisfied([input:20l]), is(false)
+        assertThat handler.isSatisfied([input:22l]), is(true)
+        
+        assertThat handler.isSatisfied([input:20.9d]), is(false)
+        assertThat handler.isSatisfied([input:21.1d]), is(true)
+        
+        condition.configuration=[right:".*anything.*", operator:"matches"]
+        assertThat handler.isSatisfied([input:'something matches?']), is(false)
+        assertThat handler.isSatisfied([input:'anything matches?']), is(true)
+
+        assertThat handler.isSatisfied([noting:"nothing"]), is(false)
+        
+        condition.configuration=[right:"ONOFF", operator:"matches"]
+        assertThat handler.isSatisfied([input:OnOffType.ON]), is(false)
+        def Event event = ItemEventFactory.createStateEvent("itemName", OnOffType.OFF, "source")
+        condition.configuration=[right:".*ON.*", operator:"matches", inputproperty:"itemName"]
+        assertThat handler.isSatisfied([input:event]), is(false)
+        condition.configuration=[right:"itemName", operator:"matches", inputproperty:"itemName"]
+        assertThat handler.isSatisfied([input:event]), is(true)
+        condition.configuration=[right:"null", operator:"="]
+        assertThat handler.isSatisfied([input:null]), is(true)
+        condition.configuration=[right:"notnull", operator:"="]
+        assertThat handler.isSatisfied([input:null]), is(false)
+        condition.configuration=[right:"ON", operator:"<"]
+        assertThat handler.isSatisfied([input:OnOffType.ON]), is(false)
+        
     }
 
     @Test

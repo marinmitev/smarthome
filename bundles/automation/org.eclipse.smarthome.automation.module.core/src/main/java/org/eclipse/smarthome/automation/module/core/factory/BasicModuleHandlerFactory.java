@@ -16,6 +16,7 @@ import org.eclipse.smarthome.automation.Module;
 import org.eclipse.smarthome.automation.Trigger;
 import org.eclipse.smarthome.automation.handler.BaseModuleHandlerFactory;
 import org.eclipse.smarthome.automation.handler.ModuleHandler;
+import org.eclipse.smarthome.automation.module.core.handler.CompareConditionHandler;
 import org.eclipse.smarthome.automation.module.core.handler.EventConditionHandler;
 import org.eclipse.smarthome.automation.module.core.handler.GenericEventTriggerHandler;
 import org.eclipse.smarthome.automation.module.core.handler.ItemPostCommandActionHandler;
@@ -41,10 +42,10 @@ public class BasicModuleHandlerFactory extends BaseModuleHandlerFactory {
 
     private Logger logger = LoggerFactory.getLogger(BasicModuleHandlerFactory.class);
 
-    private static final Collection<String> types = Arrays.asList(new String[] {
-            ItemStateConditionHandler.ITEM_STATE_CONDITION,
-            ItemPostCommandActionHandler.ITEM_POST_COMMAND_ACTION, GenericEventTriggerHandler.MODULE_TYPE_ID,
-            EventConditionHandler.MODULETYPE_ID });
+    private static final Collection<String> types = Arrays
+            .asList(new String[] { ItemStateConditionHandler.ITEM_STATE_CONDITION,
+                    ItemPostCommandActionHandler.ITEM_POST_COMMAND_ACTION, GenericEventTriggerHandler.MODULE_TYPE_ID,
+                    EventConditionHandler.MODULETYPE_ID, CompareConditionHandler.MODULE_TYPE });
 
     @SuppressWarnings("rawtypes")
     private ServiceTracker itemRegistryTracker;

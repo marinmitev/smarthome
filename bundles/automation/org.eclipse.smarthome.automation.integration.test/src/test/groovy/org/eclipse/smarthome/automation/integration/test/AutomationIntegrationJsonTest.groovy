@@ -184,9 +184,10 @@ class AutomationIntegrationJsonTest extends OSGiTest{
         logger.info('assert that rule added by json is executed correctly');
         waitForAssert({
             assertThat ruleRegistry.getAll().isEmpty(), is(false)
-            Rule r = ruleRegistry.get("ItemSampleRule")
-            assertThat r, is(notNullValue())
-            assertThat ruleRegistry.getStatus(r.UID), is(RuleStatus.IDLE)
+            Rule rule = ruleRegistry.get("ItemSampleRule")
+            assertThat rule, is(notNullValue())
+            assertThat ruleRegistry.getStatus(rule.UID), is (RuleStatus.IDLE)
+            
         }, 3000, 200)
         SwitchItem myPresenceItem = itemRegistry.getItem("myPresenceItem")
         eventPublisher.post(ItemEventFactory.createCommandEvent("myPresenceItem", OnOffType.ON))
