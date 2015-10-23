@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.smarthome.automation.Action;
+import org.eclipse.smarthome.automation.Visibility;
 import org.eclipse.smarthome.config.core.ConfigDescriptionParameter;
 
 /**
@@ -27,7 +28,7 @@ import org.eclipse.smarthome.config.core.ConfigDescriptionParameter;
  */
 public class CompositeActionType extends ActionType {
 
-    private List<Action> modules;
+    private List<Action> children;
 
     /**
      * This constructor is responsible for creation of a {@code CompositeActionType} with ordered set of {@link Action}
@@ -35,16 +36,15 @@ public class CompositeActionType extends ActionType {
      * It initialize only base properties of the {@code CompositeActionType}.
      *
      * @param UID is the unique id of this module type in scope of the RuleEngine.
-     * @param configDescriptions is a {@link Set} of configuration descriptions.
+     * @param configDescriptions is a {@link List} of configuration descriptions.
      * @param modules is a {@link LinkedHashSet} of {@link Action}s.
-     * @param inputs is a {@link Set} of {@link Input} descriptions.
-     * @param outputs is a {@link Set} of {@link Output} descriptions.
+     * @param inputs is a {@link List} of {@link Input} descriptions.
+     * @param outputs is a {@link List} of {@link Output} descriptions.
      */
-    public CompositeActionType(String UID, Set<ConfigDescriptionParameter> configDescriptions, Set<Input> inputs,
-            Set<Output> outputs, List<Action> modules) {
+    public CompositeActionType(String UID, List<ConfigDescriptionParameter> configDescriptions, List<Input> inputs,
+            List<Output> outputs, List<Action> modules) {
         super(UID, configDescriptions, inputs, outputs);
-        this.modules = modules;
-        this.modules = modules != null ? modules : new ArrayList<Action>(0);
+        this.children = modules != null ? modules : new ArrayList<Action>(0);
     }
 
     /**
@@ -53,7 +53,7 @@ public class CompositeActionType extends ActionType {
      * It initialize all properties of the {@code CompositeActionType}.
      *
      * @param UID is the unique id of this module type in scope of the RuleEngine.
-     * @param configDescriptions is a {@link Set} of configuration descriptions.
+     * @param configDescriptions is a {@link List} of configuration descriptions.
      * @param label is a short and accurate name of the {@code CompositeActionType}.
      * @param description is a short and understandable description of which can be used the {@code CompositeActionType}
      *            .
@@ -62,15 +62,15 @@ public class CompositeActionType extends ActionType {
      *            or filtering it.
      * @param visibility determines whether the {@code CompositeActionType} can be used by anyone if it is
      *            {@link Visibility#PUBLIC} or only by its creator if it is {@link Visibility#PRIVATE}.
-     * @param inputs is a {@link Set} of {@link Input} descriptions.
-     * @param outputs is a {@link Set} of {@link Output} descriptions.
+     * @param inputs is a {@link List} of {@link Input} descriptions.
+     * @param outputs is a {@link List} of {@link Output} descriptions.
      * @param modules is a {@link LinkedHashSet} of {@link Action}s.
      */
-    public CompositeActionType(String UID, Set<ConfigDescriptionParameter> configDescriptions, String label,
-            String description, Set<String> tags, Visibility visibility, Set<Input> inputs, Set<Output> outputs,
+    public CompositeActionType(String UID, List<ConfigDescriptionParameter> configDescriptions, String label,
+            String description, Set<String> tags, Visibility visibility, List<Input> inputs, List<Output> outputs,
             List<Action> modules) {
         super(UID, configDescriptions, label, description, tags, visibility, inputs, outputs);
-        this.modules = modules != null ? modules : new ArrayList<Action>(0);
+        this.children = modules != null ? modules : new ArrayList<Action>(0);
     }
 
     /**
@@ -78,8 +78,8 @@ public class CompositeActionType extends ActionType {
      *
      * @return a {@link LinkedHashSet} of the {@link Action} modules of this {@code CompositeActionType}.
      */
-    public List<Action> getModules() {
-        return modules;
+    public List<Action> getChildren() {
+        return children;
     }
 
 }

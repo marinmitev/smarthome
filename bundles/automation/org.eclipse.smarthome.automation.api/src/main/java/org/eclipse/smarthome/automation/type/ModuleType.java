@@ -7,10 +7,13 @@
  */
 package org.eclipse.smarthome.automation.type;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import org.eclipse.smarthome.automation.Module;
 import org.eclipse.smarthome.automation.Rule;
+import org.eclipse.smarthome.automation.Visibility;
 import org.eclipse.smarthome.automation.handler.ModuleHandler;
 import org.eclipse.smarthome.config.core.ConfigDescriptionParameter;
 
@@ -32,7 +35,7 @@ public abstract class ModuleType {
     /**
      * This field is used as reference from the {@link Module}s, to find their meta-information.
      */
-    private String UID;
+    private String uid;
 
     /**
      * The value of this field determines whether the {@link ModuleType}s can be used by anyone if they are
@@ -56,38 +59,26 @@ public abstract class ModuleType {
      */
     private String description;
 
-    protected Set<ConfigDescriptionParameter> configDescriptions;
-
-    public enum Visibility {
-
-        /**
-         * The {@link ModuleType} is visible for anyone.
-         */
-        PUBLIC,
-
-        /**
-         * The {@link ModuleType} is visible only for its creator.
-         */
-        PRIVATE
-    }
+    protected List<ConfigDescriptionParameter> configDescriptions;
 
     /**
      * This constructor is responsible to initialize common base properties of the {@link ModuleType}s.
      *
      * @param UID is an unique id of the {@link ModuleType}, used as reference from the {@link Module}s, to find their
      *            meta-information.
-     * @param configDescriptions is a {@link Set} of meta-information configuration descriptions.
+     * @param configDescriptions is a {@link List} of meta-information configuration descriptions.
      */
-    public ModuleType(String UID, Set<ConfigDescriptionParameter> configDescriptions) {
-        this.UID = UID;
-        this.configDescriptions = configDescriptions;
+    public ModuleType(String UID, List<ConfigDescriptionParameter> configDescriptions) {
+        this.uid = UID;
+        this.configDescriptions = configDescriptions != null ? configDescriptions
+                : new ArrayList<ConfigDescriptionParameter>(0);
     }
 
     /**
      * This constructor is responsible to initialize all common properties of the {@link ModuleType}s.
      *
      * @param UID unique id of the {@link ModuleType}.
-     * @param configDescriptions is a {@link Set} of meta-information configuration descriptions.
+     * @param configDescriptions is a {@link List} of meta-information configuration descriptions.
      * @param label is a short and accurate name of the {@link ModuleType}.
      * @param description is a short and understandable description of which can be used the {@link ModuleType}.
      * @param tags defines categories that fit the {@link ModuleType} and which can serve as criteria for searching
@@ -95,7 +86,7 @@ public abstract class ModuleType {
      * @param visibility determines whether the {@link ModuleType} can be used by anyone if it is
      *            {@link Visibility#PUBLIC} or only by its creator if it is {@link Visibility#PRIVATE}.
      */
-    public ModuleType(String UID, Set<ConfigDescriptionParameter> configDescriptions, String label, String description,
+    public ModuleType(String UID, List<ConfigDescriptionParameter> configDescriptions, String label, String description,
             Set<String> tags, Visibility visibility) {
         this(UID, configDescriptions);
         this.label = label;
@@ -114,7 +105,7 @@ public abstract class ModuleType {
      * @return the unique id (UID) of the {@link ModuleType}, corresponding to the some type of {@link Module}s.
      */
     public String getUID() {
-        return UID;
+        return uid;
     }
 
     /**
@@ -123,7 +114,7 @@ public abstract class ModuleType {
      *
      * @return a {@link Set} of meta-information configuration descriptions.
      */
-    public Set<ConfigDescriptionParameter> getConfigurationDescription() {
+    public List<ConfigDescriptionParameter> getConfigurationDescription() {
         return configDescriptions;
     }
 
@@ -177,7 +168,7 @@ public abstract class ModuleType {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((UID == null) ? 0 : UID.hashCode());
+        result = prime * result + ((uid == null) ? 0 : uid.hashCode());
         return result;
     }
 
@@ -190,10 +181,10 @@ public abstract class ModuleType {
         if (getClass() != obj.getClass())
             return false;
         ModuleType other = (ModuleType) obj;
-        if (UID == null) {
-            if (other.UID != null)
+        if (uid == null) {
+            if (other.uid != null)
                 return false;
-        } else if (!UID.equals(other.UID))
+        } else if (!uid.equals(other.uid))
             return false;
         return true;
     }

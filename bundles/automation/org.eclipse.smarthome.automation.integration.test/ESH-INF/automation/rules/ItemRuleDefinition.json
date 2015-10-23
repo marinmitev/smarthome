@@ -29,7 +29,7 @@
           "topic": "smarthome/items/myMotionItem/state",
 		  "payload":".*ON.*"
         },
-		"input":{
+		"inputs":{
 			"event":"ItemStateChangeTriggerID.event"
 		}
 	  }

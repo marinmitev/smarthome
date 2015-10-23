@@ -12,7 +12,6 @@ import java.io.OutputStreamWriter;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.eclipse.smarthome.automation.Action;
 import org.eclipse.smarthome.automation.type.ActionType;
@@ -28,6 +27,7 @@ import org.json.JSONException;
  * Parser for ActionTypes.
  *
  * @author Ana Dimova - Initial Contribution
+ * @author Yordan Mihaylov - updates related to api changes
  *
  */
 public class ActionTypeJSONParser {
@@ -43,11 +43,11 @@ public class ActionTypeJSONParser {
      */
     static void actionTypeToJSON(ActionType actionType, OutputStreamWriter writer) throws IOException, JSONException {
         ModuleTypeJSONParser.moduleTypeToJSON(actionType, writer);
-        Set<Input> inputs = actionType.getInputs();
+        List<Input> inputs = actionType.getInputs();
         if (inputs != null && !inputs.isEmpty()) {
-            Set<ConfigDescriptionParameter> configDescriptions = actionType.getConfigurationDescription();
+            List<ConfigDescriptionParameter> configDescriptions = actionType.getConfigurationDescription();
             if (configDescriptions != null && !configDescriptions.isEmpty())
-                writer.write(",\n    \"" + JSONStructureConstants.INPUT + "\":{\n");
+                writer.write(",\n    \"" + JSONStructureConstants.INPUTS + "\":{\n");
             Iterator<Input> inputsI = inputs.iterator();
             while (inputsI.hasNext()) {
                 Input input = inputsI.next();
@@ -60,10 +60,10 @@ public class ActionTypeJSONParser {
             }
             writer.write("\n    }");
         }
-        Set<Output> outputs = actionType.getOutputs();
+        List<Output> outputs = actionType.getOutputs();
         if (outputs != null && !outputs.isEmpty()) {
             if (inputs != null && !inputs.isEmpty())
-                writer.write(",\n    \"" + JSONStructureConstants.OUTPUT + "\":{\n");
+                writer.write(",\n    \"" + JSONStructureConstants.OUTPUTS + "\":{\n");
             Iterator<Output> outputsI = outputs.iterator();
             while (outputsI.hasNext()) {
                 Output output = outputsI.next();
@@ -90,8 +90,8 @@ public class ActionTypeJSONParser {
     static void compositeActionTypeToJSON(CompositeActionType cActionType, OutputStreamWriter writer)
             throws IOException, JSONException {
         ActionTypeJSONParser.actionTypeToJSON(cActionType, writer);
-        List<Action> actions = cActionType.getModules();
-        Set<ConfigDescriptionParameter> configDescriptions = cActionType.getConfigurationDescription();
+        List<Action> actions = cActionType.getChildren();
+        List<ConfigDescriptionParameter> configDescriptions = cActionType.getConfigurationDescription();
         if (configDescriptions != null && !configDescriptions.isEmpty())
             writer.write(",\n");
         writer.write("    " + JSONStructureConstants.ACTIONS + ":{\n");

@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.smarthome.automation.Trigger;
+import org.eclipse.smarthome.automation.Visibility;
 import org.eclipse.smarthome.config.core.ConfigDescriptionParameter;
 
 /**
@@ -26,7 +27,7 @@ import org.eclipse.smarthome.config.core.ConfigDescriptionParameter;
  */
 public class CompositeTriggerType extends TriggerType {
 
-    private List<Trigger> modules;
+    private List<Trigger> children;
 
     /**
      * This constructor is responsible for creation of a {@code CompositeTriggerType} with ordered set of
@@ -39,10 +40,10 @@ public class CompositeTriggerType extends TriggerType {
      * @param outputs is a {@link Set} of {@link Output} descriptions.
      *
      */
-    public CompositeTriggerType(String UID, Set<ConfigDescriptionParameter> configDescriptions, Set<Output> outputs,
+    public CompositeTriggerType(String UID, List<ConfigDescriptionParameter> configDescriptions, List<Output> outputs,
             List<Trigger> modules) {
         super(UID, configDescriptions, outputs);
-        this.modules = modules != null ? modules : new ArrayList<Trigger>(0);
+        this.children = modules != null ? modules : new ArrayList<Trigger>(0);
     }
 
     /**
@@ -63,10 +64,10 @@ public class CompositeTriggerType extends TriggerType {
      * @param outputs is a {@link Set} of {@link Output} descriptions.
      * @param modules is a {@link LinkedHashSet} of {@link Trigger}s.
      */
-    public CompositeTriggerType(String UID, Set<ConfigDescriptionParameter> configDescriptions, String label,
-            String description, Set<String> tags, Visibility visibility, Set<Output> outputs, List<Trigger> modules) {
+    public CompositeTriggerType(String UID, List<ConfigDescriptionParameter> configDescriptions, String label,
+            String description, Set<String> tags, Visibility visibility, List<Output> outputs, List<Trigger> modules) {
         super(UID, configDescriptions, label, description, tags, visibility, outputs);
-        this.modules = modules != null ? modules : new ArrayList<Trigger>(0);
+        this.children = modules != null ? modules : new ArrayList<Trigger>(0);
     }
 
     /**
@@ -74,8 +75,8 @@ public class CompositeTriggerType extends TriggerType {
      *
      * @return a {@link LinkedHashSet} of the {@link Trigger} modules of this {@code CompositeTriggerType}.
      */
-    public List<Trigger> getModules() {
-        return modules;
+    public List<Trigger> getChildren() {
+        return children;
     }
 
 }

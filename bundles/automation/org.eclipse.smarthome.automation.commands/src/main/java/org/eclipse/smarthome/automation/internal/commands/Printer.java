@@ -40,6 +40,7 @@ import org.eclipse.smarthome.config.core.ParameterOption;
  * This class provides the functionality responsible for printing the automation objects as a result of commands.
  *
  * @author Ana Dimova - Initial Contribution
+ * @author Yordan Mihaylov - updates related to api changes
  *
  */
 public class Printer {
@@ -113,7 +114,7 @@ public class Printer {
             String str = "                              ";
             writer.append(makeString(str, config) + "\n");
         }
-        Set<ConfigDescriptionParameter> cd = rule.getConfigurationDescriptions();
+        List<ConfigDescriptionParameter> cd = rule.getConfigurationDescriptions();
         if (cd != null && !cd.isEmpty()) {
             writer.append("CONFIGURATION_DESCRIPTIONS");
             printChars(writer, ' ', 4, false);
@@ -198,7 +199,7 @@ public class Printer {
             writer.append(makeString(tags) + "\n");
         }
         if (template instanceof RuleTemplate) {
-            Set<ConfigDescriptionParameter> cd = ((RuleTemplate) template).getConfigurationDescription();
+            List<ConfigDescriptionParameter> cd = ((RuleTemplate) template).getConfigurationDescription();
             if (cd != null && !cd.isEmpty()) {
                 writer.append("CONFIGURATION_DESCRIPTIONS");
                 printChars(writer, ' ', 4, false);
@@ -283,14 +284,14 @@ public class Printer {
             printChars(writer, ' ', 26, false);
             writer.append(makeString(tags) + "\n");
         }
-        Set<ConfigDescriptionParameter> cd = moduleType.getConfigurationDescription();
+        List<ConfigDescriptionParameter> cd = moduleType.getConfigurationDescription();
         if (cd != null && !cd.isEmpty()) {
             writer.append("CONFIGURATION_DESCRIPTIONS");
             printChars(writer, ' ', 4, false);
             writer.append(printConfigurationDescription(cd) + "\n");
         }
         if (moduleType instanceof TriggerType) {
-            Set<Output> outputs = ((TriggerType) moduleType).getOutputs();
+            List<Output> outputs = ((TriggerType) moduleType).getOutputs();
             if (outputs != null && !outputs.isEmpty()) {
                 writer.append("OUTPUTS");
                 printChars(writer, ' ', 23, false);
@@ -298,7 +299,7 @@ public class Printer {
             }
         }
         if (moduleType instanceof ConditionType) {
-            Set<Input> inputs = ((ConditionType) moduleType).getInputs();
+            List<Input> inputs = ((ConditionType) moduleType).getInputs();
             if (inputs != null && !inputs.isEmpty()) {
                 writer.append("INPUTS");
                 printChars(writer, ' ', 24, false);
@@ -306,13 +307,13 @@ public class Printer {
             }
         }
         if (moduleType instanceof ActionType) {
-            Set<Input> inputs = ((ActionType) moduleType).getInputs();
+            List<Input> inputs = ((ActionType) moduleType).getInputs();
             if (inputs != null && !inputs.isEmpty()) {
                 writer.append("INPUTS");
                 printChars(writer, ' ', 24, false);
                 writer.append(makeString(inputs) + "\n");
             }
-            Set<Output> outputs = ((ActionType) moduleType).getOutputs();
+            List<Output> outputs = ((ActionType) moduleType).getOutputs();
             if (outputs != null && !outputs.isEmpty()) {
                 writer.append("OUTPUTS");
                 printChars(writer, ' ', 23, false);
@@ -320,7 +321,7 @@ public class Printer {
             }
         }
         if (moduleType instanceof CompositeTriggerType) {
-            List<Trigger> triggers = ((CompositeTriggerType) moduleType).getModules();
+            List<Trigger> triggers = ((CompositeTriggerType) moduleType).getChildren();
             if (triggers != null && !triggers.isEmpty()) {
                 writer.append("CHILDREN");
                 printChars(writer, ' ', 22, false);
@@ -334,7 +335,7 @@ public class Printer {
             }
         }
         if (moduleType instanceof CompositeConditionType) {
-            List<Condition> conditions = ((CompositeConditionType) moduleType).getModules();
+            List<Condition> conditions = ((CompositeConditionType) moduleType).getChildren();
             if (conditions != null && !conditions.isEmpty()) {
                 writer.append("CHILDREN");
                 printChars(writer, ' ', 20, false);
@@ -348,7 +349,7 @@ public class Printer {
             }
         }
         if (moduleType instanceof CompositeActionType) {
-            List<Action> actions = ((CompositeActionType) moduleType).getModules();
+            List<Action> actions = ((CompositeActionType) moduleType).getChildren();
             if (actions != null && !actions.isEmpty()) {
                 writer.append("CHILDREN");
                 printChars(writer, ' ', 23, false);
@@ -434,7 +435,7 @@ public class Printer {
      * @param configDescriptions set of {@link ConfigDescriptionParameter}s for printing.
      * @return a formated string, representing the set of {@link ConfigDescriptionParameter}s.
      */
-    private static String printConfigurationDescription(Set<ConfigDescriptionParameter> configDescriptions) {
+    private static String printConfigurationDescription(List<ConfigDescriptionParameter> configDescriptions) {
         StringBuilder writer = new StringBuilder();
         Iterator<ConfigDescriptionParameter> i = configDescriptions.iterator();
         ConfigDescriptionParameter parameter = i.next();
@@ -534,13 +535,21 @@ public class Printer {
         String res = "[\n";
         for (Object element : list) {
             index--;
-            String string = "                                      ";
+            String string = "                                  ";
             if (element instanceof FilterCriteria) {
                 string = string + "name=\"" + ((FilterCriteria) element).getName() + "\", value=\""
                         + ((FilterCriteria) element).getValue() + "\"";
             } else if (element instanceof ParameterOption) {
                 string = string + "value=\"" + ((ParameterOption) element).getValue() + "\", label=\""
                         + ((ParameterOption) element).getLabel() + "\"";
+            } else if (element instanceof Input) {
+                Input in = (Input) element;
+                string = string + "name=\"" + in.getName() + "\", type=\"" + in.getType() + "\", "
+                        + (in.isRequired() ? "REQUIRED" : "NOT REQUIRED")
+                        + (in.getDefaultValue() != null ? "\", default=\"" + in.getDefaultValue() : "");
+            } else if (element instanceof Output) {
+                Output out = (Output) element;
+                string = string + "name=\"" + out.getName() + "\", type=\"" + out.getType() + "\"";
             }
             if (index > 0) {
                 res = res + string + ",\n";
@@ -548,7 +557,7 @@ public class Printer {
                 res = res + string + "\n";
             }
         }
-        return res = res + "                                  ]";
+        return res = res + "                              ]";
     }
 
     /**

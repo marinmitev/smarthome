@@ -13,7 +13,6 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -37,6 +36,7 @@ import org.slf4j.LoggerFactory;
  * This class serves for loading JSON files and parse it to the Rule objects.
  *
  * @author Ana Dimova - Initial Contribution
+ * @author Yordan Mihaylov - updates related to api changes
  *
  */
 public class RuleJSONParser implements Parser<Rule> {
@@ -144,9 +144,9 @@ public class RuleJSONParser implements Parser<Rule> {
 
             JSONObject jsonConfig = JSONUtility.getJSONObject(ParsingNestedException.RULE, uid, exceptions,
                     JSONStructureConstants.CONFIG, true, jsonRule, log);
-            Set<ConfigDescriptionParameter> configDescriptions = null;
+            List<ConfigDescriptionParameter> configDescriptions = null;
             if (jsonConfig != null) {
-                configDescriptions = new LinkedHashSet<ConfigDescriptionParameter>();
+                configDescriptions = new ArrayList<ConfigDescriptionParameter>();
                 configurations = ConfigPropertyJSONParser.getConfiguration(ParsingNestedException.RULE, uid, exceptions,
                         jsonConfig, configDescriptions, log);
             }
@@ -234,7 +234,7 @@ public class RuleJSONParser implements Parser<Rule> {
             writer.write(",\n");
         }
 
-        Set<ConfigDescriptionParameter> configDescriptions = rule.getConfigurationDescriptions();
+        List<ConfigDescriptionParameter> configDescriptions = rule.getConfigurationDescriptions();
         Map<String, ?> configValues = rule.getConfiguration();
         ruleConfigurationToJSON(configDescriptions, configValues, writer);
 
@@ -266,7 +266,7 @@ public class RuleJSONParser implements Parser<Rule> {
      * @throws IOException is thrown when the I/O operations are failed or interrupted.
      * @throws JSONException is thrown by the JSON.org classes when things are amiss.
      */
-    private void ruleConfigurationToJSON(Set<ConfigDescriptionParameter> configDescriptions,
+    private void ruleConfigurationToJSON(List<ConfigDescriptionParameter> configDescriptions,
             Map<String, ?> configValues, OutputStreamWriter writer) throws IOException, JSONException {
         if (configDescriptions != null && !configDescriptions.isEmpty()) {
             writer.write("    \"" + JSONStructureConstants.CONFIG + "\":{\n");

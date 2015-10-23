@@ -60,6 +60,7 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
  * @author Kai Kreuzer - refactored (managed) provider and registry implementation
  * @author Ana Dimova - provides localization
  * @author Ana Dimova - refactor Parser interface.
+ * @author Yordan Mihaylov - updates related to api changes
  */
 public class ModuleTypeResourceBundleProvider extends AbstractResourceBundleProvider<ModuleType>
         implements ModuleTypeProvider {
@@ -226,6 +227,7 @@ public class ModuleTypeResourceBundleProvider extends AbstractResourceBundleProv
         try {
             providedObjects = parser.parse(inputStreamReader);
         } catch (ParsingException e) {
+            logger.error("ModuleType parsing error!", e);
         }
         if (providedObjects != null && !providedObjects.isEmpty()) {
             Iterator<ModuleType> i = providedObjects.iterator();
@@ -287,7 +289,7 @@ public class ModuleTypeResourceBundleProvider extends AbstractResourceBundleProv
                 defModuleType.getLabel(), locale);
         String ldescription = ModuleTypeI18nUtil.getLocalizedModuleTypeDescription(i18nProvider, bundle, uid,
                 defModuleType.getDescription(), locale);
-        Set<ConfigDescriptionParameter> lconfigDescriptions = ConfigDescriptionParameterI18nUtil
+        List<ConfigDescriptionParameter> lconfigDescriptions = ConfigDescriptionParameterI18nUtil
                 .getLocalizedConfigurationDescription(i18nProvider, defModuleType.getConfigurationDescription(), bundle,
                         uid, ModuleTypeI18nUtil.MODULE_TYPE, locale);
         if (defModuleType instanceof ActionType) {
@@ -318,15 +320,15 @@ public class ModuleTypeResourceBundleProvider extends AbstractResourceBundleProv
      * @return localized ActionType.
      */
     private ActionType createLocalizedActionType(ActionType at, Bundle bundle, String moduleTypeUID, Locale locale,
-            Set<ConfigDescriptionParameter> lconfigDescriptions, String llabel, String ldescription) {
-        Set<Input> inputs = ModuleTypeI18nUtil.getLocalizedInputs(i18nProvider, at.getInputs(), bundle, moduleTypeUID,
+            List<ConfigDescriptionParameter> lconfigDescriptions, String llabel, String ldescription) {
+        List<Input> inputs = ModuleTypeI18nUtil.getLocalizedInputs(i18nProvider, at.getInputs(), bundle, moduleTypeUID,
                 locale);
-        Set<Output> outputs = ModuleTypeI18nUtil.getLocalizedOutputs(i18nProvider, at.getOutputs(), bundle,
+        List<Output> outputs = ModuleTypeI18nUtil.getLocalizedOutputs(i18nProvider, at.getOutputs(), bundle,
                 moduleTypeUID, locale);
         ActionType lat = null;
         if (at instanceof CompositeActionType) {
             List<Action> modules = ModuleI18nUtil.getLocalizedModules(i18nProvider,
-                    ((CompositeActionType) at).getModules(), bundle, moduleTypeUID, ModuleTypeI18nUtil.MODULE_TYPE,
+                    ((CompositeActionType) at).getChildren(), bundle, moduleTypeUID, ModuleTypeI18nUtil.MODULE_TYPE,
                     locale);
             lat = new CompositeActionType(moduleTypeUID, lconfigDescriptions, llabel, ldescription, at.getTags(),
                     at.getVisibility(), inputs, outputs, modules);
@@ -350,13 +352,13 @@ public class ModuleTypeResourceBundleProvider extends AbstractResourceBundleProv
      * @return localized ConditionType.
      */
     private ConditionType createLocalizedConditionType(ConditionType ct, Bundle bundle, String moduleTypeUID,
-            Locale locale, Set<ConfigDescriptionParameter> lconfigDescriptions, String llabel, String ldescription) {
-        Set<Input> inputs = ModuleTypeI18nUtil.getLocalizedInputs(i18nProvider, ct.getInputs(), bundle, moduleTypeUID,
+            Locale locale, List<ConfigDescriptionParameter> lconfigDescriptions, String llabel, String ldescription) {
+        List<Input> inputs = ModuleTypeI18nUtil.getLocalizedInputs(i18nProvider, ct.getInputs(), bundle, moduleTypeUID,
                 locale);
         ConditionType lct = null;
         if (ct instanceof CompositeConditionType) {
             List<Condition> modules = ModuleI18nUtil.getLocalizedModules(i18nProvider,
-                    ((CompositeConditionType) ct).getModules(), bundle, moduleTypeUID, ModuleTypeI18nUtil.MODULE_TYPE,
+                    ((CompositeConditionType) ct).getChildren(), bundle, moduleTypeUID, ModuleTypeI18nUtil.MODULE_TYPE,
                     locale);
             lct = new CompositeConditionType(moduleTypeUID, lconfigDescriptions, llabel, ldescription, ct.getTags(),
                     ct.getVisibility(), inputs, modules);
@@ -380,13 +382,13 @@ public class ModuleTypeResourceBundleProvider extends AbstractResourceBundleProv
      * @return localized TriggerType.
      */
     private TriggerType createLocalizedTriggerType(TriggerType tt, Bundle bundle, String moduleTypeUID, Locale locale,
-            Set<ConfigDescriptionParameter> lconfigDescriptions, String llabel, String ldescription) {
-        Set<Output> outputs = ModuleTypeI18nUtil.getLocalizedOutputs(i18nProvider, tt.getOutputs(), bundle,
+            List<ConfigDescriptionParameter> lconfigDescriptions, String llabel, String ldescription) {
+        List<Output> outputs = ModuleTypeI18nUtil.getLocalizedOutputs(i18nProvider, tt.getOutputs(), bundle,
                 moduleTypeUID, locale);
         TriggerType ltt = null;
         if (tt instanceof CompositeTriggerType) {
             List<Trigger> modules = ModuleI18nUtil.getLocalizedModules(i18nProvider,
-                    ((CompositeTriggerType) tt).getModules(), bundle, moduleTypeUID, ModuleTypeI18nUtil.MODULE_TYPE,
+                    ((CompositeTriggerType) tt).getChildren(), bundle, moduleTypeUID, ModuleTypeI18nUtil.MODULE_TYPE,
                     locale);
             ltt = new CompositeTriggerType(moduleTypeUID, lconfigDescriptions, llabel, ldescription, tt.getTags(),
                     tt.getVisibility(), outputs, modules);

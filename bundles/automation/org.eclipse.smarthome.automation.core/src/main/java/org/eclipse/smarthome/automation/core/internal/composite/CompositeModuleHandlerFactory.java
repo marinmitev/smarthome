@@ -100,7 +100,7 @@ public class CompositeModuleHandlerFactory extends BaseModuleHandlerFactory impl
             String moduleType = module.getTypeUID();
             ModuleType mt = mtManager.getType(moduleType);
             if (mt instanceof CompositeTriggerType) {
-                List<Trigger> childModules = ((CompositeTriggerType) mt).getModules();
+                List<Trigger> childModules = ((CompositeTriggerType) mt).getChildren();
                 LinkedHashMap<Trigger, TriggerHandler> mapModuleToHandler = getChildHandlers(module.getConfiguration(),
                         childModules, ruleUID);
                 if (mapModuleToHandler != null) {
@@ -108,7 +108,7 @@ public class CompositeModuleHandlerFactory extends BaseModuleHandlerFactory impl
                             mapModuleToHandler, ruleUID);
                 }
             } else if (mt instanceof CompositeConditionType) {
-                List<Condition> childModules = ((CompositeConditionType) mt).getModules();
+                List<Condition> childModules = ((CompositeConditionType) mt).getChildren();
                 LinkedHashMap<Condition, ConditionHandler> mapModuleToHandler = getChildHandlers(
                         module.getConfiguration(), childModules, ruleUID);
                 if (mapModuleToHandler != null) {
@@ -116,7 +116,7 @@ public class CompositeModuleHandlerFactory extends BaseModuleHandlerFactory impl
                             mapModuleToHandler, ruleUID);
                 }
             } else if (mt instanceof CompositeActionType) {
-                List<Action> childModules = ((CompositeActionType) mt).getModules();
+                List<Action> childModules = ((CompositeActionType) mt).getChildren();
                 LinkedHashMap<Action, ActionHandler> mapModuleToHandler = getChildHandlers(module.getConfiguration(),
                         childModules, ruleUID);
                 if (mapModuleToHandler != null) {
@@ -143,7 +143,7 @@ public class CompositeModuleHandlerFactory extends BaseModuleHandlerFactory impl
      */
     private <T extends Module, MT extends ModuleHandler> LinkedHashMap<T, MT> getChildHandlers(
             Map<String, Object> compositeConfig, List<T> childModules, String ruleUID) {
-        LinkedHashMap<T, MT> mapModuleToHandler = new LinkedHashMap<>();
+        LinkedHashMap<T, MT> mapModuleToHandler = new LinkedHashMap<T, MT>();
         for (T child : childModules) {
             ruleEngine.updateMapModuleTypeToRule(ruleUID, child.getTypeUID());
             ModuleHandlerFactory childMhf = ruleEngine.getModuleHandlerFactory(child.getTypeUID(), ruleUID);

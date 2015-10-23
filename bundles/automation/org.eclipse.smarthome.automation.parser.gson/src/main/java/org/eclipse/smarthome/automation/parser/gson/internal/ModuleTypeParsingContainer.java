@@ -7,7 +7,7 @@
  */
 package org.eclipse.smarthome.automation.parser.gson.internal;
 
-import java.util.Map;
+import java.util.List;
 
 import org.eclipse.smarthome.automation.type.CompositeActionType;
 import org.eclipse.smarthome.automation.type.CompositeConditionType;
@@ -18,13 +18,12 @@ import org.eclipse.smarthome.automation.type.CompositeTriggerType;
  * within a single input stream.
  *
  * @author Kai Kreuzer - Initial contribution
- *
  */
 public class ModuleTypeParsingContainer {
 
-    public Map<String, CompositeTriggerType> triggers;
+    public List<CompositeTriggerType> triggers;
 
-    public Map<String, CompositeConditionType> conditions;
+    public List<CompositeConditionType> conditions;
 
-    public Map<String, CompositeActionType> actions;
+    public List<CompositeActionType> actions;
 }

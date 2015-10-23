@@ -12,7 +12,6 @@ import java.io.OutputStreamWriter;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.eclipse.smarthome.automation.Trigger;
 import org.eclipse.smarthome.automation.type.CompositeTriggerType;
@@ -26,6 +25,7 @@ import org.json.JSONException;
  *
  * @author Ana Dimova - Initial Contribution
  * @author Ana Dimova - refactor Parser interface.
+ * @author Yordan Mihaylov - updates related to api changes
  *
  */
 class TriggerTypeJSONParser {
@@ -42,11 +42,11 @@ class TriggerTypeJSONParser {
     static void triggerTypeToJSON(TriggerType triggerType, OutputStreamWriter writer)
             throws IOException, JSONException {
         ModuleTypeJSONParser.moduleTypeToJSON(triggerType, writer);
-        Set<Output> outputs = triggerType.getOutputs();
+        List<Output> outputs = triggerType.getOutputs();
         if (outputs != null && !outputs.isEmpty()) {
-            Set<ConfigDescriptionParameter> configDescriptions = triggerType.getConfigurationDescription();
+            List<ConfigDescriptionParameter> configDescriptions = triggerType.getConfigurationDescription();
             if (configDescriptions != null && !configDescriptions.isEmpty())
-                writer.write(",\n    \"" + JSONStructureConstants.OUTPUT + "\":{\n");
+                writer.write(",\n    \"" + JSONStructureConstants.OUTPUTS + "\":{\n");
             Iterator<Output> outputsI = outputs.iterator();
             while (outputsI.hasNext()) {
                 Output output = outputsI.next();
@@ -73,8 +73,8 @@ class TriggerTypeJSONParser {
     static void compositeTriggerTypeToJSON(CompositeTriggerType cTriggerType, OutputStreamWriter writer)
             throws IOException, JSONException {
         triggerTypeToJSON(cTriggerType, writer);
-        List<Trigger> triggers = cTriggerType.getModules();
-        Set<ConfigDescriptionParameter> configDescriptions = cTriggerType.getConfigurationDescription();
+        List<Trigger> triggers = cTriggerType.getChildren();
+        List<ConfigDescriptionParameter> configDescriptions = cTriggerType.getConfigurationDescription();
         if (configDescriptions != null && !configDescriptions.isEmpty())
             writer.write(",\n");
         writer.write("    " + JSONStructureConstants.TRIGGERS + ":{\n");

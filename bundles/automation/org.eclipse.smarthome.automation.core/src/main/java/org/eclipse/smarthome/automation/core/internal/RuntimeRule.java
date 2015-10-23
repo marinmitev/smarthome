@@ -12,7 +12,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.eclipse.smarthome.automation.Action;
 import org.eclipse.smarthome.automation.Condition;
@@ -47,8 +46,8 @@ public class RuntimeRule extends Rule {
     }
 
     public RuntimeRule(RuleTemplate template, Map<String, ?> configuration) {
-        super(createTriggers(template.getTriggers()), createConditions(template.getConditions()),
-                createActions(template.getActions()), template.getConfigurationDescription(), configuration);
+        super(getRuntimeTriggersCopy(template.getTriggers()), getRuntimeConditionsCopy(template.getConditions()),
+                getRuntimeActionsCopy(template.getActions()), template.getConfigurationDescription(), configuration);
     }
 
     /**
@@ -58,22 +57,22 @@ public class RuntimeRule extends Rule {
      *            has to be created.
      */
     protected RuntimeRule(Rule rule) {
-        super(rule.getUID(), createTriggers(rule.getTriggers()), createConditions(rule.getConditions()),
-                createActions(rule.getActions()), rule.getConfigurationDescriptions(), rule.getConfiguration());
+        super(rule.getUID(), getRuntimeTriggersCopy(rule.getTriggers()), getRuntimeConditionsCopy(rule.getConditions()),
+                getRuntimeActionsCopy(rule.getActions()), rule.getConfigurationDescriptions(), rule.getConfiguration(),
+                rule.getTemplateUID());
         setName(rule.getName());
         setTags(rule.getTags());
         setDescription(rule.getDescription());
-        this.ruleTemplateUID = rule.getTemplateUID();
     }
 
     @Override
     public Map<String, ?> getConfiguration() {
-        return configurations;
+        return config;
     }
 
     @Override
     public void setConfiguration(Map<String, ?> ruleConfiguration) {
-        this.configurations = ruleConfiguration != null ? new HashMap<String, Object>(ruleConfiguration)
+        this.config = ruleConfiguration != null ? new HashMap<String, Object>(ruleConfiguration)
                 : new HashMap<String, Object>(11);
     }
 
@@ -162,7 +161,7 @@ public class RuntimeRule extends Rule {
 
     }
 
-    private boolean isOptionalConfig(Set<ConfigDescriptionParameter> configDescriptions) {
+    private boolean isOptionalConfig(List<ConfigDescriptionParameter> configDescriptions) {
         if (configDescriptions != null && !configDescriptions.isEmpty()) {
             boolean required = false;
             Iterator<ConfigDescriptionParameter> i = configDescriptions.iterator();
@@ -281,7 +280,20 @@ public class RuntimeRule extends Rule {
         uid = rUID;
     }
 
-    private static List<Action> createActions(List<Action> actions) {
+    private static List<Action> getActionsCopy(List<Action> actions) {
+        List<Action> res = new ArrayList<Action>();
+        if (actions != null) {
+            for (Action a : actions) {
+                Action action = new Action(a.getId(), a.getTypeUID(), a.getConfiguration(), a.getInputs());
+                action.setLabel(a.getLabel());
+                action.setDescription(a.getDescription());
+                res.add(action);
+            }
+        }
+        return res;
+    }
+
+    private static List<Action> getRuntimeActionsCopy(List<Action> actions) {
         List<Action> res = new ArrayList<Action>();
         if (actions != null) {
             for (Action action : actions) {
@@ -291,7 +303,20 @@ public class RuntimeRule extends Rule {
         return res;
     }
 
-    private static List<Condition> createConditions(List<Condition> conditions) {
+    private static List<Condition> getConditionsCopy(List<Condition> conditions) {
+        List<Condition> res = new ArrayList<Condition>(11);
+        if (conditions != null) {
+            for (Condition c : conditions) {
+                Condition condition = new Condition(c.getId(), c.getTypeUID(), c.getConfiguration(), c.getInputs());
+                condition.setLabel(condition.getLabel());
+                condition.setDescription(condition.getDescription());
+                res.add(condition);
+            }
+        }
+        return res;
+    }
+
+    private static List<Condition> getRuntimeConditionsCopy(List<Condition> conditions) {
         List<Condition> res = new ArrayList<Condition>(11);
         if (conditions != null) {
             for (Condition condition : conditions) {
@@ -301,7 +326,20 @@ public class RuntimeRule extends Rule {
         return res;
     }
 
-    private static List<Trigger> createTriggers(List<Trigger> triggers) {
+    private static List<Trigger> getTriggersCopy(List<Trigger> triggers) {
+        List<Trigger> res = new ArrayList<Trigger>(11);
+        if (triggers != null) {
+            for (Trigger t : triggers) {
+                Trigger trigger = new Trigger(t.getId(), t.getTypeUID(), t.getConfiguration());
+                trigger.setLabel(trigger.getLabel());
+                trigger.setDescription(trigger.getDescription());
+                res.add(trigger);
+            }
+        }
+        return res;
+    }
+
+    private static List<Trigger> getRuntimeTriggersCopy(List<Trigger> triggers) {
         List<Trigger> res = new ArrayList<Trigger>(11);
         if (triggers != null) {
             for (Trigger trigger : triggers) {
@@ -311,4 +349,12 @@ public class RuntimeRule extends Rule {
         return res;
     }
 
+    protected Rule getRuleCopy() {
+        Rule rule = new Rule(getUID(), getTriggersCopy(getTriggers()), getConditionsCopy(getConditions()),
+                getActionsCopy(getActions()), getConfigurationDescriptions(), getConfiguration(), getTemplateUID());
+        rule.setName(getName());
+        rule.setTags(getTags());
+        rule.setDescription(getDescription());
+        return rule;
+    }
 }

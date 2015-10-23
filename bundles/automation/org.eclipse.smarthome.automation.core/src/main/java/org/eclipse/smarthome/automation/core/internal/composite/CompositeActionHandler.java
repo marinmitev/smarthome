@@ -13,7 +13,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.StringTokenizer;
 
 import org.eclipse.smarthome.automation.Action;
@@ -58,12 +57,12 @@ public class CompositeActionHandler extends AbstractCompositeModuleHandler<Actio
      */
     @Override
     public Map<String, Object> execute(Map<String, ?> context) {
-        Map<String, Object> internalContext = new HashMap<>(context);
-        Map<String, Object> result = new HashMap<>();
-        List<Action> children = moduleType.getModules();
+        Map<String, Object> internalContext = new HashMap<String, Object>(context);
+        Map<String, Object> result = new HashMap<String, Object>();
+        List<Action> children = moduleType.getChildren();
         for (Action child : children) {
             Map<String, ?> compositeContext = getCompositeContext(internalContext);
-            Map<String, Object> originalConfig = new HashMap<>(child.getConfiguration());
+            Map<String, Object> originalConfig = new HashMap<String, Object>(child.getConfiguration());
             updateChildConfig(child, compositeContext);
             ActionHandler childHandler = moduleHandlerMap.get(child);
             Map<String, Object> childResults = childHandler.execute(compositeContext);
@@ -90,8 +89,8 @@ public class CompositeActionHandler extends AbstractCompositeModuleHandler<Actio
      * @param outputs outputs of the parent action. The action of {@link CompositeActionType}
      * @return map of links between child action outputs and parent output
      */
-    protected Map<String, String> getCompositeOutputMap(Set<Output> outputs) {
-        Map<String, String> result = new LinkedHashMap<>(11);
+    protected Map<String, String> getCompositeOutputMap(List<Output> outputs) {
+        Map<String, String> result = new LinkedHashMap<String, String>(11);
         if (outputs != null) {
             for (Output output : outputs) {
                 String refs = output.getReference();

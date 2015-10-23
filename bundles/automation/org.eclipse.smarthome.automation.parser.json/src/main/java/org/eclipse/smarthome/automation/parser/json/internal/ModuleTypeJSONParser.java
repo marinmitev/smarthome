@@ -21,6 +21,7 @@ import java.util.Set;
 import org.eclipse.smarthome.automation.Action;
 import org.eclipse.smarthome.automation.Condition;
 import org.eclipse.smarthome.automation.Trigger;
+import org.eclipse.smarthome.automation.Visibility;
 import org.eclipse.smarthome.automation.parser.Parser;
 import org.eclipse.smarthome.automation.parser.ParsingException;
 import org.eclipse.smarthome.automation.parser.ParsingNestedException;
@@ -31,7 +32,6 @@ import org.eclipse.smarthome.automation.type.CompositeTriggerType;
 import org.eclipse.smarthome.automation.type.ConditionType;
 import org.eclipse.smarthome.automation.type.Input;
 import org.eclipse.smarthome.automation.type.ModuleType;
-import org.eclipse.smarthome.automation.type.ModuleType.Visibility;
 import org.eclipse.smarthome.automation.type.Output;
 import org.eclipse.smarthome.automation.type.TriggerType;
 import org.eclipse.smarthome.config.core.ConfigDescriptionParameter;
@@ -47,6 +47,7 @@ import org.slf4j.LoggerFactory;
  * This class serves for loading JSON files and parse it to the Module Type objects.
  *
  * @author Ana Dimova - Initial Contribution
+ * @author Yordan Mihaylov - updates related to api changes
  *
  */
 public class ModuleTypeJSONParser implements Parser<ModuleType> {
@@ -84,17 +85,17 @@ public class ModuleTypeJSONParser implements Parser<ModuleType> {
                             log);
                 }
             }
-            JSONObject jsonTRIGGERS = JSONUtility.getJSONObject(ParsingNestedException.MODULE_TYPE, null, exceptions,
+            JSONArray jsonTRIGGERS = JSONUtility.getJSONArray(ParsingNestedException.MODULE_TYPE, null, exceptions,
                     JSONStructureConstants.TRIGGERS, true, json, log);
             if (jsonTRIGGERS != null)
                 createModuleTypes(JSONUtility.TRIGGERS, jsonTRIGGERS, moduleTypes, exceptions);
 
-            JSONObject jsonCONDITIONS = JSONUtility.getJSONObject(ParsingNestedException.MODULE_TYPE, null, exceptions,
+            JSONArray jsonCONDITIONS = JSONUtility.getJSONArray(ParsingNestedException.MODULE_TYPE, null, exceptions,
                     JSONStructureConstants.CONDITIONS, true, json, log);
             if (jsonCONDITIONS != null)
                 createModuleTypes(JSONUtility.CONDITIONS, jsonCONDITIONS, moduleTypes, exceptions);
 
-            JSONObject jsonACTIONS = JSONUtility.getJSONObject(ParsingNestedException.MODULE_TYPE, null, exceptions,
+            JSONArray jsonACTIONS = JSONUtility.getJSONArray(ParsingNestedException.MODULE_TYPE, null, exceptions,
                     JSONStructureConstants.ACTIONS, true, json, log);
             if (jsonACTIONS != null)
                 createModuleTypes(JSONUtility.ACTIONS, jsonACTIONS, moduleTypes, exceptions);
@@ -166,26 +167,46 @@ public class ModuleTypeJSONParser implements Parser<ModuleType> {
      * @param moduleTypes is a set fulfilled with {@link ModuleType} objects created form json objects.
      * @param exceptions is a list used for collecting the exceptions occurred during {@link ModuleType}s creation.
      */
-    private void createModuleTypes(int type, JSONObject jsonModuleTypes, Set<ModuleType> moduleTypes,
+    private void createModuleTypes(int type, JSONArray jsonModuleTypes, Set<ModuleType> moduleTypes,
             List<ParsingNestedException> exceptions) {
         if (jsonModuleTypes == null) {
             return;
         }
-        Iterator<?> jsonModulesIds = jsonModuleTypes.keys();
-        while (jsonModulesIds.hasNext()) {
-            String moduleTypeUID = (String) jsonModulesIds.next();
+
+        for (int i = 0; i < jsonModuleTypes.length(); i++) {
+
+            // }
+            //
+            // Iterator<?> jsonModulesIds = jsonModuleTypes.keys();
+            // while (jsonModulesIds.hasNext()) {
+            // String moduleTypeUID = (String) jsonModulesIds.next();
+            JSONObject jsonModuleType;
+            try {
+                jsonModuleType = jsonModuleTypes.getJSONObject(i);
+            } catch (JSONException e) {
+                JSONUtility.catchParsingException(ParsingNestedException.MODULE_TYPE, null, exceptions, e, log);
+                continue;
+            }
+            // String moduleTypeUID;
+            // try {
+            // moduleTypeUID = jsonModuleType.getString(JSONStructureConstants.UID);
+            // } catch (JSONException e) {
+            // JSONUtility.catchParsingException(ParsingNestedException.MODULE_TYPE, null, exceptions, e, log);
+            // continue;
+            // }
+
             ModuleType moduleType = null;
-            JSONObject jsonModuleType = JSONUtility.getJSONObject(ParsingNestedException.MODULE_TYPE, moduleTypeUID,
-                    exceptions, moduleTypeUID, false, jsonModuleTypes, log);
+            // JSONObject jsonModuleType = JSONUtility.getJSONObject(ParsingNestedException.MODULE_TYPE, moduleTypeUID,
+            // exceptions, moduleTypeUID, false, jsonModuleTypes, log);
             switch (type) {
                 case JSONUtility.TRIGGERS:
-                    moduleType = createTriggerType(moduleTypeUID, jsonModuleType, exceptions);
+                    moduleType = createTriggerType(jsonModuleType, exceptions);
                     break;
                 case JSONUtility.CONDITIONS:
-                    moduleType = createConditionType(moduleTypeUID, jsonModuleType, exceptions);
+                    moduleType = createConditionType(jsonModuleType, exceptions);
                     break;
                 case JSONUtility.ACTIONS:
-                    moduleType = createActionType(moduleTypeUID, jsonModuleType, exceptions);
+                    moduleType = createActionType(jsonModuleType, exceptions);
                     break;
             }
             moduleTypes.add(moduleType);
@@ -200,15 +221,17 @@ public class ModuleTypeJSONParser implements Parser<ModuleType> {
      * @param exceptions is a list used for collecting the exceptions occurred during {@link ActionType}s creation.
      * @return the newly created ActionType.
      */
-    private ActionType createActionType(String moduleTypeUID, JSONObject jsonModuleType,
-            List<ParsingNestedException> exceptions) {
+    private ActionType createActionType(JSONObject jsonModuleType, List<ParsingNestedException> exceptions) {
+
+        String moduleTypeUID = JSONUtility.getString(ParsingNestedException.MODULE_TYPE, null, exceptions,
+                JSONStructureConstants.UID, true, jsonModuleType, log);
 
         String label = JSONUtility.getString(ParsingNestedException.MODULE_TYPE, moduleTypeUID, exceptions,
                 JSONStructureConstants.LABEL, true, jsonModuleType, log);
         String description = JSONUtility.getString(ParsingNestedException.MODULE_TYPE, moduleTypeUID, exceptions,
                 JSONStructureConstants.DESCRIPTION, true, jsonModuleType, log);
 
-        Set<ConfigDescriptionParameter> configDescriptions = ConfigPropertyJSONParser.initializeConfigDescriptions(
+        List<ConfigDescriptionParameter> configDescriptions = ConfigPropertyJSONParser.initializeConfigDescriptions(
                 ParsingNestedException.MODULE_TYPE, moduleTypeUID, exceptions, jsonModuleType, log);
 
         Visibility v = null;
@@ -217,8 +240,8 @@ public class ModuleTypeJSONParser implements Parser<ModuleType> {
         Set<String> tags = null;
         tags = getTags(moduleTypeUID, jsonModuleType, exceptions);
 
-        Set<Input> inputs = getInputs(moduleTypeUID, jsonModuleType, exceptions);
-        Set<Output> outputs = getOutputs(moduleTypeUID, jsonModuleType, exceptions);
+        List<Input> inputs = getInputs(moduleTypeUID, jsonModuleType, exceptions);
+        List<Output> outputs = getOutputs(moduleTypeUID, jsonModuleType, exceptions);
 
         JSONArray jsonActions = JSONUtility.getJSONArray(ParsingNestedException.MODULE_TYPE, moduleTypeUID, exceptions,
                 JSONStructureConstants.CHILDREN, true, jsonModuleType, log);
@@ -246,20 +269,23 @@ public class ModuleTypeJSONParser implements Parser<ModuleType> {
      * @param exceptions is a list used for collecting the exceptions occurred during {@link ConditionType}s creation.
      * @return parsed ConditionType.
      */
-    private ConditionType createConditionType(String moduleTypeUID, JSONObject jsonModuleType,
-            List<ParsingNestedException> exceptions) {
+    private ConditionType createConditionType(JSONObject jsonModuleType, List<ParsingNestedException> exceptions) {
+
+        String moduleTypeUID = JSONUtility.getString(ParsingNestedException.MODULE_TYPE, null, exceptions,
+                JSONStructureConstants.UID, true, jsonModuleType, log);
+
         String label = JSONUtility.getString(ParsingNestedException.MODULE_TYPE, moduleTypeUID, exceptions,
                 JSONStructureConstants.LABEL, true, jsonModuleType, log);
         String description = JSONUtility.getString(ParsingNestedException.MODULE_TYPE, moduleTypeUID, exceptions,
                 JSONStructureConstants.DESCRIPTION, true, jsonModuleType, log);
 
-        Set<ConfigDescriptionParameter> configDescriptions = ConfigPropertyJSONParser.initializeConfigDescriptions(
+        List<ConfigDescriptionParameter> configDescriptions = ConfigPropertyJSONParser.initializeConfigDescriptions(
                 ParsingNestedException.MODULE_TYPE, moduleTypeUID, exceptions, jsonModuleType, log);
 
         Visibility v = getVisibility(moduleTypeUID, jsonModuleType, exceptions);
         Set<String> tags = getTags(moduleTypeUID, jsonModuleType, exceptions);
 
-        Set<Input> inputs = getInputs(moduleTypeUID, jsonModuleType, exceptions);
+        List<Input> inputs = getInputs(moduleTypeUID, jsonModuleType, exceptions);
         JSONArray jsonConditions = JSONUtility.getJSONArray(ParsingNestedException.MODULE_TYPE, moduleTypeUID,
                 exceptions, JSONStructureConstants.CHILDREN, true, jsonModuleType, log);
         ConditionType conditionType = null;
@@ -285,15 +311,18 @@ public class ModuleTypeJSONParser implements Parser<ModuleType> {
      * @param exceptions is a list used for collecting the exceptions occurred during {@link TriggerType}s creation.
      * @return parsed TriggerType.
      */
-    private TriggerType createTriggerType(String moduleTypeUID, JSONObject jsonModuleType,
-            List<ParsingNestedException> exceptions) {
+    private TriggerType createTriggerType(JSONObject jsonModuleType, List<ParsingNestedException> exceptions) {
+
+        String moduleTypeUID = JSONUtility.getString(ParsingNestedException.MODULE_TYPE, null, exceptions,
+                JSONStructureConstants.UID, true, jsonModuleType, log);
+
         String label = JSONUtility.getString(ParsingNestedException.MODULE_TYPE, moduleTypeUID, exceptions,
                 JSONStructureConstants.LABEL, true, jsonModuleType, log);
 
         String description = JSONUtility.getString(ParsingNestedException.MODULE_TYPE, moduleTypeUID, exceptions,
                 JSONStructureConstants.DESCRIPTION, true, jsonModuleType, log);
 
-        Set<ConfigDescriptionParameter> configDescriptions = ConfigPropertyJSONParser.initializeConfigDescriptions(
+        List<ConfigDescriptionParameter> configDescriptions = ConfigPropertyJSONParser.initializeConfigDescriptions(
                 ParsingNestedException.MODULE_TYPE, moduleTypeUID, exceptions, jsonModuleType, log);
 
         Visibility v = null;
@@ -301,7 +330,7 @@ public class ModuleTypeJSONParser implements Parser<ModuleType> {
 
         Set<String> tags = getTags(moduleTypeUID, jsonModuleType, exceptions);
 
-        Set<Output> outputs = getOutputs(moduleTypeUID, jsonModuleType, exceptions);
+        List<Output> outputs = getOutputs(moduleTypeUID, jsonModuleType, exceptions);
 
         JSONArray jsonTriggers = JSONUtility.getJSONArray(ParsingNestedException.MODULE_TYPE, moduleTypeUID, exceptions,
                 JSONStructureConstants.CHILDREN, true, jsonModuleType, log);
@@ -328,11 +357,11 @@ public class ModuleTypeJSONParser implements Parser<ModuleType> {
      * @param exceptions is a list used for collecting the exceptions occurred during {@link Output}s creation.
      * @return a set of parsed Outputs.
      */
-    private Set<Output> getOutputs(String moduleTypeUID, JSONObject jsonModuleType,
+    private List<Output> getOutputs(String moduleTypeUID, JSONObject jsonModuleType,
             List<ParsingNestedException> exceptions) {
-        JSONObject jsonOutputs = JSONUtility.getJSONObject(ParsingNestedException.MODULE_TYPE, moduleTypeUID,
-                exceptions, JSONStructureConstants.OUTPUT, true, jsonModuleType, log);
-        Set<Output> outputs = null;
+        JSONArray jsonOutputs = JSONUtility.getJSONArray(ParsingNestedException.MODULE_TYPE, moduleTypeUID, exceptions,
+                JSONStructureConstants.OUTPUTS, true, jsonModuleType, log);
+        List<Output> outputs = null;
         if (jsonOutputs != null) {
             outputs = OutputJSONParser.collectOutputs(bc, moduleTypeUID, jsonOutputs, exceptions, log);
         }
@@ -347,12 +376,11 @@ public class ModuleTypeJSONParser implements Parser<ModuleType> {
      * @param exceptions is a list used for collecting the exceptions occurred during {@link Input}s creation.
      * @return a set of parsed Inputs.
      */
-    private Set<Input> getInputs(String moduleTypeUID, JSONObject jsonModuleType,
+    private List<Input> getInputs(String moduleTypeUID, JSONObject jsonModuleType,
             List<ParsingNestedException> exceptions) {
-        JSONObject jsonInputs = null;
-        Set<Input> inputs = null;
-        jsonInputs = JSONUtility.getJSONObject(ParsingNestedException.MODULE_TYPE, moduleTypeUID, exceptions,
-                JSONStructureConstants.INPUT, true, jsonModuleType, log);
+        List<Input> inputs = null;
+        JSONArray jsonInputs = JSONUtility.getJSONArray(ParsingNestedException.MODULE_TYPE, moduleTypeUID, exceptions,
+                JSONStructureConstants.INPUTS, true, jsonModuleType, log);
         if (jsonInputs != null) {
             inputs = InputJSONParser.collectInputs(bc, moduleTypeUID, jsonInputs, exceptions, log);
         }
@@ -439,9 +467,9 @@ public class ModuleTypeJSONParser implements Parser<ModuleType> {
             writer.write(",\n");
         }
 
-        Set<ConfigDescriptionParameter> configDescriptions = moduleType.getConfigurationDescription();
+        List<ConfigDescriptionParameter> configDescriptions = moduleType.getConfigurationDescription();
         if (configDescriptions != null && !configDescriptions.isEmpty()) {
-            writer.write("    \"" + JSONStructureConstants.CONFIG + "\":{\n");
+            writer.write("    \"" + JSONStructureConstants.CONFIG_DESCRIPTIONS + "\":{\n");
             Iterator<ConfigDescriptionParameter> configI = configDescriptions.iterator();
             while (configI.hasNext()) {
                 ConfigDescriptionParameter configParameter = configI.next();

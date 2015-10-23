@@ -7,18 +7,20 @@
       "rule",
       "template"
     ],
-    "config":{  
-        "condition_operator": {
+    "configDescriptions":[  
+         {
+          "name":"condition_operator",              
           "type": "TEXT",
           "description": "Valid operators are =,>,<,!=",
           "required": true
         },
-        "condition_constraint": {
+         {
+          "name":"condition_constraint",              
           "type": "TEXT",
           "description": "Right operand which is compared with the input.",
           "required": true
         }
-    },
+    ],
     "on": [  
       {  
         "id": "CompositeSampleTriggerTemplateID",
@@ -33,7 +35,7 @@
           "operator": "$condition_operator",
           "constraint": "$condition_constraint"
         },
-        "input": {
+        "inputs": {
           "conditionInput": "CompositeSampleTriggerTemplateID.compositeTriggerOutput"
         }
       }
@@ -42,7 +44,7 @@
       {  
         "id": "CompositeActionTemplateID",
         "type": "CompositeSampleAction",
-        "input": {  
+        "inputs": {  
           "compositeActionInput": "CompositeSampleTriggerTemplateID.compositeTriggerOutput"
         }
       }

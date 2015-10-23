@@ -9,7 +9,7 @@ package org.eclipse.smarthome.automation.parser.json.internal;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.util.Iterator;
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 
@@ -24,7 +24,7 @@ import org.slf4j.Logger;
  * This class is responsible for parsing the Inputs.
  *
  * @author Ana Dimova - Initial Contribution
- *
+ * @author Yordan Mihaylov - updates related to api changes
  */
 public class InputJSONParser {
 
@@ -37,16 +37,21 @@ public class InputJSONParser {
      * @param exceptions is a list used for collecting the exceptions occurred during {@link Input}s creation.
      * @param log is used for logging the exceptions.
      */
-    static LinkedHashSet<Input> collectInputs(BundleContext bc, String moduleTypeUID, JSONObject jsonInputs,
+    static List<Input> collectInputs(BundleContext bc, String moduleTypeUID, JSONArray jsonInputs,
             List<ParsingNestedException> exceptions, Logger log) {
-        LinkedHashSet<Input> inputs = new LinkedHashSet<Input>();
-        Iterator<?> jsonInputsI = jsonInputs.keys();
-        while (jsonInputsI.hasNext()) {
-            String inputName = (String) jsonInputsI.next();
-            JSONObject inputInfo = JSONUtility.getJSONObject(ParsingNestedException.MODULE_TYPE, moduleTypeUID,
-                    exceptions, inputName, false, jsonInputs, log);
-            Input input = InputJSONParser.createInput(bc, moduleTypeUID, inputName, inputInfo, exceptions, log);
+        List<Input> inputs = new ArrayList<Input>();
+        // Iterator<?> jsonInputsI = jsonInputs.keys();
+        // while (jsonInputsI.hasNext()) {
+        // String inputName = (String) jsonInputsI.next();
+        // JSONObject inputInfo = JSONUtility.getJSONObject(ParsingNestedException.MODULE_TYPE, moduleTypeUID,
+        // exceptions, inputName, false, jsonInputs, log);
+
+        for (int i = 0; i < jsonInputs.length(); i++) {
+
+            JSONObject inputInfo = jsonInputs.optJSONObject(i);
+            Input input = InputJSONParser.createInput(bc, moduleTypeUID, inputInfo, exceptions, log);
             if (input != null)
+                // TODO check if it exists
                 inputs.add(input);
         }
         return inputs;
@@ -57,14 +62,15 @@ public class InputJSONParser {
      *
      * @param bc BundleContext
      * @param moduleTypeUID is the unique identifier of the ModuleType.
-     * @param inputName is a string representing the name of the {@link Input}.
      * @param jsonInputDescription is a JSON object describing the {@link Input}.
      * @param exceptions is a list used for collecting the exceptions occurred during {@link Input}'s creation.
      * @param log is used for logging the exceptions.
      * @return an object representing the {@link Input} or <code>null</code>.
      */
-    static Input createInput(BundleContext bc, String moduleTypeUID, String inputName, JSONObject jsonInputDescription,
+    static Input createInput(BundleContext bc, String moduleTypeUID, JSONObject jsonInputDescription,
             List<ParsingNestedException> exceptions, Logger log) {
+        String inputName = JSONUtility.getString(ParsingNestedException.MODULE_TYPE, moduleTypeUID, exceptions,
+                JSONStructureConstants.NAME, true, jsonInputDescription, log);
         String type = JSONUtility.getString(ParsingNestedException.MODULE_TYPE, moduleTypeUID, exceptions,
                 JSONStructureConstants.TYPE, false, jsonInputDescription, log);
         if (type == null)

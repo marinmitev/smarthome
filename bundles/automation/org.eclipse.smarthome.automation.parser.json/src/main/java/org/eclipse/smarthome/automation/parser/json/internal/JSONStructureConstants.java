@@ -25,6 +25,7 @@ import org.eclipse.smarthome.config.core.ConfigDescriptionParameter;
 
 /**
  * @author Ana Dimova - Initial Contribution
+ * @author Yordan Mihaylov - updates related to api changes
  *
  */
 public interface JSONStructureConstants {
@@ -52,8 +53,13 @@ public interface JSONStructureConstants {
 
     /**
      * This constant is used as json property that serves to define a set of {@link ConfigDescriptionParameter}s in case
-     * of parsing the {@link ModuleType}s. In case of parsing {@link Module}s, it defines a set of key-value pairs,
-     * where <b>key</b> is the name of the {@link ConfigDescriptionParameter} and <b>value</b> is its value.
+     * of parsing the {@link ModuleType}s.
+     */
+    public final String CONFIG_DESCRIPTIONS = "configDescriptions";
+
+    /**
+     * This constant defines a set of key-value pairs, where <b>key</b> is the name of the
+     * {@link ConfigDescriptionParameter} and <b>value</b> is its value.
      */
     public final String CONFIG = "config";
 
@@ -95,7 +101,7 @@ public interface JSONStructureConstants {
     /**
      * This constant is used as json property that serves to define {@link Input} objects.
      */
-    public final String INPUT = "input";
+    public final String INPUTS = "inputs";
 
     /**
      * This constant is used as json property that serves to define a name to all automation objects that have a label.
@@ -137,7 +143,7 @@ public interface JSONStructureConstants {
     /**
      * This constant is used as json property that serves to define {@link Output} objects.
      */
-    public final String OUTPUT = "output";
+    public final String OUTPUTS = "outputs";
 
     /**
      * This constant is used as json property that serves to define a pattern for {@link ConfigDescriptionParameter}.

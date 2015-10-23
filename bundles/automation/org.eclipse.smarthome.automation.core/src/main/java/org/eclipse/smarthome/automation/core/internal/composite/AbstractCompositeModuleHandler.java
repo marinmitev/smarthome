@@ -74,7 +74,7 @@ public class AbstractCompositeModuleHandler<M extends Module, MT extends ModuleT
      * @return context which combines rule context and input and configuration properties of the parent module.
      */
     protected Map<String, ?> getCompositeContext(Map<String, ?> context) {
-        Map<String, Object> result = new HashMap<>(context);
+        Map<String, Object> result = new HashMap<String, Object>(context);
         for (Entry<String, Object> config : module.getConfiguration().entrySet()) {
             result.put("$" + config.getKey(), config.getValue());
         }

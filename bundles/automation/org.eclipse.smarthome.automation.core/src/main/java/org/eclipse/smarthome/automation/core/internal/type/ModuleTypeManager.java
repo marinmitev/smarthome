@@ -19,9 +19,6 @@ import org.eclipse.smarthome.automation.Action;
 import org.eclipse.smarthome.automation.Condition;
 import org.eclipse.smarthome.automation.Trigger;
 import org.eclipse.smarthome.automation.core.internal.RuleEngine;
-import org.eclipse.smarthome.automation.core.internal.RuntimeAction;
-import org.eclipse.smarthome.automation.core.internal.RuntimeCondition;
-import org.eclipse.smarthome.automation.core.internal.RuntimeTrigger;
 import org.eclipse.smarthome.automation.type.ActionType;
 import org.eclipse.smarthome.automation.type.CompositeActionType;
 import org.eclipse.smarthome.automation.type.CompositeConditionType;
@@ -182,7 +179,7 @@ public class ModuleTypeManager implements ServiceTrackerCustomizer {
             CompositeTriggerType m = (CompositeTriggerType) mType;
             result = new CompositeTriggerType(mType.getUID(), mType.getConfigurationDescription(), mType.getLabel(),
                     mType.getDescription(), mType.getTags(), mType.getVisibility(), m.getOutputs(),
-                    copyTriggers(m.getModules()));
+                    copyTriggers(m.getChildren()));
 
         } else if (mType instanceof TriggerType) {
             TriggerType m = (TriggerType) mType;
@@ -193,7 +190,7 @@ public class ModuleTypeManager implements ServiceTrackerCustomizer {
             CompositeConditionType m = (CompositeConditionType) mType;
             result = new CompositeConditionType(mType.getUID(), mType.getConfigurationDescription(), mType.getLabel(),
                     mType.getDescription(), mType.getTags(), mType.getVisibility(), m.getInputs(),
-                    copyConditions(m.getModules()));
+                    copyConditions(m.getChildren()));
 
         } else if (mType instanceof ConditionType) {
             ConditionType m = (ConditionType) mType;
@@ -204,7 +201,7 @@ public class ModuleTypeManager implements ServiceTrackerCustomizer {
             CompositeActionType m = (CompositeActionType) mType;
             result = new CompositeActionType(mType.getUID(), mType.getConfigurationDescription(), mType.getLabel(),
                     mType.getDescription(), mType.getTags(), mType.getVisibility(), m.getInputs(), m.getOutputs(),
-                    copyActions(m.getModules()));
+                    copyActions(m.getChildren()));
 
         } else if (mType instanceof ActionType) {
             ActionType m = (ActionType) mType;
@@ -220,8 +217,11 @@ public class ModuleTypeManager implements ServiceTrackerCustomizer {
     private static List<Trigger> copyTriggers(List<Trigger> triggers) {
         List<Trigger> res = new ArrayList<Trigger>(11);
         if (triggers != null) {
-            for (Trigger trigger : triggers) {
-                res.add(new RuntimeTrigger(trigger));
+            for (Trigger t : triggers) {
+                Trigger trigger = new Trigger(t.getId(), t.getTypeUID(), t.getConfiguration());
+                trigger.setLabel(trigger.getLabel());
+                trigger.setDescription(trigger.getDescription());
+                res.add(trigger);
             }
         }
         return res;
@@ -230,8 +230,11 @@ public class ModuleTypeManager implements ServiceTrackerCustomizer {
     private static List<Condition> copyConditions(List<Condition> conditions) {
         List<Condition> res = new ArrayList<Condition>(11);
         if (conditions != null) {
-            for (Condition condition : conditions) {
-                res.add(new RuntimeCondition(condition));
+            for (Condition c : conditions) {
+                Condition condition = new Condition(c.getId(), c.getTypeUID(), c.getConfiguration(), c.getInputs());
+                condition.setLabel(condition.getLabel());
+                condition.setDescription(condition.getDescription());
+                res.add(condition);
             }
         }
         return res;
@@ -240,8 +243,11 @@ public class ModuleTypeManager implements ServiceTrackerCustomizer {
     private static List<Action> copyActions(List<Action> actions) {
         List<Action> res = new ArrayList<Action>();
         if (actions != null) {
-            for (Action action : actions) {
-                res.add(new RuntimeAction(action));
+            for (Action a : actions) {
+                Action action = new Action(a.getId(), a.getTypeUID(), a.getConfiguration(), a.getInputs());
+                action.setLabel(a.getLabel());
+                action.setDescription(a.getDescription());
+                res.add(action);
             }
         }
         return res;

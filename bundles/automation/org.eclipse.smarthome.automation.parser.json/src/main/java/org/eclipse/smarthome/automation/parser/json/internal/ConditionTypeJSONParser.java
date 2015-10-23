@@ -12,7 +12,6 @@ import java.io.OutputStreamWriter;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.eclipse.smarthome.automation.Condition;
 import org.eclipse.smarthome.automation.type.CompositeConditionType;
@@ -26,6 +25,7 @@ import org.json.JSONException;
  * Parser for ConditionTypes.
  *
  * @author Ana Dimova - Initial Contribution
+ * @author Yordan Mihaylov - updates related to api changes
  *
  */
 public class ConditionTypeJSONParser {
@@ -41,11 +41,11 @@ public class ConditionTypeJSONParser {
     static void conditionTypeToJSON(ConditionType conditionType, OutputStreamWriter writer)
             throws IOException, JSONException {
         ModuleTypeJSONParser.moduleTypeToJSON(conditionType, writer);
-        Set<Input> inputs = conditionType.getInputs();
+        List<Input> inputs = conditionType.getInputs();
         if (inputs != null && !inputs.isEmpty()) {
-            Set<ConfigDescriptionParameter> configDescriptions = conditionType.getConfigurationDescription();
+            List<ConfigDescriptionParameter> configDescriptions = conditionType.getConfigurationDescription();
             if (configDescriptions != null && !configDescriptions.isEmpty())
-                writer.write(",\n    \"" + JSONStructureConstants.INPUT + "\":{\n");
+                writer.write(",\n    \"" + JSONStructureConstants.INPUTS + "\":{\n");
             Iterator<Input> inputsI = inputs.iterator();
             while (inputsI.hasNext()) {
                 Input input = inputsI.next();
@@ -71,8 +71,8 @@ public class ConditionTypeJSONParser {
     static void compositeConditionTypeToJSON(CompositeConditionType cConditionType, OutputStreamWriter writer)
             throws IOException, JSONException {
         conditionTypeToJSON(cConditionType, writer);
-        List<Condition> conditions = cConditionType.getModules();
-        Set<ConfigDescriptionParameter> configDescriptions = cConditionType.getConfigurationDescription();
+        List<Condition> conditions = cConditionType.getChildren();
+        List<ConfigDescriptionParameter> configDescriptions = cConditionType.getConfigurationDescription();
         if (configDescriptions != null && !configDescriptions.isEmpty())
             writer.write(",\n");
         writer.write("    " + JSONStructureConstants.CONDITIONS + ":{\n");

@@ -21,7 +21,7 @@
           "operator": "=",
           "constraint": "dtag"
         },
-        "input": {
+        "inputs": {
           "conditionInput": "SampleTriggerID.triggerOutput"
         }
       }
@@ -58,7 +58,7 @@
           "operator": "!=",
           "constraint": "dtag"
         },
-        "input": {
+        "inputs": {
           "conditionInput": "CustomSampleTriggerID.customTriggerOutput"
         }
       }
@@ -77,7 +77,7 @@
       {  
         "id": "CustomActionID",
         "type": "SampleAction:CustomAction",
-        "input": {  
+        "inputs": {  
           "customActionInput": "CustomSampleTriggerID.customTriggerOutput"
         }
       }

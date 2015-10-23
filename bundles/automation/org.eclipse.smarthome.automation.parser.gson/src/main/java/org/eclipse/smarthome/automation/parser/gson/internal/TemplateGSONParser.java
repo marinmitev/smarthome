@@ -14,6 +14,7 @@ import java.util.Set;
 
 import org.eclipse.smarthome.automation.parser.ParsingException;
 import org.eclipse.smarthome.automation.parser.ParsingNestedException;
+import org.eclipse.smarthome.automation.template.RuleTemplate;
 import org.eclipse.smarthome.automation.template.Template;
 
 /**
@@ -27,7 +28,7 @@ public class TemplateGSONParser extends AbstractGSONParser<Template> {
     @Override
     public Set<Template> parse(InputStreamReader reader) throws ParsingException {
         try {
-            Template[] result = gson.fromJson(reader, Template[].class);
+            Template[] result = gson.fromJson(reader, RuleTemplate[].class);
             return new HashSet<Template>(Arrays.asList(result));
         } catch (Exception e) {
             throw new ParsingException(new ParsingNestedException(ParsingNestedException.TEMPLATE, null, e));

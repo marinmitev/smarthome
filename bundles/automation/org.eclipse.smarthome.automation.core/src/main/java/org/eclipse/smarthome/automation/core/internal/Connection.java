@@ -123,7 +123,7 @@ public class Connection {
      * @return collected Connections
      */
     public static Set<Connection> getConnections(Map<String, String> inputs, Logger log) {
-        Set<Connection> connections = new HashSet<>(11);
+        Set<Connection> connections = new HashSet<Connection>(11);
         if (inputs != null) {
             for (Entry<String, String> input : inputs.entrySet()) {
                 String inputName = input.getKey();

@@ -111,7 +111,7 @@ public class ConnectionValidator {
         ActionType type = (ActionType) mtManager.getType(action.getTypeUID());
         if (type == null)
             throw new IllegalArgumentException("Action Type with UID \"" + action.getTypeUID() + "\" not exists!");
-        Set<Input> inputs = type.getInputs();
+        List<Input> inputs = type.getInputs();
         if (inputs != null && !inputs.isEmpty()) {
             for (Input input : inputs) {
                 String inputName = input.getName();
@@ -128,7 +128,7 @@ public class ConnectionValidator {
                 String msg = "Connection \"" + inputName + ":" + moduleId + "." + outputName
                         + "\" in the Action with ID \"" + action.getId() + "\" is invalid!";
                 Trigger trigger = triggersMap.get(moduleId);
-                Set<Output> outputs;
+                List<Output> outputs;
                 boolean notFound = true;
                 if (trigger != null) {
                     String triggerTypeUID = trigger.getTypeUID();
@@ -198,7 +198,7 @@ public class ConnectionValidator {
         ConditionType type = (ConditionType) mtManager.getType(condition.getTypeUID());
         if (type == null)
             throw new IllegalArgumentException("Condition Type \"" + condition.getTypeUID() + "\" does not exist!");
-        Set<Input> inputs = type.getInputs();
+        List<Input> inputs = type.getInputs();
         if (inputs != null && !inputs.isEmpty()) {
             for (Input input : inputs) {
                 String inputName = input.getName();
@@ -224,7 +224,7 @@ public class ConnectionValidator {
                     throw new IllegalArgumentException(
                             msg + " Trigger Type with UID \"" + triggerTypeUID + "\" not exists!");
                 }
-                Set<Output> outputs = triggerType.getOutputs();
+                List<Output> outputs = triggerType.getOutputs();
                 boolean notFound = true;
                 if (outputs != null && !outputs.isEmpty()) {
                     for (Output output : outputs) {

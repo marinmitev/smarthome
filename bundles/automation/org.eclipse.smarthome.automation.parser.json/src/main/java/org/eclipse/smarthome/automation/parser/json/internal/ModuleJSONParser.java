@@ -30,7 +30,7 @@ import org.slf4j.Logger;
  * This class serves for creating the Module objects from JSON Objects.
  *
  * @author Ana Dimova - Initial Contribution
- *
+ * @author Yordan Mihaylov - updates related to api changes
  */
 public class ModuleJSONParser {
 
@@ -141,7 +141,7 @@ public class ModuleJSONParser {
                 jsonCondition, log);
         Map<String, Object> configurations = ConfigPropertyJSONParser.getConfigurationValues(type, UID, exceptions,
                 jsonConfig, log);
-        JSONObject jsonInput = JSONUtility.getJSONObject(type, UID, exceptions, JSONStructureConstants.INPUT, true,
+        JSONObject jsonInput = JSONUtility.getJSONObject(type, UID, exceptions, JSONStructureConstants.INPUTS, true,
                 jsonCondition, log);
         Map<String, String> inputs = ModuleJSONParser.getInputs(type, UID, exceptions, jsonInput, log);
         Condition condition = new Condition(conditionId, uid, configurations, inputs);
@@ -204,7 +204,7 @@ public class ModuleJSONParser {
                 jsonAction, log);
         Map<String, Object> configurations = ConfigPropertyJSONParser.getConfigurationValues(type, UID, exceptions,
                 jsonConfig, log);
-        JSONObject jsonInput = JSONUtility.getJSONObject(type, UID, exceptions, JSONStructureConstants.INPUT, true,
+        JSONObject jsonInput = JSONUtility.getJSONObject(type, UID, exceptions, JSONStructureConstants.INPUTS, true,
                 jsonAction, log);
         Map<String, String> inputs = ModuleJSONParser.getInputs(type, UID, exceptions, jsonInput, log);
         Action action = new Action(actionId, uid, configurations, inputs);
@@ -233,7 +233,7 @@ public class ModuleJSONParser {
             Map<String, ?> configValues = action.getConfiguration();
             if (configValues != null && !configValues.isEmpty())
                 writer.write(",\n");
-            writer.write("        \"" + JSONStructureConstants.INPUT + "\":{\n");
+            writer.write("        \"" + JSONStructureConstants.INPUTS + "\":{\n");
             Iterator<Entry<String, String>> connectionsI = inputs.entrySet().iterator();
             while (connectionsI.hasNext()) {
                 Entry<String, String> input = connectionsI.next();
@@ -261,7 +261,7 @@ public class ModuleJSONParser {
             Map<String, ?> configValues = condition.getConfiguration();
             if (configValues != null && !configValues.isEmpty())
                 writer.write(",\n");
-            writer.write("        \"" + JSONStructureConstants.INPUT + "\":{\n");
+            writer.write("        \"" + JSONStructureConstants.INPUTS + "\":{\n");
             Iterator<Entry<String, String>> connectionsI = connections.entrySet().iterator();
             while (connectionsI.hasNext()) {
                 Entry<String, String> connection = connectionsI.next();

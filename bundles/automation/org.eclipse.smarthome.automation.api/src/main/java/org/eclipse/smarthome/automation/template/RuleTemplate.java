@@ -18,7 +18,10 @@ import org.eclipse.smarthome.automation.Condition;
 import org.eclipse.smarthome.automation.Module;
 import org.eclipse.smarthome.automation.Rule;
 import org.eclipse.smarthome.automation.Trigger;
+import org.eclipse.smarthome.automation.Visibility;
 import org.eclipse.smarthome.config.core.ConfigDescriptionParameter;
+
+import com.google.gson.annotations.SerializedName;
 
 /**
  * The templates define types of shared, ready to use rule definitions, which
@@ -39,24 +42,27 @@ public class RuleTemplate implements Template {
     /**
      * This field holds an unique identifier of the {@link RuleTemplate} instance.
      */
-    private String UID;
+    private String uid;
 
     /**
      * This field holds a list with the unique {@link Trigger}s participating in the {@link Rule} and starting its
      * execution.
      */
+    @SerializedName("on")
     private List<Trigger> triggers;
 
     /**
      * This field holds a list with the unique {@link Condition}s participating in the {@link Rule} and determine the
      * completion of the execution.
      */
+    @SerializedName("if")
     private List<Condition> conditions;
 
     /**
      * This field holds a list with the unique {@link Action}s participating in the {@link Rule} and are the real work
      * that will be done by the rule.
      */
+    @SerializedName("then")
     private List<Action> actions;
 
     /**
@@ -82,7 +88,7 @@ public class RuleTemplate implements Template {
     /**
      * This field defines a set of configuration properties of the {@link Rule}.
      */
-    private Set<ConfigDescriptionParameter> configDescriptions;
+    private List<ConfigDescriptionParameter> configDescriptions;
 
     /**
      * This constructor creates a {@link RuleTemplate} instance.
@@ -95,10 +101,10 @@ public class RuleTemplate implements Template {
      * @param visibility defines if the template can be public or private.
      */
     public RuleTemplate(String UID, String label, String description, Set<String> tags, List<Trigger> triggers,
-            List<Condition> conditions, List<Action> actions, Set<ConfigDescriptionParameter> configDescriptions,
+            List<Condition> conditions, List<Action> actions, List<ConfigDescriptionParameter> configDescriptions,
             Visibility visibility) {
 
-        this.UID = UID;
+        this.uid = UID;
         this.label = label;
         this.description = description;
         this.triggers = triggers;
@@ -119,7 +125,7 @@ public class RuleTemplate implements Template {
      */
     @Override
     public String getUID() {
-        return UID;
+        return uid;
     }
 
     /**
@@ -176,10 +182,10 @@ public class RuleTemplate implements Template {
      *
      * @return a {@link Set} of {@link ConfigDescriptionParameter}s.
      */
-    public Set<ConfigDescriptionParameter> getConfigurationDescription() {
+    public List<ConfigDescriptionParameter> getConfigurationDescription() {
         if (configDescriptions == null)
             return null;
-        return new HashSet<ConfigDescriptionParameter>(configDescriptions);
+        return new ArrayList<ConfigDescriptionParameter>(configDescriptions);
     }
 
     /**

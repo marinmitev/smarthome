@@ -12,11 +12,9 @@ import java.io.OutputStreamWriter;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.eclipse.smarthome.automation.parser.ParsingNestedException;
 import org.eclipse.smarthome.config.core.ConfigDescriptionParameter;
@@ -50,8 +48,9 @@ public class ConfigPropertyJSONParser {
      * @return the newly created {@link ConfigDescriptionParameter}.
      */
     static ConfigDescriptionParameter createConfigPropertyDescription(int type, String UID,
-            List<ParsingNestedException> exceptions, String configPropertyName, JSONObject configDescription,
-            Logger log) {
+            List<ParsingNestedException> exceptions, JSONObject configDescription, Logger log) {
+        String configPropertyName = JSONUtility.getString(type, UID, exceptions, JSONStructureConstants.NAME, true,
+                configDescription, log);
         String typeStr = JSONUtility.getString(type, UID, exceptions, JSONStructureConstants.TYPE, false,
                 configDescription, log);
         if (typeStr != null) {
@@ -170,7 +169,7 @@ public class ConfigPropertyJSONParser {
      * @return a map with pairs of configuration parameter names and configuration parameter values.
      */
     static Map<String, Object> getConfiguration(int type, String UID, List<ParsingNestedException> exceptions,
-            JSONObject jsonConfigInfo, Set<ConfigDescriptionParameter> configDescriptions, Logger log) {
+            JSONObject jsonConfigInfo, List<ConfigDescriptionParameter> configDescriptions, Logger log) {
         Map<String, Object> configurations = new HashMap<String, Object>();
         Iterator<?> i = jsonConfigInfo.keys();
         while (i.hasNext()) {
@@ -184,7 +183,7 @@ public class ConfigPropertyJSONParser {
                 }
             }
             ConfigDescriptionParameter configProperty = ConfigPropertyJSONParser.createConfigPropertyDescription(type,
-                    UID, exceptions, configPropertyName, configPropertyInfo, log);
+                    UID, exceptions, configPropertyInfo, log);
             if (configProperty != null) {
                 configDescriptions.add(configProperty);
             }
@@ -435,22 +434,21 @@ public class ConfigPropertyJSONParser {
      * @return collection with ConfigurationDescriptionParameters
      */
     @SuppressWarnings("unchecked")
-    static Set<ConfigDescriptionParameter> initializeConfigDescriptions(int type, String UID,
+    static List<ConfigDescriptionParameter> initializeConfigDescriptions(int type, String UID,
             List<ParsingNestedException> exceptions, JSONObject jsonModuleType, Logger log) {
-        Set<ConfigDescriptionParameter> configDescriptions = new HashSet<ConfigDescriptionParameter>();
-        JSONObject jsonConfigDescriptions = JSONUtility.getJSONObject(type, UID, exceptions,
-                JSONStructureConstants.CONFIG, true, jsonModuleType, log);
+        List<ConfigDescriptionParameter> configDescriptions = new ArrayList<ConfigDescriptionParameter>();
+        JSONArray jsonConfigDescriptions = JSONUtility.getJSONArray(type, UID, exceptions,
+                JSONStructureConstants.CONFIG_DESCRIPTIONS, true, jsonModuleType, log);
         if (jsonConfigDescriptions != null) {
-            Iterator<String> configI = jsonConfigDescriptions.keys();
-            while (configI.hasNext()) {
-                String configPropertyName = configI.next();
-                JSONObject configPropertyInfo = JSONUtility.getJSONObject(type, UID, exceptions, configPropertyName,
-                        false, jsonConfigDescriptions, log);
+            for (int i = 0; i < jsonConfigDescriptions.length(); i++) {
+                JSONObject configPropertyInfo = jsonConfigDescriptions.optJSONObject(i);
                 ConfigDescriptionParameter configProperty = null;
                 if (configPropertyInfo != null) {
                     configProperty = ConfigPropertyJSONParser.createConfigPropertyDescription(type, UID, exceptions,
-                            configPropertyName, configPropertyInfo, log);
+                            configPropertyInfo, log);
                 }
+
+                // TODO check if already exists
                 configDescriptions.add(configProperty);
             }
         }

@@ -30,7 +30,7 @@ import org.eclipse.smarthome.automation.template.RuleTemplate
 import org.eclipse.smarthome.automation.template.Template
 import org.eclipse.smarthome.automation.template.TemplateProvider
 import org.eclipse.smarthome.automation.template.TemplateRegistry
-import org.eclipse.smarthome.automation.template.Template.Visibility
+import org.eclipse.smarthome.automation.Visibility
 import org.eclipse.smarthome.automation.type.ActionType
 import org.eclipse.smarthome.automation.type.ModuleTypeProvider
 import org.eclipse.smarthome.automation.type.ModuleTypeRegistry
@@ -525,10 +525,10 @@ class AutomationIntegrationTest extends OSGiTest{
         def templateTriggers = []
         def templateConditions = []
         def templateActions = []
-        def templateConfigDescriptionParameters = [new ConfigDescriptionParameter("param", Type.TEXT)
-        ] as Set
+        def templateConfigDescriptionParameters = [new ConfigDescriptionParameter("param", Type.TEXT)]
 
-        def template = new RuleTemplate(templateUID, "Test template Label", "Test template description", tags, templateTriggers, templateConditions, templateActions, templateConfigDescriptionParameters, Visibility.PUBLIC)
+        def template = new RuleTemplate(templateUID, "Test template Label", "Test template description", tags, templateTriggers, templateConditions, 
+        templateActions, templateConfigDescriptionParameters, Visibility.PUBLIC)
 
         def triggerTypeUID = "testTrigger1"
         def triggerType = new TriggerType(triggerTypeUID, templateConfigDescriptionParameters, null)

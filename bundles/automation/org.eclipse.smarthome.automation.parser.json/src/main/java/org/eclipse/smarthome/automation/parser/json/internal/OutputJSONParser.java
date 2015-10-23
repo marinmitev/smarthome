@@ -9,8 +9,8 @@ package org.eclipse.smarthome.automation.parser.json.internal;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -25,7 +25,7 @@ import org.slf4j.Logger;
  * This class is responsible for parsing the Outputs.
  *
  * @author Ana Dimova - Initial Contribution
- *
+ * @author Yordan Mihaylov - updates related to api changes
  */
 public class OutputJSONParser {
 
@@ -39,18 +39,12 @@ public class OutputJSONParser {
      * @param log is used for logging the exceptions.
      * @return the collected Outputs.
      */
-    static Set<Output> collectOutputs(BundleContext bc, String moduleTypeUID, JSONObject jsonOutputs,
+    static List<Output> collectOutputs(BundleContext bc, String moduleTypeUID, JSONArray jsonOutputs,
             List<ParsingNestedException> exceptions, Logger log) {
-        Set<Output> outputs = new HashSet<Output>();
-        Iterator<?> joutputs = jsonOutputs.keys();
-        while (joutputs.hasNext()) {
-            String outputName = (String) joutputs.next();
-            JSONObject outputInfo = JSONUtility.getJSONObject(ParsingNestedException.MODULE_TYPE, moduleTypeUID,
-                    exceptions, outputName, false, jsonOutputs, log);
-            if (outputInfo == null) {
-                continue;
-            }
-            Output output = OutputJSONParser.createOutput(bc, moduleTypeUID, outputName, outputInfo, exceptions, log);
+        List<Output> outputs = new ArrayList<Output>();
+        for (int i = 0; i < jsonOutputs.length(); i++) {
+            JSONObject outputInfo = jsonOutputs.optJSONObject(i);
+            Output output = OutputJSONParser.createOutput(bc, moduleTypeUID, outputInfo, exceptions, log);
             if (output != null)
                 outputs.add(output);
         }
@@ -62,14 +56,15 @@ public class OutputJSONParser {
      *
      * @param bc BundleContext
      * @param moduleTypeUID is the unique identifier of the ModuleType.
-     * @param outputName is a string representing the name of the {@link Output}.
      * @param jsonOutput is a JSON object describing the {@link Output}.
      * @param exceptions is a list used for collecting the exceptions occurred during {@link Output}'s creation.
      * @param log is used for logging the exceptions.
      * @return an object representing the {@link Output} or <code>null</code>.
      */
-    static Output createOutput(BundleContext bc, String moduleTypeUID, String outputName, JSONObject jsonOutput,
+    static Output createOutput(BundleContext bc, String moduleTypeUID, JSONObject jsonOutput,
             List<ParsingNestedException> exceptions, Logger log) {
+        String outputName = JSONUtility.getString(ParsingNestedException.MODULE_TYPE, moduleTypeUID, exceptions,
+                JSONStructureConstants.NAME, true, jsonOutput, log);
         String type = JSONUtility.getString(ParsingNestedException.MODULE_TYPE, moduleTypeUID, exceptions,
                 JSONStructureConstants.TYPE, false, jsonOutput, log);
         if (type == null)

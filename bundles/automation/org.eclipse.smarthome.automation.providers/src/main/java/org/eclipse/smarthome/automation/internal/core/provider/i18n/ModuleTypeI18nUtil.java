@@ -7,9 +7,9 @@
  */
 package org.eclipse.smarthome.automation.internal.core.provider.i18n;
 
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 
 import org.eclipse.smarthome.automation.type.Input;
 import org.eclipse.smarthome.automation.type.Output;
@@ -22,6 +22,7 @@ import org.osgi.framework.Bundle;
  * the default text is not a constant with the assistance of {@link I18nProvider}.
  *
  * @author Ana Dimova - Initial Contribution
+ * @author Yordan Mihaylov - updates related to api changes
  *
  */
 public class ModuleTypeI18nUtil {
@@ -42,9 +43,9 @@ public class ModuleTypeI18nUtil {
         return i18nProvider.getText(bundle, key, defaultDescription, locale);
     }
 
-    public static Set<Input> getLocalizedInputs(I18nProvider i18nProvider, Set<Input> inputs, Bundle bundle, String uid,
-            Locale locale) {
-        Set<Input> linputs = new HashSet<Input>();
+    public static List<Input> getLocalizedInputs(I18nProvider i18nProvider, List<Input> inputs, Bundle bundle,
+            String uid, Locale locale) {
+        List<Input> linputs = new ArrayList<Input>();
         if (inputs != null)
             for (Input input : inputs) {
                 String inputName = input.getName();
@@ -58,9 +59,9 @@ public class ModuleTypeI18nUtil {
         return linputs;
     }
 
-    public static Set<Output> getLocalizedOutputs(I18nProvider i18nProvider, Set<Output> outputs, Bundle bundle,
+    public static List<Output> getLocalizedOutputs(I18nProvider i18nProvider, List<Output> outputs, Bundle bundle,
             String uid, Locale locale) {
-        Set<Output> loutputs = new HashSet<Output>();
+        List<Output> loutputs = new ArrayList<Output>();
         if (outputs != null)
             for (Output output : outputs) {
                 String outputName = output.getName();

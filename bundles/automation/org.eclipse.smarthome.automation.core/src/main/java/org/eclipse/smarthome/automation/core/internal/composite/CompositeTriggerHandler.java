@@ -12,7 +12,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.StringTokenizer;
 
 import org.eclipse.smarthome.automation.Trigger;
@@ -61,8 +60,8 @@ public class CompositeTriggerHandler
      */
     @Override
     public void triggered(Trigger trigger, Map<String, ?> context) {
-        Set<Output> outputs = moduleType.getOutputs();
-        Map<String, Object> result = new HashMap<>(11);
+        List<Output> outputs = moduleType.getOutputs();
+        Map<String, Object> result = new HashMap<String, Object>(11);
         for (Output output : outputs) {
             String refs = output.getReference();
             if (refs != null) {
@@ -97,7 +96,7 @@ public class CompositeTriggerHandler
     @Override
     public void setRuleEngineCallback(RuleEngineCallback ruleCallback) {
         this.ruleCallback = ruleCallback;
-        List<Trigger> children = moduleType.getModules();
+        List<Trigger> children = moduleType.getChildren();
         for (Trigger child : children) {
             TriggerHandler handler = moduleHandlerMap.get(child);
             handler.setRuleEngineCallback(this);
@@ -106,7 +105,7 @@ public class CompositeTriggerHandler
 
     @Override
     public void dispose() {
-        List<Trigger> children = moduleType.getModules();
+        List<Trigger> children = moduleType.getChildren();
         for (Trigger child : children) {
             TriggerHandler handler = moduleHandlerMap.get(child);
             handler.setRuleEngineCallback(null);

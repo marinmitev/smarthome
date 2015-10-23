@@ -19,11 +19,11 @@ import java.util.Set;
 import org.eclipse.smarthome.automation.Action;
 import org.eclipse.smarthome.automation.Condition;
 import org.eclipse.smarthome.automation.Trigger;
+import org.eclipse.smarthome.automation.Visibility;
 import org.eclipse.smarthome.automation.parser.Parser;
 import org.eclipse.smarthome.automation.parser.ParsingException;
 import org.eclipse.smarthome.automation.parser.ParsingNestedException;
 import org.eclipse.smarthome.automation.template.RuleTemplate;
-import org.eclipse.smarthome.automation.template.Template.Visibility;
 import org.eclipse.smarthome.config.core.ConfigDescriptionParameter;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
  * This class serves for loading JSON files and parse it to the Rule Template objects.
  *
  * @author Ana Dimova - Initial Contribution
- *
+ * @author Yordan Mihaylov - updates related to api changes
  */
 public class TemplateJSONParser implements Parser<RuleTemplate> {
 
@@ -148,7 +148,7 @@ public class TemplateJSONParser implements Parser<RuleTemplate> {
             writer.write(",\n");
         }
 
-        Set<ConfigDescriptionParameter> configDescriptions = ruleTemplate.getConfigurationDescription();
+        List<ConfigDescriptionParameter> configDescriptions = ruleTemplate.getConfigurationDescription();
         ruleTemplateConfigurationToJSON(configDescriptions, writer);
 
         List<Trigger> triggers = ruleTemplate.getTriggers();
@@ -178,10 +178,10 @@ public class TemplateJSONParser implements Parser<RuleTemplate> {
      * @throws when I/O operation has failed or has been interrupted
      * @throws JSONException when generating of the text fails for some reasons.
      */
-    private void ruleTemplateConfigurationToJSON(Set<ConfigDescriptionParameter> configDescriptions,
+    private void ruleTemplateConfigurationToJSON(List<ConfigDescriptionParameter> configDescriptions,
             OutputStreamWriter writer) throws IOException, JSONException {
         if (configDescriptions != null && !configDescriptions.isEmpty()) {
-            writer.write("    \"" + JSONStructureConstants.CONFIG + "\":{\n");
+            writer.write("    \"" + JSONStructureConstants.CONFIG_DESCRIPTIONS + "\":{\n");
             Iterator<ConfigDescriptionParameter> configI = configDescriptions.iterator();
             while (configI.hasNext()) {
                 ConfigDescriptionParameter configParameter = configI.next();
@@ -237,22 +237,18 @@ public class TemplateJSONParser implements Parser<RuleTemplate> {
                 JSONStructureConstants.THEN, sectionActions, exceptions, log);
 
         // get configuration description of rule template
-        Set<ConfigDescriptionParameter> configDescriptions = null;
-        JSONObject config = JSONUtility.getJSONObject(ParsingNestedException.TEMPLATE, ruleTemplateUID, exceptions,
-                JSONStructureConstants.CONFIG, false, jsonRuleTemplate, log);
+        List<ConfigDescriptionParameter> configDescriptions = null;
+        JSONArray config = JSONUtility.getJSONArray(ParsingNestedException.TEMPLATE, ruleTemplateUID, exceptions,
+                JSONStructureConstants.CONFIG_DESCRIPTIONS, false, jsonRuleTemplate, log);
         if (config != null) {
-            configDescriptions = new HashSet<ConfigDescriptionParameter>();
-            Iterator<?> configI = config.keys();
-            while (configI.hasNext()) {
-                String configPropertyName = (String) configI.next();
-                JSONObject configPropertyInfo = JSONUtility.getJSONObject(ParsingNestedException.TEMPLATE,
-                        ruleTemplateUID, exceptions, configPropertyName, false, config, log);
+            configDescriptions = new ArrayList<ConfigDescriptionParameter>();
+            for (int j = 0; j < config.length(); j++) {
+                JSONObject configPropertyInfo = config.optJSONObject(j);
                 if (configPropertyInfo == null) {
                     continue;
                 }
                 ConfigDescriptionParameter configProperty = ConfigPropertyJSONParser.createConfigPropertyDescription(
-                        ParsingNestedException.TEMPLATE, ruleTemplateUID, exceptions, configPropertyName,
-                        configPropertyInfo, log);
+                        ParsingNestedException.TEMPLATE, ruleTemplateUID, exceptions, configPropertyInfo, log);
                 if (configProperty != null)
                     configDescriptions.add(configProperty);
             }

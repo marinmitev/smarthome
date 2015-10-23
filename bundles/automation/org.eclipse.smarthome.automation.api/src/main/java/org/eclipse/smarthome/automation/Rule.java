@@ -9,7 +9,6 @@ package org.eclipse.smarthome.automation;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -44,8 +43,8 @@ public class Rule {
     @SerializedName("then")
     protected List<Action> actions;
     protected String scopeId;
-    protected Map<String, ?> configurations;
-    protected Set<ConfigDescriptionParameter> configDescriptions;
+    protected Map<String, ?> config;
+    protected List<ConfigDescriptionParameter> configDescriptions;
     protected String ruleTemplateUID;
     protected String uid;
     private String name;
@@ -94,14 +93,14 @@ public class Rule {
     public Rule(List<Trigger> triggers, //
             List<Condition> conditions, //
             List<Action> actions, //
-            Set<ConfigDescriptionParameter> configDescriptions, //
+            List<ConfigDescriptionParameter> configDescriptions, //
             Map<String, ?> configurations) {
         this.triggers = triggers != null ? triggers : new ArrayList<Trigger>(3);
         this.actions = actions != null ? actions : new ArrayList<Action>(3);
 
         this.conditions = conditions != null ? conditions : new ArrayList<Condition>(3);
         this.configDescriptions = configDescriptions != null ? configDescriptions
-                : new HashSet<ConfigDescriptionParameter>(3);
+                : new ArrayList<ConfigDescriptionParameter>(3);
         setConfiguration(configurations);
     }
 
@@ -119,7 +118,7 @@ public class Rule {
      */
     public Rule(String uid, List<Trigger> triggers, //
             List<Condition> conditions, //
-            List<Action> actions, Set<ConfigDescriptionParameter> configDescriptions, //
+            List<Action> actions, List<ConfigDescriptionParameter> configDescriptions, //
             Map<String, ?> configurations) {
         this(triggers, conditions, actions, configDescriptions, configurations);
         this.uid = uid;
@@ -140,7 +139,7 @@ public class Rule {
      */
     public Rule(String uid, List<Trigger> triggers, //
             List<Condition> conditions, //
-            List<Action> actions, Set<ConfigDescriptionParameter> configDescriptions, //
+            List<Action> actions, List<ConfigDescriptionParameter> configDescriptions, //
             Map<String, ?> configurations, String templateUID) {
         this(uid, triggers, conditions, actions, configDescriptions, configurations);
         this.ruleTemplateUID = templateUID;
@@ -240,7 +239,7 @@ public class Rule {
      *
      * @return a {@link Set} of {@link ConfigDescriptionParameter}s.
      */
-    public Set<ConfigDescriptionParameter> getConfigurationDescriptions() {
+    public List<ConfigDescriptionParameter> getConfigurationDescriptions() {
         return configDescriptions;
     }
 
@@ -252,7 +251,7 @@ public class Rule {
      * @return current configuration values
      */
     public Map<String, ?> getConfiguration() {
-        return configurations;
+        return config;
     }
 
     /**
@@ -263,7 +262,7 @@ public class Rule {
      * @param ruleConfiguration new configuration values.
      */
     public void setConfiguration(Map<String, ?> ruleConfiguration) {
-        configurations = ruleConfiguration;
+        config = ruleConfiguration;
     }
 
     public List<Condition> getConditions() {

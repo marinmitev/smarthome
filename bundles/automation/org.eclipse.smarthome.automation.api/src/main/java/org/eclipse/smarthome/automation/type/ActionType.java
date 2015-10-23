@@ -7,10 +7,12 @@
  */
 package org.eclipse.smarthome.automation.type;
 
+import java.util.List;
 import java.util.Set;
 
 import org.eclipse.smarthome.automation.Action;
 import org.eclipse.smarthome.automation.Module;
+import org.eclipse.smarthome.automation.Visibility;
 import org.eclipse.smarthome.config.core.ConfigDescriptionParameter;
 
 /**
@@ -19,7 +21,7 @@ import org.eclipse.smarthome.config.core.ConfigDescriptionParameter;
  * unique id in scope of the RuleEngine and defines {@link ConfigDescriptionParameter}s that are meta-information for
  * configuration and meta-information for {@link Input}s and {@link Output}s used for creation of {@link Action}
  * instances.
- * 
+ *
  * @author Yordan Mihaylov - Initial Contribution
  * @author Ana Dimova - Initial Contribution
  * @author Vasil Ilchev - Initial Contribution
@@ -30,40 +32,40 @@ public class ActionType extends ModuleType {
      * This field contains meta-information describing the incoming connections of the {@link Action} module to the
      * other {@link Module}s.
      */
-    private Set<Input> inputs;
+    private List<Input> inputs;
 
     /**
      * This field contains meta-information describing the outgoing connections of the {@link Action} module to the
      * other {@link Action}s.
      */
-    private Set<Output> outputs;
+    private List<Output> outputs;
 
     /**
      * This constructor is responsible to create an instance of {@link ActionType} with base properties - UID, a
-     * {@link Set} of configuration descriptions and a {@link Set} of {@link Input} definitions.
-     * 
+     * {@link List} of configuration descriptions and a {@link List} of {@link Input} definitions.
+     *
      * @param UID is an unique id of the {@link ActionType}, used as reference from the {@link Module}s, to find their
      *            meta-information.
-     * @param configDescriptions is a {@link Set} of meta-information configuration descriptions.
-     * @param inputs is a {@link Set} of {@link Input} meta-information descriptions.
+     * @param configDescriptions is a {@link List} of meta-information configuration descriptions.
+     * @param inputs is a {@link List} of {@link Input} meta-information descriptions.
      */
-    public ActionType(String UID, Set<ConfigDescriptionParameter> configDescriptions, Set<Input> inputs) {
+    public ActionType(String UID, List<ConfigDescriptionParameter> configDescriptions, List<Input> inputs) {
         this(UID, configDescriptions, inputs, null);
     }
 
     /**
-     * This constructor is responsible to create an instance of the {@link ActionType} with UID, a {@link Set} of
-     * configuration descriptions, a {@link Set} of {@link Input} definitions and a {@link Set} of {@link Output}
+     * This constructor is responsible to create an instance of the {@link ActionType} with UID, a {@link List} of
+     * configuration descriptions, a {@link List} of {@link Input} definitions and a {@link List} of {@link Output}
      * descriptions.
-     * 
+     *
      * @param UID is an unique id of the {@link ActionType}, used as reference from the {@link Module}s, to find their
      *            meta-information.
-     * @param configDescriptions is a {@link Set} of meta-information configuration descriptions.
-     * @param inputs is a {@link Set} of {@link Input} meta-information descriptions.
-     * @param outputs is a {@link Set} of {@link Output} meta-information descriptions.
+     * @param configDescriptions is a {@link List} of meta-information configuration descriptions.
+     * @param inputs is a {@link List} of {@link Input} meta-information descriptions.
+     * @param outputs is a {@link List} of {@link Output} meta-information descriptions.
      */
-    public ActionType(String UID, Set<ConfigDescriptionParameter> configDescriptions, Set<Input> inputs,
-            Set<Output> outputs) {
+    public ActionType(String UID, List<ConfigDescriptionParameter> configDescriptions, List<Input> inputs,
+            List<Output> outputs) {
         super(UID, configDescriptions);
         this.inputs = inputs;
         this.outputs = outputs;
@@ -71,22 +73,22 @@ public class ActionType extends ModuleType {
 
     /**
      * This constructor is responsible to create an instance of {@link ActionType} with UID, label, description, a
-     * {@link Set} of tags, visibility, a {@link Set} of configuration descriptions, a {@link Set} of {@link Input}
-     * descriptions and a {@link Set} of {@link Output} descriptions.
-     * 
+     * {@link Set} of tags, visibility, a {@link List} of configuration descriptions, a {@link List} of {@link Input}
+     * descriptions and a {@link List} of {@link Output} descriptions.
+     *
      * @param UID unique id of the {@link ActionType}.
-     * @param configDescriptions is a {@link Set} of meta-information configuration descriptions.
+     * @param configDescriptions is a {@link List} of meta-information configuration descriptions.
      * @param label is a short and accurate name of the {@link ActionType}.
      * @param description is a short and understandable description of which can be used the {@link ActionType}.
      * @param tags defines categories that fit the {@link ActionType} and which can serve as criteria for searching
      *            or filtering it.
      * @param visibility determines whether the {@link ActionType} can be used by anyone if it is
      *            {@link Visibility#PUBLIC} or only by its creator if it is {@link Visibility#PRIVATE}.
-     * @param inputs is a {@link Set} of {@link Input} meta-information descriptions.
-     * @param outputs is a {@link Set} of {@link Output} meta-information descriptions.
+     * @param inputs is a {@link List} of {@link Input} meta-information descriptions.
+     * @param outputs is a {@link List} of {@link Output} meta-information descriptions.
      */
-    public ActionType(String UID, Set<ConfigDescriptionParameter> configDescriptions, String label, String description,
-            Set<String> tags, Visibility visibility, Set<Input> inputs, Set<Output> outputs) {
+    public ActionType(String UID, List<ConfigDescriptionParameter> configDescriptions, String label, String description,
+            Set<String> tags, Visibility visibility, List<Input> inputs, List<Output> outputs) {
         super(UID, configDescriptions, label, description, tags, visibility);
         this.inputs = inputs;
         this.outputs = outputs;
@@ -94,19 +96,19 @@ public class ActionType extends ModuleType {
 
     /**
      * This method is used for getting the meta-information descriptions of {@link Input}s defined by this type.<br/>
-     * 
-     * @return a {@link Set} of {@link Input} definitions.
+     *
+     * @return a {@link List} of {@link Input} definitions.
      */
-    public Set<Input> getInputs() {
+    public List<Input> getInputs() {
         return inputs;
     }
 
     /**
      * This method is used for getting the meta-information descriptions of {@link Output}s defined by this type.<br/>
-     * 
-     * @return a {@link Set} of {@link Output} definitions.
+     *
+     * @return a {@link List} of {@link Output} definitions.
      */
-    public Set<Output> getOutputs() {
+    public List<Output> getOutputs() {
         return outputs;
     }
 

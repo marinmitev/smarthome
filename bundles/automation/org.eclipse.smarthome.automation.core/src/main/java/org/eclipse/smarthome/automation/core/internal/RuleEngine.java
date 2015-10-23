@@ -652,7 +652,7 @@ public class RuleEngine
     public synchronized Rule getRule(String rId) {
         RuntimeRule rule = rules.get(rId);
         if (rule != null) {
-            Rule r = new RuntimeRule(rule);
+            Rule r = rule.getRuleCopy();
             return r;
         }
         return null;
@@ -692,10 +692,10 @@ public class RuleEngine
             if (tag != null) {
                 Set<String> tags = r.getTags();
                 if (tags != null && tags.contains(tag)) {
-                    result.add(new RuntimeRule(r));
+                    result.add(r.getRuleCopy());
                 }
             } else {
-                result.add(new RuntimeRule(r));
+                result.add(r.getRuleCopy());
             }
         }
         return result;
@@ -717,13 +717,13 @@ public class RuleEngine
                     for (Iterator<String> i = rTags.iterator(); i.hasNext();) {
                         String tag = i.next();
                         if (tags.contains(tag)) {
-                            result.add(new RuntimeRule(r));
+                            result.add(r.getRuleCopy());
                             break;
                         }
                     }
                 }
             } else {
-                result.add(new RuntimeRule(r));
+                result.add(r.getRuleCopy());
             }
         }
         return result;
@@ -1224,7 +1224,7 @@ public class RuleEngine
             Map<String, Object> moduleConfiguration = module.getConfiguration();
             String typeId = module.getTypeUID();
             ModuleType mt = mtManager.getType(typeId);
-            Set<ConfigDescriptionParameter> configs = mt.getConfigurationDescription();
+            List<ConfigDescriptionParameter> configs = mt.getConfigurationDescription();
             if (configs != null) {
                 for (ConfigDescriptionParameter config : configs) {
                     String defaultValue = config.getDefault();
@@ -1237,7 +1237,7 @@ public class RuleEngine
                 } // for
             }
 
-            Set<Output> outputs = null;
+            List<Output> outputs = null;
             if (mt instanceof TriggerType) {
                 outputs = ((TriggerType) mt).getOutputs();
             } else if (mt instanceof ActionType) {
@@ -1245,7 +1245,7 @@ public class RuleEngine
             }
 
             if (outputs != null) {
-                Map<String, Object> result = new HashMap<>(11);
+                Map<String, Object> result = new HashMap<String, Object>(11);
                 for (Output output : outputs) {
                     Object defaultValue = output.getDefaultValue();
                     if (defaultValue != null) {

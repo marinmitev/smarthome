@@ -1,45 +1,52 @@
 {  
-  "conditions":{
-	  "ItemStateCondition":{
-		  "label": "Item state condition",
-		  "description": "compares the items current state with the given",
-		  "config":{
-			  "operator": {
-				  "type":"TEXT",
-				  "description":"the compare operator (one of =,<,>,!=)",
-				  "required":true
-			  },
-			  "itemName":{
-				  "type":"TEXT",
-                  "context":"item",
-				  "description":"the name of the Item",
-				  "required":true
-			  },
-			  "state":{
-				  "type":"TEXT",
-				  "description":"the state to be compared with",
-				  "required":true
-			  }
-		  }
-	  }
-  },
-  "actions":{
-	  "ItemPostCommandAction":{
-		  "label":"ItemPostCommandAction",
-		  "description":"posts commands on items",
-		  "config":{
-			  "itemName":{
-				  "type":"TEXT",
-                  "context":"item",
-				  "description":"the name of the item to post the command for",
-				  "required":true
-			  },
-			  "command":{
-				  "type":"TEXT",
-				  "description":"the command to be posted",
-				  "required":true
-			  }
-		  }
-	  }
-  }
+   "conditions":[  
+      {  
+         "uid":"ItemStateCondition",
+         "label":"Item state condition",
+         "description":"compares the items current state with the given",
+         "configDescriptions":[  
+            {  
+               "name":"operator",
+               "type":"TEXT",
+               "description":"the compare operator (one of =,<,>,!=)",
+               "required":true
+            },
+            {  
+               "name":"itemName",
+               "type":"TEXT",
+               "context":"item",
+               "description":"the name of the Item",
+               "required":true
+            },
+            {  
+               "name":"state",
+               "type":"TEXT",
+               "description":"the state to be compared with",
+               "required":true
+            }
+         ]
+      }
+   ],
+   "actions":[  
+      {  
+         "uid":"ItemPostCommandAction",
+         "label":"ItemPostCommandAction",
+         "description":"posts commands on items",
+         "configDescriptions":[  
+            {  
+               "name":"itemName",
+               "type":"TEXT",
+               "context":"item",
+               "description":"the name of the item to post the command for",
+               "required":true
+            },
+            {  
+               "name":"command",
+               "type":"TEXT",
+               "description":"the command to be posted",
+               "required":true
+            }
+         ]
+      }
+   ]
 }

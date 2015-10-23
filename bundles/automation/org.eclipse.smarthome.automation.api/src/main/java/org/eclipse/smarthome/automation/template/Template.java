@@ -10,6 +10,7 @@ package org.eclipse.smarthome.automation.template;
 import java.util.Set;
 
 import org.eclipse.smarthome.automation.Rule;
+import org.eclipse.smarthome.automation.Visibility;
 
 /**
  * The templates define types of shared, ready to use rule definitions, which
@@ -26,19 +27,6 @@ import org.eclipse.smarthome.automation.Rule;
  * @author Vasil Ilchev - Initial Contribution
  */
 public interface Template {
-
-    public enum Visibility {
-
-        /**
-         * The template is visible by everyone.
-         */
-        PUBLIC,
-
-        /**
-         * The template is visible only by its creator.
-         */
-        PRIVATE
-    }
 
     /**
      * This method is used for getting the type of Template. It is unique in scope

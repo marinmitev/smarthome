@@ -23,9 +23,6 @@ import org.eclipse.smarthome.automation.Action;
 import org.eclipse.smarthome.automation.Rule;
 import org.eclipse.smarthome.automation.Trigger;
 import org.eclipse.smarthome.automation.parser.ParsingException;
-import org.eclipse.smarthome.automation.parser.json.internal.ModuleTypeJSONParser;
-import org.eclipse.smarthome.automation.parser.json.internal.RuleJSONParser;
-import org.eclipse.smarthome.automation.parser.json.internal.TemplateJSONParser;
 import org.eclipse.smarthome.automation.template.RuleTemplate;
 import org.eclipse.smarthome.automation.type.CompositeActionType;
 import org.eclipse.smarthome.automation.type.CompositeTriggerType;
@@ -224,14 +221,14 @@ public class ParserTest {
         Assert.assertNotNull(compositeTrigger);
         Assert.assertTrue("Not composite trigger type", compositeTrigger instanceof CompositeTriggerType);
         CompositeTriggerType compositeTriggerType = (CompositeTriggerType) compositeTrigger;
-        Set<Output> tOutputs = compositeTriggerType.getOutputs();
+        List<Output> tOutputs = compositeTriggerType.getOutputs();
         Assert.assertNotNull(tOutputs);
         Output tOutput0 = tOutputs.iterator().next();
         Assert.assertNotNull(tOutput0);
         Assert.assertEquals("compositeTriggerOutput", tOutput0.getName());
         Assert.assertEquals("sampleTrigger1.triggerOutput", tOutput0.getReference());
 
-        List<Trigger> tchildren = compositeTriggerType.getModules();
+        List<Trigger> tchildren = compositeTriggerType.getChildren();
         Assert.assertNotNull(tchildren);
         Assert.assertNotNull(tchildren.get(0));
         Assert.assertEquals("sampleTrigger1", tchildren.get(0).getId());
@@ -244,7 +241,7 @@ public class ParserTest {
         Assert.assertNotNull(compositeAction);
         Assert.assertTrue("Not composite action type", compositeAction instanceof CompositeActionType);
         CompositeActionType compositeActionType = (CompositeActionType) compositeAction;
-        List<Action> achildren = compositeActionType.getModules();
+        List<Action> achildren = compositeActionType.getChildren();
         Assert.assertNotNull(achildren);
         Assert.assertNotNull(achildren.get(0));
         Assert.assertEquals("SampleAction1", achildren.get(0).getId());

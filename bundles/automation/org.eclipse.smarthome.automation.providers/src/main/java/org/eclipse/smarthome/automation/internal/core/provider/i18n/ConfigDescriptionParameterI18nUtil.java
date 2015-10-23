@@ -8,10 +8,8 @@
 package org.eclipse.smarthome.automation.internal.core.provider.i18n;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.eclipse.smarthome.config.core.ConfigDescriptionParameter;
@@ -25,31 +23,33 @@ import org.osgi.framework.Bundle;
  * infers the key if the default text is not a constant with the assistance of {@link I18nProvider}.
  *
  * @author Ana Dimova - Initial Contribution
- *
+ * @author Yordan Mihaylov - updates related to api changes
  */
 public class ConfigDescriptionParameterI18nUtil {
 
     private static final Pattern delimiter = Pattern.compile("[:=\\s]");
 
-    public static Set<ConfigDescriptionParameter> getLocalizedConfigurationDescription(I18nProvider i18nProvider,
-            Set<ConfigDescriptionParameter> config, Bundle bundle, String uid, String prefix, Locale locale) {
-        Set<ConfigDescriptionParameter> configDescriptions = new HashSet<ConfigDescriptionParameter>();
-        for (ConfigDescriptionParameter parameter : config) {
-            String parameterName = parameter.getName();
-            String llabel = getModuleTypeConfigParameterLabel(i18nProvider, bundle, uid, parameterName,
-                    parameter.getLabel(), prefix, locale);
-            String ldescription = getModuleTypeConfigParameterDescription(i18nProvider, bundle, uid, parameterName,
-                    parameter.getDescription(), prefix, locale);
-            String lpattern = getParameterPattern(i18nProvider, bundle, uid, parameterName, parameter.getPattern(),
-                    prefix, locale);
-            List<ParameterOption> loptions = getLocalizedOptions(i18nProvider, parameter.getOptions(), bundle, uid,
-                    parameterName, prefix, locale);
-            configDescriptions.add(new ConfigDescriptionParameter(parameterName, parameter.getType(),
-                    parameter.getMinimum(), parameter.getMaximum(), parameter.getStepSize(), lpattern,
-                    parameter.isMultiple(), parameter.isReadOnly(), parameter.isMultiple(), parameter.getContext(),
-                    parameter.getDefault(), llabel, ldescription, loptions, parameter.getFilterCriteria(),
-                    parameter.getGroupName(), parameter.isAdvanced(), parameter.getLimitToOptions(),
-                    parameter.getMultipleLimit()));
+    public static List<ConfigDescriptionParameter> getLocalizedConfigurationDescription(I18nProvider i18nProvider,
+            List<ConfigDescriptionParameter> config, Bundle bundle, String uid, String prefix, Locale locale) {
+        List<ConfigDescriptionParameter> configDescriptions = new ArrayList<ConfigDescriptionParameter>();
+        if (config != null) {
+            for (ConfigDescriptionParameter parameter : config) {
+                String parameterName = parameter.getName();
+                String llabel = getModuleTypeConfigParameterLabel(i18nProvider, bundle, uid, parameterName,
+                        parameter.getLabel(), prefix, locale);
+                String ldescription = getModuleTypeConfigParameterDescription(i18nProvider, bundle, uid, parameterName,
+                        parameter.getDescription(), prefix, locale);
+                String lpattern = getParameterPattern(i18nProvider, bundle, uid, parameterName, parameter.getPattern(),
+                        prefix, locale);
+                List<ParameterOption> loptions = getLocalizedOptions(i18nProvider, parameter.getOptions(), bundle, uid,
+                        parameterName, prefix, locale);
+                configDescriptions.add(new ConfigDescriptionParameter(parameterName, parameter.getType(),
+                        parameter.getMinimum(), parameter.getMaximum(), parameter.getStepSize(), lpattern,
+                        parameter.isMultiple(), parameter.isReadOnly(), parameter.isMultiple(), parameter.getContext(),
+                        parameter.getDefault(), llabel, ldescription, loptions, parameter.getFilterCriteria(),
+                        parameter.getGroupName(), parameter.isAdvanced(), parameter.getLimitToOptions(),
+                        parameter.getMultipleLimit()));
+            }
         }
         return configDescriptions;
     }

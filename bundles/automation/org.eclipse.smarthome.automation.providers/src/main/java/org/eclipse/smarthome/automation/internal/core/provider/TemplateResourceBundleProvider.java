@@ -58,6 +58,7 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
  * @author Kai Kreuzer - refactored (managed) provider and registry implementation
  * @author Ana Dimova - provides localization
  * @author Ana Dimova - refactor Parser interface.
+ * @author Yordan Mihaylov - updates related to api changes
  */
 public class TemplateResourceBundleProvider extends AbstractResourceBundleProvider<Template>
         implements TemplateProvider {
@@ -237,6 +238,7 @@ public class TemplateResourceBundleProvider extends AbstractResourceBundleProvid
         try {
             providedObjects = parser.parse(inputStreamReader);
         } catch (ParsingException e) {
+            logger.error("Template parsing of vendor " + vendor + " is faild!", e);
         }
         if (providedObjects != null && !providedObjects.isEmpty()) {
             for (Template ruleT : providedObjects) {
@@ -297,7 +299,7 @@ public class TemplateResourceBundleProvider extends AbstractResourceBundleProvid
                     defTemplate.getLabel(), locale);
             String ldescription = RuleTemplateI18nUtil.getLocalizedRuleTemplateDescription(i18nProvider, bundle, uid,
                     defTemplate.getDescription(), locale);
-            Set<ConfigDescriptionParameter> lconfigDescriptions = ConfigDescriptionParameterI18nUtil
+            List<ConfigDescriptionParameter> lconfigDescriptions = ConfigDescriptionParameterI18nUtil
                     .getLocalizedConfigurationDescription(i18nProvider,
                             ((RuleTemplate) defTemplate).getConfigurationDescription(), bundle, uid,
                             RuleTemplateI18nUtil.RULE_TEMPLATE, locale);

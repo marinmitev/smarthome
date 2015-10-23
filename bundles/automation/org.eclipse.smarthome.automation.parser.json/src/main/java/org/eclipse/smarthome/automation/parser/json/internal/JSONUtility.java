@@ -22,7 +22,7 @@ import org.slf4j.Logger;
  * Utility class for performing operations over JSON structures.
  *
  * @author Ana Dimova - Initial Contribution
- *
+ * @author Yordan Mihaylov - updates related to api changes
  */
 public class JSONUtility {
 
@@ -41,6 +41,7 @@ public class JSONUtility {
     static final int NAME = 12;
     static final int ACTIVE = 13;
     static final int TEMPLATE_UID = 14;
+    static final int CONFIG_DESCRIPTIONS = 15;
 
     /**
      * Checks JSON content.
@@ -77,6 +78,8 @@ public class JSONUtility {
             return TAGS;
         if (propertyName.equals(JSONStructureConstants.CONFIG))
             return CONFIG;
+        if (propertyName.equals(JSONStructureConstants.CONFIG_DESCRIPTIONS))
+            return CONFIG_DESCRIPTIONS;
         if (propertyName.equals(JSONStructureConstants.DESCRIPTION))
             return DESCRIPTION;
         if (propertyName.equals(JSONStructureConstants.VISIBILITY))
@@ -109,6 +112,8 @@ public class JSONUtility {
             return TAGS;
         if (propertyName.equals(JSONStructureConstants.CONFIG))
             return CONFIG;
+        if (propertyName.equals(JSONStructureConstants.CONFIG_DESCRIPTIONS))
+            return CONFIG_DESCRIPTIONS;
         if (propertyName.equals(JSONStructureConstants.DESCRIPTION))
             return DESCRIPTION;
         return -1;
