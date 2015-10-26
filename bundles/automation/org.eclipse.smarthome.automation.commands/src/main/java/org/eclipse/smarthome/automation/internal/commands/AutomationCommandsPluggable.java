@@ -16,6 +16,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.smarthome.automation.Rule;
 import org.eclipse.smarthome.automation.RuleRegistry;
 import org.eclipse.smarthome.automation.RuleStatus;
+import org.eclipse.smarthome.automation.RuleStatusInfo;
 import org.eclipse.smarthome.automation.template.Template;
 import org.eclipse.smarthome.automation.template.TemplateRegistry;
 import org.eclipse.smarthome.automation.type.ModuleType;
@@ -382,7 +383,8 @@ public class AutomationCommandsPluggable extends AutomationCommands
     @Override
     public RuleStatus getRuleStatus(String ruleUID) {
         if (ruleRegistry != null) {
-            return ruleRegistry.getStatus(ruleUID);
+            RuleStatusInfo rsi = ruleRegistry.getStatus(ruleUID);
+            return rsi != null ? rsi.getStatus() : null;
         } else {
             return null;
         }

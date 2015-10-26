@@ -16,6 +16,7 @@ import org.eclipse.smarthome.automation.Condition
 import org.eclipse.smarthome.automation.Rule
 import org.eclipse.smarthome.automation.RuleRegistry
 import org.eclipse.smarthome.automation.RuleStatus
+import org.eclipse.smarthome.automation.RuleStatusInfo
 import org.eclipse.smarthome.automation.Trigger
 import org.eclipse.smarthome.core.events.EventPublisher
 import org.eclipse.smarthome.core.events.EventSubscriber
@@ -88,8 +89,8 @@ class ScriptRuleTest extends OSGiTest {
             assertThat ruleRegistry.getAll().isEmpty(), is(false)
             def rule2 = ruleRegistry.get("javascript.rule1") as Rule
             assertThat rule2, is(notNullValue())
-            def ruleStatus2 = ruleRegistry.getStatus(rule2.uid) as RuleStatus
-            assertThat ruleStatus2, is(RuleStatus.IDLE)
+            def ruleStatus2 = ruleRegistry.getStatus(rule2.uid) as RuleStatusInfo
+            assertThat ruleStatus2.getStatus(), is(RuleStatus.IDLE)
         }, 10000, 200)
         def rule = ruleRegistry.get("javascript.rule1") as Rule
         assertThat rule, is(notNullValue())

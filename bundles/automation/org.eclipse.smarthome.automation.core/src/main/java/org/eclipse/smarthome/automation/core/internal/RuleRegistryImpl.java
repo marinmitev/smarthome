@@ -14,7 +14,6 @@ import java.util.Set;
 
 import org.eclipse.smarthome.automation.Rule;
 import org.eclipse.smarthome.automation.RuleRegistry;
-import org.eclipse.smarthome.automation.RuleStatus;
 import org.eclipse.smarthome.automation.RuleStatusInfo;
 import org.eclipse.smarthome.automation.StatusInfoCallback;
 import org.eclipse.smarthome.automation.events.RuleEventFactory;
@@ -166,8 +165,8 @@ public class RuleRegistryImpl extends AbstractRegistry<Rule, String>implements R
     }
 
     @Override
-    public RuleStatus getStatus(String ruleUID) {
-        return ruleEngine.getRuleStatus(ruleUID);
+    public RuleStatusInfo getStatus(String ruleUID) {
+        return ruleEngine.getRuleStatusInfo(ruleUID);
     }
 
     protected synchronized void dispose() {
@@ -213,5 +212,10 @@ public class RuleRegistryImpl extends AbstractRegistry<Rule, String>implements R
     @Override
     public void statusInfoChanged(String ruleUID, RuleStatusInfo statusInfo) {
         postEvent(RuleEventFactory.createRuleStatusInfoEvent(statusInfo, ruleUID, SOURCE));
+    }
+
+    @Override
+    public boolean isEnabled(String ruleUID) {
+        return disabledRuledSet.contains(ruleUID);
     }
 }

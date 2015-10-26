@@ -1082,11 +1082,22 @@ public class RuleEngine
      * @return status of the rule or null when such rule does not exists.
      */
     public synchronized RuleStatus getRuleStatus(String rUID) {
-        RuleStatusInfo info = statusMap.get(rUID);
+        RuleStatusInfo info = getRuleStatusInfo(rUID);
         RuleStatus status = null;
         if (info != null)
             status = info.getStatus();
         return status;
+    }
+
+    /**
+     * This method gets rule's status info object.
+     *
+     * @param rUID rule uid
+     * @return status of the rule or null when such rule does not exists.
+     */
+    public synchronized RuleStatusInfo getRuleStatusInfo(String rUID) {
+        RuleStatusInfo info = statusMap.get(rUID);
+        return info;
     }
 
     protected String getScopeIdentifier() {

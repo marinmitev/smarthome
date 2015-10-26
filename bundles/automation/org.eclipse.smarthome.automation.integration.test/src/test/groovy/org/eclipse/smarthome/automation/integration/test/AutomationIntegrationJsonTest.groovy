@@ -19,6 +19,7 @@ import org.eclipse.smarthome.automation.Condition
 import org.eclipse.smarthome.automation.Rule
 import org.eclipse.smarthome.automation.RuleRegistry
 import org.eclipse.smarthome.automation.RuleStatus
+import org.eclipse.smarthome.automation.RuleStatusInfo
 import org.eclipse.smarthome.automation.Trigger
 import org.eclipse.smarthome.automation.events.RuleStatusInfoEvent
 import org.eclipse.smarthome.core.autoupdate.AutoUpdateBindingConfigProvider
@@ -149,8 +150,8 @@ class AutomationIntegrationJsonTest extends OSGiTest{
             assertThat ruleRegistry.getAll().isEmpty(), is(false)
             def rule2 = ruleRegistry.getAll().find{it.tags!=null && it.tags.contains("jsonTest")} as Rule
             assertThat rule2, is(notNullValue())
-            def ruleStatus2 = ruleRegistry.getStatus(rule2.uid) as RuleStatus
-            assertThat ruleStatus2, is(RuleStatus.IDLE)
+            def ruleStatus2 = ruleRegistry.getStatus(rule2.uid) as RuleStatusInfo
+            assertThat ruleStatus2.getStatus(), is(RuleStatus.IDLE)
         }, 10000, 200)
         def rule = ruleRegistry.getAll().find{it.tags!=null && it.tags.contains("jsonTest")} as Rule
         assertThat rule, is(notNullValue())
@@ -174,8 +175,8 @@ class AutomationIntegrationJsonTest extends OSGiTest{
         assertThat action.typeUID, is("ItemPostCommandAction")
         assertThat action.configuration.get("itemName"), is("myLampItem")
         assertThat action.configuration.get("command"), is("ON")
-        def ruleStatus = ruleRegistry.getStatus(rule.uid) as RuleStatus
-        assertThat ruleStatus, is(RuleStatus.IDLE)
+        def ruleStatus = ruleRegistry.getStatus(rule.uid) as RuleStatusInfo
+        assertThat ruleStatus.getStatus(), is(RuleStatus.IDLE)
     }
 
 
@@ -184,9 +185,9 @@ class AutomationIntegrationJsonTest extends OSGiTest{
         logger.info('assert that rule added by json is executed correctly');
         waitForAssert({
             assertThat ruleRegistry.getAll().isEmpty(), is(false)
-            Rule rule = ruleRegistry.get("ItemSampleRule")
-            assertThat rule, is(notNullValue())
-            assertThat ruleRegistry.getStatus(rule.UID), is (RuleStatus.IDLE)
+            Rule r = ruleRegistry.get("ItemSampleRule")
+            assertThat r, is(notNullValue())
+            assertThat ruleRegistry.getStatus(r.UID).getStatus(), is(RuleStatus.IDLE)
             
         }, 3000, 200)
         SwitchItem myPresenceItem = itemRegistry.getItem("myPresenceItem")

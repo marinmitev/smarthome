@@ -19,6 +19,7 @@ import org.eclipse.smarthome.automation.Condition
 import org.eclipse.smarthome.automation.Rule
 import org.eclipse.smarthome.automation.RuleRegistry
 import org.eclipse.smarthome.automation.RuleStatus
+import org.eclipse.smarthome.automation.RuleStatusInfo
 import org.eclipse.smarthome.automation.Trigger
 import org.eclipse.smarthome.automation.type.ModuleTypeRegistry
 import org.eclipse.smarthome.automation.events.RuleStatusInfoEvent
@@ -129,16 +130,9 @@ class RuntimeRuleTest extends OSGiTest{
         def condition1Config = [operator:"=", itemName:"myPresenceItem2", state:"ON"]
         def condition2Config = [operator:"=", itemName:"myMotionItem2", state:"ON"]
         def actionConfig = [itemName:"myLampItem2", command:"ON"]
-        def triggers = [
-            new Trigger("ItemStateChangeTrigger2", "GenericEventTrigger", triggerConfig)
-        ]
-        def conditions = [
-            new Condition("ItemStateCondition3", "ItemStateCondition", condition1Config, null),
-            new Condition("ItemStateCondition4", "ItemStateCondition", condition2Config, null)
-        ]
-        def actions = [
-            new Action("ItemPostCommandAction2", "ItemPostCommandAction", actionConfig, null)
-        ]
+        def triggers = [new Trigger("ItemStateChangeTrigger2", "GenericEventTrigger", triggerConfig)]
+        def conditions = [new Condition("ItemStateCondition3", "ItemStateCondition", condition1Config, null), new Condition("ItemStateCondition4", "ItemStateCondition", condition2Config, null)]
+        def actions = [new Action("ItemPostCommandAction2", "ItemPostCommandAction", actionConfig, null)]
 
         def rule = new Rule("myRule21"+new Random().nextInt(),triggers, conditions, actions, null, null)
         // I would expect the factory to create the UID of the rule and the name to be in the list of parameters.
@@ -272,16 +266,9 @@ class RuntimeRuleTest extends OSGiTest{
         def condition1Config = [operator:"=", itemName:"myPresenceItem3", state:"ON"]
         def condition2Config = [operator:"=", itemName:"myMotionItem3", state:"ON"]
         def actionConfig = [itemName:"myLampItem3", command:"ON"]
-        def triggers = [
-            new Trigger("ItemStateChangeTrigger3", "ItemStateChangeTrigger", triggerConfig)
-        ]
-        def conditions = [
-            new Condition("ItemStateCondition5", "ItemStateCondition", condition1Config, null),
-            new Condition("ItemStateCondition6", "ItemStateCondition", condition2Config, null)
-        ]
-        def actions = [
-            new Action("ItemPostCommandAction3", "ItemPostCommandAction", actionConfig, null)
-        ]
+        def triggers = [new Trigger("ItemStateChangeTrigger3", "ItemStateChangeTrigger", triggerConfig)]
+        def conditions = [new Condition("ItemStateCondition5", "ItemStateCondition", condition1Config, null), new Condition("ItemStateCondition6", "ItemStateCondition", condition2Config, null)]
+        def actions = [new Action("ItemPostCommandAction3", "ItemPostCommandAction", actionConfig, null)]
 
         def rule = new Rule("myRule21"+new Random().nextInt()+ "_COMPOSITE", triggers, conditions, actions, null, null)
         rule.name="RuleByJAVA_API_WithCompositeTrigger"
@@ -293,7 +280,7 @@ class RuntimeRuleTest extends OSGiTest{
 
         //TEST RULE
         waitForAssert({
-            assertThat ruleRegistry.getStatus(rule.uid), is(RuleStatus.IDLE)
+            assertThat ruleRegistry.getStatus(rule.uid).getStatus(), is(RuleStatus.IDLE)
         })
 
         def ruleEvent = null

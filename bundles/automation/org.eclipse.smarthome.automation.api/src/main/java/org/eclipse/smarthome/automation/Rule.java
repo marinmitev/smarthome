@@ -47,9 +47,9 @@ public class Rule {
     protected List<ConfigDescriptionParameter> configDescriptions;
     protected String ruleTemplateUID;
     protected String uid;
-    private String name;
-    private Set<String> tags;
-    private String description;
+    protected String name;
+    protected Set<String> tags;
+    protected String description;
 
     public Rule() {
     }
