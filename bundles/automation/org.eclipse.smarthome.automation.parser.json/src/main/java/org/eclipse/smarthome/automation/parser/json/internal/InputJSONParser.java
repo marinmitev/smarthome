@@ -40,12 +40,6 @@ public class InputJSONParser {
     static List<Input> collectInputs(BundleContext bc, String moduleTypeUID, JSONArray jsonInputs,
             List<ParsingNestedException> exceptions, Logger log) {
         List<Input> inputs = new ArrayList<Input>();
-        // Iterator<?> jsonInputsI = jsonInputs.keys();
-        // while (jsonInputsI.hasNext()) {
-        // String inputName = (String) jsonInputsI.next();
-        // JSONObject inputInfo = JSONUtility.getJSONObject(ParsingNestedException.MODULE_TYPE, moduleTypeUID,
-        // exceptions, inputName, false, jsonInputs, log);
-
         for (int i = 0; i < jsonInputs.length(); i++) {
 
             JSONObject inputInfo = jsonInputs.optJSONObject(i);

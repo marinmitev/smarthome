@@ -174,12 +174,6 @@ public class ModuleTypeJSONParser implements Parser<ModuleType> {
         }
 
         for (int i = 0; i < jsonModuleTypes.length(); i++) {
-
-            // }
-            //
-            // Iterator<?> jsonModulesIds = jsonModuleTypes.keys();
-            // while (jsonModulesIds.hasNext()) {
-            // String moduleTypeUID = (String) jsonModulesIds.next();
             JSONObject jsonModuleType;
             try {
                 jsonModuleType = jsonModuleTypes.getJSONObject(i);
@@ -187,17 +181,8 @@ public class ModuleTypeJSONParser implements Parser<ModuleType> {
                 JSONUtility.catchParsingException(ParsingNestedException.MODULE_TYPE, null, exceptions, e, log);
                 continue;
             }
-            // String moduleTypeUID;
-            // try {
-            // moduleTypeUID = jsonModuleType.getString(JSONStructureConstants.UID);
-            // } catch (JSONException e) {
-            // JSONUtility.catchParsingException(ParsingNestedException.MODULE_TYPE, null, exceptions, e, log);
-            // continue;
-            // }
 
             ModuleType moduleType = null;
-            // JSONObject jsonModuleType = JSONUtility.getJSONObject(ParsingNestedException.MODULE_TYPE, moduleTypeUID,
-            // exceptions, moduleTypeUID, false, jsonModuleTypes, log);
             switch (type) {
                 case JSONUtility.TRIGGERS:
                     moduleType = createTriggerType(jsonModuleType, exceptions);

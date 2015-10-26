@@ -63,19 +63,7 @@ public class RuleEngineTest {
 
         Rule rule1 = createRule();
         ruleEngine.addRule(rule1);
-        // Rule[] array = new Rule[2];
-        // array = ruleEngine.getRules().toArray(array);
-        // Assert.assertEquals("Expected list with 2 rules", 2, array.length);
-        // Assert.assertNotEquals("Returned rule [0] is not a copy", rule1, array[0]);// returned rule should be a copy
-        // Assert.assertNotEquals("Returned rule [1] is not a copy", rule1, array[1]);// returned
-        // // rule
-        // // should be
-        // // a copy
-
         Rule rule1Get = ruleEngine.getRule("rule1");
-        // Assert.assertNotNull("Cannot find rule by UID", rule1Get);
-        // Assert.assertNotEquals("Returned rule by UID is not a copy", rule1, rule1Get);// returned rule should be a
-        // copy
         Assert.assertEquals("Returned rule with wrong UID", "rule1", rule1Get.getUID());
     }
 
