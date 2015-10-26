@@ -45,9 +45,10 @@ public class RuntimeRule extends Rule {
         super(ruleTemplateUID, configurations);
     }
 
-    public RuntimeRule(RuleTemplate template, Map<String, ?> configuration) {
+    public RuntimeRule(String ruleUID, RuleTemplate template, Map<String, ?> configuration) {
         super(getRuntimeTriggersCopy(template.getTriggers()), getRuntimeConditionsCopy(template.getConditions()),
                 getRuntimeActionsCopy(template.getActions()), template.getConfigurationDescription(), configuration);
+        this.uid = ruleUID;
     }
 
     /**

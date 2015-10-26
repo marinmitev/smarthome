@@ -413,7 +413,7 @@ public class RuleEngine
             logger.debug("Rule template '" + ruleTemplateUID + "' does not exist.");
             return null;
         } else {
-            RuntimeRule r1 = new RuntimeRule(template, rule.getConfiguration());
+            RuntimeRule r1 = new RuntimeRule(rule.getUID(), template, rule.getConfiguration());
             r1.handleModuleConfigReferences();
             return r1;
         }
