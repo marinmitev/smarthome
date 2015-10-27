@@ -227,6 +227,14 @@ public class BasicModuleHandlerFactory extends BaseModuleHandlerFactory {
                 handlers.put(ruleUID + module.getId(), eventConditionHandler);
             }
             return eventConditionHandler;
+        } else if (CompareConditionHandler.MODULE_TYPE.equals(moduleTypeUID) && module instanceof Condition) {
+            CompareConditionHandler compareConditionHandler = handler != null
+                    && handler instanceof CompareConditionHandler ? (CompareConditionHandler) handler : null;
+            if (compareConditionHandler == null) {
+                compareConditionHandler = new CompareConditionHandler((Condition)module);
+                handlers.put(ruleUID+module.getId(), compareConditionHandler);
+            }
+            return compareConditionHandler;
         } else {
             logger.error("The ModuleHandler is not supported:" + moduleTypeUID);
         }

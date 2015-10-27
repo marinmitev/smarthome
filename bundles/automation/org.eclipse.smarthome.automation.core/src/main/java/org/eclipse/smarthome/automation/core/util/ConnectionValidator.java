@@ -33,6 +33,7 @@ import org.eclipse.smarthome.automation.type.TriggerType;
  *
  * @author Ana Dimova
  * @author Kai Kreuzer - refactored (managed) provider and registry implementation
+ * @author Benedikt Niehues - validation of connection-types respects inheriting types
  *
  */
 public class ConnectionValidator {
@@ -230,12 +231,21 @@ public class ConnectionValidator {
                     for (Output output : outputs) {
                         if (output.getName().equals(outputName)) {
                             notFound = false;
-                            if (output.getType().equals(input.getType())) {
-                                break;
-                            } else {
-                                throw new IllegalArgumentException(msg + " Incompatible types : \"" + output.getType()
-                                        + "\" and \"" + input.getType() + "\".");
+                            try {
+                                Class<?> outputType = Class.forName(output.getType());
+                                Class<?> inputType = Class.forName(input.getType());
+                                if (outputType.isAssignableFrom(inputType)){
+                                    break;
+                                }
+                            } catch (ClassNotFoundException e) {
+                                if (output.getType().equals(input.getType())) {
+                                    break;
+                                } else {
+                                    throw new IllegalArgumentException(msg + " Incompatible types : \"" + output.getType()
+                                            + "\" and \"" + input.getType() + "\".");
+                                }
                             }
+                           
                         }
                     }
                 }

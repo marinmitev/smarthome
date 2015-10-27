@@ -96,7 +96,10 @@ class AutomationIntegrationTest extends OSGiTest{
                     new SwitchItem("myLampItem3"),
                     new SwitchItem("myMotionItem4"),
                     new SwitchItem("myPresenceItem4"),
-                    new SwitchItem("myLampItem4")
+                    new SwitchItem("myLampItem4"),
+                    new SwitchItem("myMotionItem5"),
+                    new SwitchItem("myPresenceItem5"),
+                    new SwitchItem("myLampItem5"),
                 ]
             },
             addProviderChangeListener: {},
@@ -194,13 +197,19 @@ class AutomationIntegrationTest extends OSGiTest{
         def triggerConfig = [eventSource:"myMotionItem3", eventTopic:"smarthome/*", eventTypes:"ItemStateEvent"]
         def condition1Config = [topic:"smarthome/*"]
         def actionConfig = [itemName:"myLampItem3", command:"ON"]
-        def triggers = [new Trigger("ItemStateChangeTrigger", "GenericEventTrigger", triggerConfig)]
+        def triggers = [
+            new Trigger("ItemStateChangeTrigger", "GenericEventTrigger", triggerConfig)
+        ]
 
         def inputs = [topic: "ItemStateChangeTrigger.topic"]
 
         //def conditionInputs=[topicConnection] as Set
-        def conditions = [new Condition("EventCondition_2", "EventCondition", condition1Config, inputs)]
-        def actions = [new Action("ItemPostCommandAction2", "ItemPostCommandAction", actionConfig, null)]
+        def conditions = [
+            new Condition("EventCondition_2", "EventCondition", condition1Config, inputs)
+        ]
+        def actions = [
+            new Action("ItemPostCommandAction2", "ItemPostCommandAction", actionConfig, null)
+        ]
 
         def rule = new Rule("myRule21_ConnectionTest",triggers, conditions, actions, null, null)
         rule.name="RuleByJAVA_API"+new Random().nextInt()
@@ -242,12 +251,18 @@ class AutomationIntegrationTest extends OSGiTest{
         def triggerConfig = [eventSource:"myMotionItem", eventTopic:"smarthome/*", eventTypes:"ItemStateEvent"]
         def condition1Config = [topic:"smarthome/*"]
         def actionConfig = [itemName:"myLampItem3", command:"ON"]
-        def triggers = [new Trigger("ItemStateChangeTrigger", "GenericEventTriggerWhichDoesNotExist", triggerConfig)]
+        def triggers = [
+            new Trigger("ItemStateChangeTrigger", "GenericEventTriggerWhichDoesNotExist", triggerConfig)
+        ]
         def inputs = [topic: "ItemStateChangeTrigger.topic"]
 
         //def conditionInputs=[topicConnection] as Set
-        def conditions = [new Condition("EventCondition_2", "EventCondition", condition1Config, inputs)]
-        def actions = [new Action("ItemPostCommandAction2", "ItemPostCommandAction", actionConfig, null)]
+        def conditions = [
+            new Condition("EventCondition_2", "EventCondition", condition1Config, inputs)
+        ]
+        def actions = [
+            new Action("ItemPostCommandAction2", "ItemPostCommandAction", actionConfig, null)
+        ]
 
         def rule = new Rule("myRule21_UNINITIALIZED",triggers, conditions, actions, null, null)
         rule.name="RuleByJAVA_API"+new Random().nextInt()
@@ -288,9 +303,16 @@ class AutomationIntegrationTest extends OSGiTest{
         def eventInputs = [event:"ItemStateChangeTrigger3.event"]
         def condition2Config = [operator:"=", itemName:"myMotionItem3", state:"ON"]
         def actionConfig = [itemName:"myLampItem3", command:"ON"]
-        def triggers = [new Trigger("ItemStateChangeTrigger3", "ItemStateChangeTrigger", triggerConfig)]
-        def conditions = [new Condition("ItemStateCondition5", "ItemStateEventCondition", condition1Config, eventInputs), new Condition("ItemStateCondition6", "ItemStateCondition", condition2Config, null)]
-        def actions = [new Action("ItemPostCommandAction3", "ItemPostCommandAction", actionConfig, null)]
+        def triggers = [
+            new Trigger("ItemStateChangeTrigger3", "ItemStateChangeTrigger", triggerConfig)
+        ]
+        def conditions = [
+            new Condition("ItemStateCondition5", "ItemStateEventCondition", condition1Config, eventInputs),
+            new Condition("ItemStateCondition6", "ItemStateCondition", condition2Config, null)
+        ]
+        def actions = [
+            new Action("ItemPostCommandAction3", "ItemPostCommandAction", actionConfig, null)
+        ]
 
         def rule = new Rule("myRule21"+new Random().nextInt()+ "_COMPOSITE", triggers, conditions, actions, null, null)
         rule.name="RuleByJAVA_API_WIthCompositeTrigger"
@@ -348,9 +370,16 @@ class AutomationIntegrationTest extends OSGiTest{
         def eventInputs = [event:"ItemStateChangeTrigger4.event"]
         def condition2Config = [operator:"=", itemName:"myMotionItem4", state:"ON"]
         def actionConfig = [itemName:"myLampItem4", command:"ON"]
-        def triggers = [new Trigger("ItemStateChangeTrigger4", "ItemStateChangeTrigger", triggerConfig)]
-        def conditions = [new Condition("ItemStateCondition7", "ItemStateEvent_ON_Condition", condition1Config, eventInputs), new Condition("ItemStateCondition8", "ItemStateCondition", condition2Config, null)]
-        def actions = [new Action("ItemPostCommandAction4", "ItemPostCommandAction", actionConfig, null)]
+        def triggers = [
+            new Trigger("ItemStateChangeTrigger4", "ItemStateChangeTrigger", triggerConfig)
+        ]
+        def conditions = [
+            new Condition("ItemStateCondition7", "ItemStateEvent_ON_Condition", condition1Config, eventInputs),
+            new Condition("ItemStateCondition8", "ItemStateCondition", condition2Config, null)
+        ]
+        def actions = [
+            new Action("ItemPostCommandAction4", "ItemPostCommandAction", actionConfig, null)
+        ]
 
         def rule = new Rule("myRule21"+new Random().nextInt()+ "_COMPOSITE", triggers, conditions, actions, null, null)
         rule.name="RuleByJAVA_API_ChainedComposite"
@@ -409,9 +438,16 @@ class AutomationIntegrationTest extends OSGiTest{
         def condition1Config = [operator:"=", itemName:"myPresenceItem2", state:"ON"]
         def condition2Config = [operator:"=", itemName:"myMotionItem2", state:"ON"]
         def actionConfig = [itemName:"myLampItem2", command:"ON"]
-        def triggers = [new Trigger("ItemStateChangeTrigger2", "GenericEventTrigger", triggerConfig)]
-        def conditions = [new Condition("ItemStateCondition3", "ItemStateCondition", condition1Config, null), new Condition("ItemStateCondition4", "ItemStateCondition", condition2Config, null)]
-        def actions = [new Action("ItemPostCommandAction2", "ItemPostCommandAction", actionConfig, null)]
+        def triggers = [
+            new Trigger("ItemStateChangeTrigger2", "GenericEventTrigger", triggerConfig)
+        ]
+        def conditions = [
+            new Condition("ItemStateCondition3", "ItemStateCondition", condition1Config, null),
+            new Condition("ItemStateCondition4", "ItemStateCondition", condition2Config, null)
+        ]
+        def actions = [
+            new Action("ItemPostCommandAction2", "ItemPostCommandAction", actionConfig, null)
+        ]
 
         def rule = new Rule("myRule21",triggers, conditions, actions, null, null)
         rule.name="RuleByJAVA_API"
@@ -526,7 +562,9 @@ class AutomationIntegrationTest extends OSGiTest{
         def templateTriggers = []
         def templateConditions = []
         def templateActions = []
-        def templateConfigDescriptionParameters = [new ConfigDescriptionParameter("param", Type.TEXT)]
+        def templateConfigDescriptionParameters = [
+            new ConfigDescriptionParameter("param", Type.TEXT)
+        ]
 
         def template = new RuleTemplate(templateUID, "Test template Label", "Test template description", tags, templateTriggers, templateConditions,
                 templateActions, templateConfigDescriptionParameters, Visibility.PUBLIC)
@@ -589,9 +627,16 @@ class AutomationIntegrationTest extends OSGiTest{
         def condition1Config = [operator:"=", itemName:"myPresenceItem2", state:"ON"]
         def condition2Config = [operator:"=", itemName:"myMotionItem2", state:"ON"]
         def actionConfig = [itemName:"myLampItem2", command:"ON"]
-        def triggers = [new Trigger("ItemStateChangeTrigger_"+rand, "GenericEventTrigger", triggerConfig)]
-        def conditions = [new Condition("ItemStateCondition_"+rand, "ItemStateCondition", condition1Config, null), new Condition("ItemStateCondition1_"+rand, "ItemStateCondition", condition2Config, null)]
-        def actions = [new Action("ItemPostCommandAction_"+rand, "ItemPostCommandAction", actionConfig, null)]
+        def triggers = [
+            new Trigger("ItemStateChangeTrigger_"+rand, "GenericEventTrigger", triggerConfig)
+        ]
+        def conditions = [
+            new Condition("ItemStateCondition_"+rand, "ItemStateCondition", condition1Config, null),
+            new Condition("ItemStateCondition1_"+rand, "ItemStateCondition", condition2Config, null)
+        ]
+        def actions = [
+            new Action("ItemPostCommandAction_"+rand, "ItemPostCommandAction", actionConfig, null)
+        ]
 
         def rule = new Rule("myRule_"+rand,triggers, conditions, actions, null, null)
         rule.name="RuleByJAVA_API_"+rand
@@ -600,6 +645,85 @@ class AutomationIntegrationTest extends OSGiTest{
         return rule
     }
 
+
+    @Test
+    public void 'assert a rule with generic condition works'() {
+        def random = new Random().nextInt(100000)
+        logger.info('assert a rule with generic condition works');
+        //Creation of RULE
+        def triggerConfig = [eventSource:"myMotionItem5", eventTopic:"smarthome/*", eventTypes:"ItemStateEvent"]
+        def condition1Config = [operator:"matches", right:".*ON.*", inputproperty:"payload"]
+        def condition2Config = [operator:"=", right:"myMotionItem5", inputproperty:"itemName"]
+        def actionConfig = [itemName:"myLampItem5", command:"ON"]
+        def triggerId = "ItemStateChangeTrigger"+random
+        def triggers = [
+            new Trigger(triggerId, "GenericEventTrigger", triggerConfig)
+        ]
+        def conditions = [
+            new Condition("ItemStateCondition"+random, "GenericCompareCondition", condition1Config, [input:triggerId+".event"]),
+            new Condition("ItemStateCondition"+(random+1), "GenericCompareCondition", condition2Config, [input:triggerId+".event"])
+        ]
+        def actions = [
+            new Action("ItemPostCommandAction"+random, "ItemPostCommandAction", actionConfig, null)
+        ]
+
+        def rule = new Rule("myRule_"+random,triggers, conditions, actions, null, null)
+        rule.name="RuleByJAVA_API"+random
+        def tags = ["myRule_"+random] as Set
+        rule.tags = tags;
+
+        logger.info("Rule created: "+rule.getUID())
+
+        ruleRegistry.add(rule)
+        ruleRegistry.setEnabled(rule.UID, true)
+
+        //WAIT until Rule modules types are parsed and the rule becomes IDLE
+        waitForAssert({
+            assertThat ruleRegistry.getAll().isEmpty(), is(false)
+            def rule2 = ruleRegistry.get(rule.UID)
+            assertThat rule2, is(notNullValue())
+            def ruleStatus2 = ruleRegistry.getStatus(rule2.uid) as RuleStatus
+            assertThat ruleStatus2, is(RuleStatus.IDLE)
+        }, 10000, 200)
+
+
+        //TEST RULE
+
+        def EventPublisher eventPublisher = getService(EventPublisher)
+        def ItemRegistry itemRegistry = getService(ItemRegistry)
+        SwitchItem myMotionItem = itemRegistry.getItem("myMotionItem5")
+        Command commandObj = TypeParser.parseCommand(myMotionItem.getAcceptedCommandTypes(), "ON")
+        eventPublisher.post(ItemEventFactory.createCommandEvent("myPresenceItem5", commandObj))
+
+        Event itemEvent = null
+
+        def itemEventHandler = [
+            receive: {  Event e ->
+                logger.info("Event: " + e.topic)
+                if (e.topic.contains("myLampItem5")){
+                    itemEvent=e
+                }
+            },
+
+            getSubscribedEventTypes: {
+                Sets.newHashSet(ItemUpdatedEvent.TYPE, ItemStateEvent.TYPE)
+            },
+
+            getEventFilter:{ null }
+
+        ] as EventSubscriber
+
+        registerService(itemEventHandler)
+        commandObj = TypeParser.parseCommand(itemRegistry.getItem("myMotionItem5").getAcceptedCommandTypes(),"ON")
+        eventPublisher.post(ItemEventFactory.createCommandEvent("myMotionItem5", commandObj))
+        waitForAssert ({ assertThat itemEvent, is(notNullValue())} , 3000, 100)
+        assertThat itemEvent.topic, is(equalTo("smarthome/items/myLampItem5/state"))
+        assertThat (((ItemStateEvent)itemEvent).itemState, is(OnOffType.ON))
+        def myLampItem2 = itemRegistry.getItem("myLampItem5")
+        assertThat myLampItem2, is(notNullValue())
+        logger.info("myLampItem5 State: " + myLampItem2.state)
+        assertThat myLampItem2.state, is(OnOffType.ON)
+    }
 
 }
 
