@@ -259,6 +259,11 @@ class RuntimeRuleTest extends OSGiTest{
         condition.configuration=[right:"ON", operator:"<"]
         assertThat handler.isSatisfied([input:OnOffType.ON]), is(false)
         
+        condition.configuration=[right:"ON", operator:"<", inputproperty:"nothing"]
+        assertThat handler.isSatisfied([input:event]), is(false)
+        condition.configuration=[right:"ON", operator:"=", inputproperty:"nothing"]
+        assertThat handler.isSatisfied([input:"ON"]), is(true)
+        
     }
 
     @Test
