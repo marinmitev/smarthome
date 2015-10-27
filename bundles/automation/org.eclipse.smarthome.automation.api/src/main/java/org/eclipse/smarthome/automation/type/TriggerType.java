@@ -7,6 +7,7 @@
  */
 package org.eclipse.smarthome.automation.type;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -74,7 +75,7 @@ public class TriggerType extends ModuleType {
      * @return a {@link List} of {@link Output} definitions.
      */
     public List<Output> getOutputs() {
-        return outputs;
+        return outputs != null ? outputs : Collections.<Output> emptyList();
     }
 
 }

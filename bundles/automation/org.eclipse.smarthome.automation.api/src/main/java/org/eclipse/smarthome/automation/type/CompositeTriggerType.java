@@ -36,14 +36,14 @@ public class CompositeTriggerType extends TriggerType {
      *
      * @param UID is the unique id of this module type in scope of the RuleEngine.
      * @param configDescriptions is a {@link Set} of configuration descriptions.
-     * @param modules is a {@link LinkedHashSet} of {@link Trigger}s.
+     * @param children is a {@link LinkedHashSet} of {@link Trigger}s.
      * @param outputs is a {@link Set} of {@link Output} descriptions.
      *
      */
     public CompositeTriggerType(String UID, List<ConfigDescriptionParameter> configDescriptions, List<Output> outputs,
-            List<Trigger> modules) {
+            List<Trigger> children) {
         super(UID, configDescriptions, outputs);
-        this.children = modules != null ? modules : new ArrayList<Trigger>(0);
+        this.children = children;
     }
 
     /**
@@ -62,12 +62,12 @@ public class CompositeTriggerType extends TriggerType {
      * @param visibility determines whether the {@code CompositeTriggerType} can be used by anyone if it is
      *            {@link Visibility#PUBLIC} or only by its creator if it is {@link Visibility#PRIVATE}.
      * @param outputs is a {@link Set} of {@link Output} descriptions.
-     * @param modules is a {@link LinkedHashSet} of {@link Trigger}s.
+     * @param children is a {@link LinkedHashSet} of {@link Trigger}s.
      */
     public CompositeTriggerType(String UID, List<ConfigDescriptionParameter> configDescriptions, String label,
-            String description, Set<String> tags, Visibility visibility, List<Output> outputs, List<Trigger> modules) {
+            String description, Set<String> tags, Visibility visibility, List<Output> outputs, List<Trigger> children) {
         super(UID, configDescriptions, label, description, tags, visibility, outputs);
-        this.children = modules != null ? modules : new ArrayList<Trigger>(0);
+        this.children = children;
     }
 
     /**
@@ -76,7 +76,7 @@ public class CompositeTriggerType extends TriggerType {
      * @return a {@link LinkedHashSet} of the {@link Trigger} modules of this {@code CompositeTriggerType}.
      */
     public List<Trigger> getChildren() {
-        return children;
+        return children != null ? children : new ArrayList<Trigger>(0);
     }
 
 }

@@ -9,6 +9,7 @@ package org.eclipse.smarthome.automation.template;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -136,9 +137,7 @@ public class RuleTemplate implements Template {
      */
     @Override
     public Set<String> getTags() {
-        if (tags == null || tags.isEmpty())
-            return null;
-        return new HashSet<String>(tags);
+        return tags != null ? tags : Collections.<String> emptySet();
     }
 
     /**
@@ -183,9 +182,7 @@ public class RuleTemplate implements Template {
      * @return a {@link Set} of {@link ConfigDescriptionParameter}s.
      */
     public List<ConfigDescriptionParameter> getConfigurationDescription() {
-        if (configDescriptions == null)
-            return null;
-        return new ArrayList<ConfigDescriptionParameter>(configDescriptions);
+        return configDescriptions != null ? configDescriptions : Collections.<ConfigDescriptionParameter> emptyList();
     }
 
     /**
@@ -222,28 +219,19 @@ public class RuleTemplate implements Template {
         } else if (Action.class == moduleClazz) {
             result = (List<T>) actions;
         }
-        return result != null ? result : new ArrayList<T>(11);
+        return result != null ? result : Collections.<T> emptyList();
     }
 
     public List<Trigger> getTriggers() {
-        if (triggers == null) {
-            triggers = new ArrayList<Trigger>(11);
-        }
-        return triggers;
+        return triggers != null ? triggers : Collections.<Trigger> emptyList();
     }
 
     public List<Condition> getConditions() {
-        if (conditions == null) {
-            conditions = new ArrayList<Condition>(11);
-        }
-        return conditions;
+        return conditions != null ? conditions : Collections.<Condition> emptyList();
     }
 
     public List<Action> getActions() {
-        if (actions == null) {
-            actions = new ArrayList<Action>(11);
-        }
-        return actions;
+        return actions != null ? actions : Collections.<Action> emptyList();
     }
 
 }

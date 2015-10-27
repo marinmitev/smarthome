@@ -7,6 +7,7 @@
  */
 package org.eclipse.smarthome.automation.type;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -100,7 +101,7 @@ public class ActionType extends ModuleType {
      * @return a {@link List} of {@link Input} definitions.
      */
     public List<Input> getInputs() {
-        return inputs;
+        return inputs != null ? inputs : Collections.<Input> emptyList();
     }
 
     /**
@@ -109,7 +110,7 @@ public class ActionType extends ModuleType {
      * @return a {@link List} of {@link Output} definitions.
      */
     public List<Output> getOutputs() {
-        return outputs;
+        return outputs != null ? outputs : Collections.<Output> emptyList();
     }
 
 }

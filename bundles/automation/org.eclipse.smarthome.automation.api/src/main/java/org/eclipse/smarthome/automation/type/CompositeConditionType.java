@@ -7,7 +7,7 @@
  */
 package org.eclipse.smarthome.automation.type;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -36,13 +36,13 @@ public class CompositeConditionType extends ConditionType {
      *
      * @param UID is the unique id of this module type in scope of the RuleEngine.
      * @param configDescriptions is a {@link Set} of configuration descriptions.
-     * @param modules is a LinkedHashSet of {@link Condition}s.
+     * @param children is a LinkedHashSet of {@link Condition}s.
      * @param inputs is a {@link Set} of {@link Input} descriptions.
      */
     public CompositeConditionType(String UID, List<ConfigDescriptionParameter> configDescriptions, List<Input> inputs,
-            List<Condition> modules) {
+            List<Condition> children) {
         super(UID, configDescriptions, inputs);
-        this.children = modules != null ? modules : new ArrayList<Condition>(0);
+        this.children = children;
     }
 
     /**
@@ -61,12 +61,12 @@ public class CompositeConditionType extends ConditionType {
      * @param visibility determines whether the {@code CompositeConditionType} can be used by anyone if it is
      *            {@link Visibility#PUBLIC} or only by its creator if it is {@link Visibility#PRIVATE}.
      * @param inputs is a {@link List} of {@link Input} descriptions.
-     * @param modules is a {@link LinkedHashSet} of {@link Condition}s.
+     * @param children is a {@link LinkedHashSet} of {@link Condition}s.
      */
     public CompositeConditionType(String UID, List<ConfigDescriptionParameter> configDescriptions, String label,
-            String description, Set<String> tags, Visibility visibility, List<Input> inputs, List<Condition> modules) {
+            String description, Set<String> tags, Visibility visibility, List<Input> inputs, List<Condition> children) {
         super(UID, configDescriptions, label, description, tags, visibility, inputs);
-        this.children = modules != null ? modules : new ArrayList<Condition>(0);
+        this.children = children;
     }
 
     /**
@@ -75,7 +75,7 @@ public class CompositeConditionType extends ConditionType {
      * @return a {@link LinkedHashSet} of the {@link Condition} modules of this {@code CompositeConditionType}.
      */
     public List<Condition> getChildren() {
-        return children;
+        return children != null ? children : Collections.<Condition> emptyList();
     }
 
 }

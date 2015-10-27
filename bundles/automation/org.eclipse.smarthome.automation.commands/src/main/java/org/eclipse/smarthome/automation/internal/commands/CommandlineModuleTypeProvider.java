@@ -15,6 +15,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.List;
@@ -132,7 +133,8 @@ public class CommandlineModuleTypeProvider extends AbstractCommandProvider<Modul
     @Override
     public Collection<ModuleType> getModuleTypes(Locale locale) {
         synchronized (providedObjectsHolder) {
-            return providedObjectsHolder.values();
+            return !providedObjectsHolder.isEmpty() ? providedObjectsHolder.values()
+                    : Collections.<ModuleType> emptyList();
         }
     }
 

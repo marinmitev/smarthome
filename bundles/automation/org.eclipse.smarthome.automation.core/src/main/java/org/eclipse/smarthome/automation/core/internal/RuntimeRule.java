@@ -67,11 +67,6 @@ public class RuntimeRule extends Rule {
     }
 
     @Override
-    public Map<String, ?> getConfiguration() {
-        return config;
-    }
-
-    @Override
     public void setConfiguration(Map<String, ?> ruleConfiguration) {
         this.config = ruleConfiguration != null ? new HashMap<String, Object>(ruleConfiguration)
                 : new HashMap<String, Object>(11);
@@ -87,14 +82,14 @@ public class RuntimeRule extends Rule {
 
     private Map<String, Module> initModuleMap() {
         moduleMap = new HashMap<String, Module>(20);
-        for (Module m : triggers) {
+        for (Module m : getTriggers()) {
             moduleMap.put(m.getId(), m);
         }
-        for (Module m : conditions) {
+        for (Module m : getConditions()) {
             moduleMap.put(m.getId(), m);
 
         }
-        for (Module m : actions) {
+        for (Module m : getActions()) {
             moduleMap.put(m.getId(), m);
         }
         return moduleMap;

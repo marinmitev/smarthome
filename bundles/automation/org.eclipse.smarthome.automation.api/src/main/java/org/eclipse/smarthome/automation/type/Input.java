@@ -7,6 +7,7 @@
  */
 package org.eclipse.smarthome.automation.type;
 
+import java.util.Collections;
 import java.util.Set;
 
 import org.eclipse.smarthome.automation.Module;
@@ -26,7 +27,7 @@ import org.eclipse.smarthome.automation.Rule;
  * The Inputs are entry points of {@link Module}s for data coming from other
  * modules. The {@link Input} can be connected to a single {@link Output} of
  * other module which produces data of the same type.</br>
- * 
+ *
  * @author Yordan Mihaylov - Initial Contribution
  */
 public class Input {
@@ -62,7 +63,7 @@ public class Input {
 
     /**
      * Constructor of the {@code Input} object. Creates Input base on type of accepted data and {@code Input}'s name.
-     * 
+     *
      * @param type data type accepted by this Input. The accepted types are any java types defined by fully qualified
      *            names.
      * @param name unique name of the Input.
@@ -74,7 +75,7 @@ public class Input {
     /**
      * Constructor of Input object. Creates Input base on type of accepted data
      * and input name
-     * 
+     *
      * @param type data type accepted by this {@code Input}.
      * @param name unique name of the {@code Input}.
      * @param label a single word description of the {@code Input}.
@@ -108,7 +109,7 @@ public class Input {
 
     /**
      * This method is used for getting the name of Input. It must be unique in scope of the {@link Rule}.
-     * 
+     *
      * @return name is an unique identifier of the Input.
      */
     public String getName() {
@@ -118,7 +119,7 @@ public class Input {
     /**
      * This method is used for getting the short description of the Input. Usually the label should be a single word
      * description.
-     * 
+     *
      * @return label of the Input.
      */
     public String getLabel() {
@@ -127,7 +128,7 @@ public class Input {
 
     /**
      * This method is used for getting the long description of the Input.
-     * 
+     *
      * @return user friendly description of the Input.
      */
     public String getDescription() {
@@ -136,7 +137,7 @@ public class Input {
 
     /**
      * This method is used for determining if the Input is required or optional.
-     * 
+     *
      * @return true when required, false otherwise.
      */
     public boolean isRequired() {
@@ -146,7 +147,7 @@ public class Input {
     /**
      * This method is used for getting the type of the Input. The accepted types are all java types defined by fully
      * qualified names.
-     * 
+     *
      * @return type is a fully qualified name of java type.
      */
     public String getType() {
@@ -160,17 +161,17 @@ public class Input {
      * For example: When we want to connect input to output and they both have same java.lang.double
      * data type, and the output has assign "temperature" and "celsius" tags then the input must have at least one of
      * these output's tags (i.e. "temperature") to connect this input to the selected output.
-     * 
+     *
      * @return tags associated with this Input.
      */
     public Set<String> getTags() {
-        return tags;
+        return tags != null ? tags : Collections.<String> emptySet();
     }
 
     /**
      * This method is used for getting the reference to data source. It is used to link custom inputs (inputs of custom
      * module type) to system input (defined by the system module type. The system module type uses only system inputs).
-     * 
+     *
      * @return reference to data source.
      */
     public String getReference() {
@@ -180,7 +181,7 @@ public class Input {
     /**
      * This method is used for getting the default value of the Input. Default value takes place when there is no value
      * for this Input. Type of the default value must be the type the Input.
-     * 
+     *
      * @return default Input value
      */
     public Object getDefaultValue() {
@@ -190,7 +191,7 @@ public class Input {
     /**
      * This method is used for setting the type of the Input. The accepted types are all java types defined by fully
      * qualified names.
-     * 
+     *
      * @param type is a fully qualified name of java type.
      */
     private void setType(String type) {

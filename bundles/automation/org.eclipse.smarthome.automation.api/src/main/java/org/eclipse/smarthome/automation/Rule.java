@@ -9,6 +9,8 @@ package org.eclipse.smarthome.automation;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -95,12 +97,10 @@ public class Rule {
             List<Action> actions, //
             List<ConfigDescriptionParameter> configDescriptions, //
             Map<String, ?> configurations) {
-        this.triggers = triggers != null ? triggers : new ArrayList<Trigger>(3);
-        this.actions = actions != null ? actions : new ArrayList<Action>(3);
-
-        this.conditions = conditions != null ? conditions : new ArrayList<Condition>(3);
-        this.configDescriptions = configDescriptions != null ? configDescriptions
-                : new ArrayList<ConfigDescriptionParameter>(3);
+        this.triggers = triggers;
+        this.actions = actions;
+        this.conditions = conditions;
+        this.configDescriptions = configDescriptions;
         setConfiguration(configurations);
     }
 
@@ -240,6 +240,9 @@ public class Rule {
      * @return a {@link Set} of {@link ConfigDescriptionParameter}s.
      */
     public List<ConfigDescriptionParameter> getConfigurationDescriptions() {
+        if (configDescriptions == null) {
+            configDescriptions = new ArrayList<ConfigDescriptionParameter>(3);
+        }
         return configDescriptions;
     }
 
@@ -251,6 +254,9 @@ public class Rule {
      * @return current configuration values
      */
     public Map<String, ?> getConfiguration() {
+        if (config == null) {
+            config = new HashMap<String, Object>(3);
+        }
         return config;
     }
 
@@ -262,26 +268,28 @@ public class Rule {
      * @param ruleConfiguration new configuration values.
      */
     public void setConfiguration(Map<String, ?> ruleConfiguration) {
-        config = ruleConfiguration;
+        if (ruleConfiguration != null) {
+            config = ruleConfiguration;
+        }
     }
 
     public List<Condition> getConditions() {
         if (conditions == null) {
-            conditions = new ArrayList<Condition>(11);
+            conditions = new ArrayList<Condition>(3);
         }
         return conditions;
     }
 
     public List<Action> getActions() {
         if (actions == null) {
-            actions = new ArrayList<Action>(11);
+            actions = new ArrayList<Action>(3);
         }
         return actions;
     }
 
     public List<Trigger> getTriggers() {
         if (triggers == null) {
-            triggers = new ArrayList<Trigger>(11);
+            triggers = new ArrayList<Trigger>(3);
         }
         return triggers;
     }
@@ -345,7 +353,7 @@ public class Rule {
         } else if (Action.class == moduleClazz) {
             result = (List<T>) actions;
         }
-        return result != null ? result : new ArrayList<T>(11);
+        return result != null ? result : Collections.<T> emptyList();
     }
 
     /**

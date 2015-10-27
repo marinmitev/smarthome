@@ -8,7 +8,7 @@
 package org.eclipse.smarthome.automation;
 
 import java.sql.Connection;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
@@ -43,7 +43,7 @@ public class Condition extends Module {
      */
     public Condition(String id, String typeUID, Map<String, ?> configuration, Map<String, String> inputs) {
         super(id, typeUID, configuration);
-        setInputs(inputs != null ? inputs : new HashMap<String, String>(0));
+        setInputs(inputs);
     }
 
     /**
@@ -54,7 +54,7 @@ public class Condition extends Module {
      * @return a {@link Map} of input connections.
      */
     public Map<String, String> getInputs() {
-        return inputs;
+        return inputs != null ? inputs : Collections.<String, String> emptyMap();
     }
 
     /**
@@ -63,7 +63,9 @@ public class Condition extends Module {
      * @param connections a {@link Set} of input {@link Connection}s.
      */
     public void setInputs(Map<String, String> inputs) {
-        this.inputs = inputs;
+        if (inputs != null) {
+            this.inputs = inputs;
+        }
     }
 
 }

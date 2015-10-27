@@ -7,7 +7,7 @@
  */
 package org.eclipse.smarthome.automation.type;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -37,14 +37,14 @@ public class CompositeActionType extends ActionType {
      *
      * @param UID is the unique id of this module type in scope of the RuleEngine.
      * @param configDescriptions is a {@link List} of configuration descriptions.
-     * @param modules is a {@link LinkedHashSet} of {@link Action}s.
+     * @param children is a {@link LinkedHashSet} of {@link Action}s.
      * @param inputs is a {@link List} of {@link Input} descriptions.
      * @param outputs is a {@link List} of {@link Output} descriptions.
      */
     public CompositeActionType(String UID, List<ConfigDescriptionParameter> configDescriptions, List<Input> inputs,
-            List<Output> outputs, List<Action> modules) {
+            List<Output> outputs, List<Action> children) {
         super(UID, configDescriptions, inputs, outputs);
-        this.children = modules != null ? modules : new ArrayList<Action>(0);
+        this.children = children;
     }
 
     /**
@@ -64,13 +64,13 @@ public class CompositeActionType extends ActionType {
      *            {@link Visibility#PUBLIC} or only by its creator if it is {@link Visibility#PRIVATE}.
      * @param inputs is a {@link List} of {@link Input} descriptions.
      * @param outputs is a {@link List} of {@link Output} descriptions.
-     * @param modules is a {@link LinkedHashSet} of {@link Action}s.
+     * @param children is a {@link LinkedHashSet} of {@link Action}s.
      */
     public CompositeActionType(String UID, List<ConfigDescriptionParameter> configDescriptions, String label,
             String description, Set<String> tags, Visibility visibility, List<Input> inputs, List<Output> outputs,
-            List<Action> modules) {
+            List<Action> children) {
         super(UID, configDescriptions, label, description, tags, visibility, inputs, outputs);
-        this.children = modules != null ? modules : new ArrayList<Action>(0);
+        this.children = children;
     }
 
     /**
@@ -79,7 +79,7 @@ public class CompositeActionType extends ActionType {
      * @return a {@link LinkedHashSet} of the {@link Action} modules of this {@code CompositeActionType}.
      */
     public List<Action> getChildren() {
-        return children;
+        return children != null ? children : Collections.<Action> emptyList();
     }
 
 }

@@ -7,6 +7,7 @@
  */
 package org.eclipse.smarthome.automation.type;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -71,6 +72,6 @@ public class ConditionType extends ModuleType {
      * @return a {@link List} of {@link Input} meta-information descriptions.
      */
     public List<Input> getInputs() {
-        return inputs;
+        return inputs != null ? inputs : Collections.<Input> emptyList();
     }
 }

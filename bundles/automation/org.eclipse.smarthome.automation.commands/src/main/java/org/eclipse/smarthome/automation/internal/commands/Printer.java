@@ -292,7 +292,7 @@ public class Printer {
         }
         if (moduleType instanceof TriggerType) {
             List<Output> outputs = ((TriggerType) moduleType).getOutputs();
-            if (outputs != null && !outputs.isEmpty()) {
+            if (!outputs.isEmpty()) {
                 writer.append("OUTPUTS");
                 printChars(writer, ' ', 23, false);
                 writer.append(makeString(outputs) + "\n");
@@ -300,7 +300,7 @@ public class Printer {
         }
         if (moduleType instanceof ConditionType) {
             List<Input> inputs = ((ConditionType) moduleType).getInputs();
-            if (inputs != null && !inputs.isEmpty()) {
+            if (!inputs.isEmpty()) {
                 writer.append("INPUTS");
                 printChars(writer, ' ', 24, false);
                 writer.append(makeString(inputs) + "\n");
@@ -308,13 +308,13 @@ public class Printer {
         }
         if (moduleType instanceof ActionType) {
             List<Input> inputs = ((ActionType) moduleType).getInputs();
-            if (inputs != null && !inputs.isEmpty()) {
+            if (!inputs.isEmpty()) {
                 writer.append("INPUTS");
                 printChars(writer, ' ', 24, false);
                 writer.append(makeString(inputs) + "\n");
             }
             List<Output> outputs = ((ActionType) moduleType).getOutputs();
-            if (outputs != null && !outputs.isEmpty()) {
+            if (!outputs.isEmpty()) {
                 writer.append("OUTPUTS");
                 printChars(writer, ' ', 23, false);
                 writer.append(makeString(outputs) + "\n");

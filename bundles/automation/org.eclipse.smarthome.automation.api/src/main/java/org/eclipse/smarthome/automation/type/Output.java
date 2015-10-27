@@ -7,6 +7,7 @@
  */
 package org.eclipse.smarthome.automation.type;
 
+import java.util.Collections;
 import java.util.Set;
 
 import org.eclipse.smarthome.automation.Module;
@@ -28,7 +29,7 @@ import org.eclipse.smarthome.automation.Rule;
  * s.
  * The {@link Output} can be connected
  * to more then one {@link Input} of the same data type.<br>
- * 
+ *
  * @author Yordan Mihaylov - Initial Contribution
  * @author Ana Dimova - Initial Contribution
  * @author Vasil Ilchev - Initial Contribution
@@ -81,10 +82,10 @@ public class Output {
 
     /**
      * Constructor of {@code Output} objects. It is based on the type of data and {@code Output}'s name.
-     * 
+     *
      * @param name is an unique name of the {@code Output}.
      * @param type is the data type accepted by this {@code Output}.
-     * 
+     *
      * @see #getType()
      */
     public Output(String name, String type) {
@@ -95,7 +96,7 @@ public class Output {
     /**
      * Constructor of {@code Output} object. Creates an {@code Output} instance based on the type of accepted data
      * and {@code Output}'s name.
-     * 
+     *
      * @param type is the data type accepted by this {@code Output}.
      * @param name is an unique name of the {@code Output}.
      * @param label a single word description of the {@code Output}.
@@ -128,7 +129,7 @@ public class Output {
     /**
      * This method is used for getting the name of {@code Output}. It must be unique in
      * scope of {@link Rule}.
-     * 
+     *
      * @return name is an unique identifier of the {@code Output}.
      */
     public String getName() {
@@ -138,7 +139,7 @@ public class Output {
     /**
      * This method is used for getting the type of the {@code Output}. The accepted types
      * are all java types defined by fully qualified names.
-     * 
+     *
      * @return type is a fully qualified name of java type.
      */
     public String getType() {
@@ -148,7 +149,7 @@ public class Output {
     /**
      * This method is used for getting the short description of the {@code Output}.
      * Usually the label should be a single word description.
-     * 
+     *
      * @return label of the Output.
      */
     public String getLabel() {
@@ -157,7 +158,7 @@ public class Output {
 
     /**
      * This method is used for getting the long description of the {@code Output}.
-     * 
+     *
      * @return user friendly description of the {@code Output}.
      */
     public String getDescription() {
@@ -168,7 +169,7 @@ public class Output {
      * This method is used for getting the reference to data source. It defines what part of complex data (i.e.
      * JavaBean, java.lang.Map etc.) has to be used as a value of this {@code Output}. For example, in the
      * {@code Output} data - java.lang.Map, the reference points to the property that has to be used as an output value.
-     * 
+     *
      * @return a reference to data source.
      */
     public String getReference() {
@@ -183,17 +184,17 @@ public class Output {
      * have same data type - java.lang.double and the {@link Output} has assign "temperature" and "celsius" tags, then
      * the {@link Input} must have at least one of these {@code Output}'s tags (i.e. "temperature") to connect this
      * {@link Input} to the selected {@code Output}.
-     * 
+     *
      * @return the tags, associated with this {@link Input}.
      */
     public Set<String> getTags() {
-        return tags;
+        return tags != null ? tags : Collections.<String> emptySet();
     }
 
     /**
      * This method is used for getting the default value of the {@code Output}. Default value takes place when there is
      * no runtime value for this {@code Output}. Type of the default value must be the type of the {@code Output}.
-     * 
+     *
      * @return the default value of this {@code Output}.
      */
     public Object getDefaultValue() {
@@ -203,7 +204,7 @@ public class Output {
     /**
      * This method is used for setting the type of the {@code Output}. The accepted types are all java types defined by
      * fully qualified names.
-     * 
+     *
      * @param type is a fully qualified name of the java type.
      */
     private void setType(String type) {

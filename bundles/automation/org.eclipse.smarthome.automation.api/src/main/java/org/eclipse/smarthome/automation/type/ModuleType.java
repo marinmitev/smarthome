@@ -7,7 +7,7 @@
  */
 package org.eclipse.smarthome.automation.type;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -70,8 +70,7 @@ public abstract class ModuleType {
      */
     public ModuleType(String UID, List<ConfigDescriptionParameter> configDescriptions) {
         this.uid = UID;
-        this.configDescriptions = configDescriptions != null ? configDescriptions
-                : new ArrayList<ConfigDescriptionParameter>(0);
+        this.configDescriptions = configDescriptions;
     }
 
     /**
@@ -115,7 +114,7 @@ public abstract class ModuleType {
      * @return a {@link Set} of meta-information configuration descriptions.
      */
     public List<ConfigDescriptionParameter> getConfigurationDescription() {
-        return configDescriptions;
+        return configDescriptions != null ? configDescriptions : Collections.<ConfigDescriptionParameter> emptyList();
     }
 
     /**
@@ -127,7 +126,7 @@ public abstract class ModuleType {
      * @return {@link #tags} assign to this {@link ModuleType}
      */
     public Set<String> getTags() {
-        return tags;
+        return tags != null ? tags : Collections.<String> emptySet();
     }
 
     /**
