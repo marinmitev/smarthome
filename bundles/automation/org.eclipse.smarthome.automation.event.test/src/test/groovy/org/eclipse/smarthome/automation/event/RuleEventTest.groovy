@@ -123,6 +123,10 @@ class RuleEventTest extends OSGiTest{
         ruleRegistry.add(rule)
         ruleRegistry.setEnabled(rule.UID, true)
 
+        waitForAssert({
+            assertThat ruleRegistry.getStatus(rule.UID).status, is (RuleStatus.IDLE)
+        })
+        
         //TEST RULE
 
         def EventPublisher eventPublisher = getService(EventPublisher)
