@@ -234,8 +234,11 @@ public class ConnectionValidator {
                             try {
                                 Class<?> outputType = Class.forName(output.getType());
                                 Class<?> inputType = Class.forName(input.getType());
-                                if (outputType.isAssignableFrom(inputType)){
+                                if (inputType.isAssignableFrom(outputType)){
                                     break;
+                                }else{
+                                    throw new IllegalArgumentException(msg + " Incompatible types : \"" + output.getType()
+                                    + "\" and \"" + input.getType() + "\".");
                                 }
                             } catch (ClassNotFoundException e) {
                                 if (output.getType().equals(input.getType())) {
