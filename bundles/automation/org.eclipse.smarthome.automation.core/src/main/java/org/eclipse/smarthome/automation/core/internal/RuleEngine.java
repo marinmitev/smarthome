@@ -232,8 +232,11 @@ public class RuleEngine
      * @throws IllegalArgumentException when the rule with the same UID is already added.
      */
     private String addRule0(Rule rule, String identity) {
+        validateModules(rule.getModules(null));
+
         RuntimeRule r1;
         String rUID = rule.getUID();
+
         r1 = new RuntimeRule(rule);
 
         rUID = getRuleUID(rUID);
@@ -244,6 +247,23 @@ public class RuleEngine
         logger.debug("Added rule '{}'", rUID);
 
         return rUID;
+    }
+
+    /**
+     * Validates ids of modules. The module id must not contain dot.
+     *
+     * @param modules list of trigger, condition and action modules
+     * @throws IllegalArgumentException when a module id contains dot.
+     */
+    private void validateModules(List<Module> modules) {
+        for (Module m : modules) {
+            String mId = m.getId();
+            if (mId == null || mId.indexOf('.') > -1) {
+                throw new IllegalArgumentException(
+                        "Invalid module uid: " + mId != null ? mId : "null" + ". It must not be null or contain dot.");
+            }
+        }
+
     }
 
     /**

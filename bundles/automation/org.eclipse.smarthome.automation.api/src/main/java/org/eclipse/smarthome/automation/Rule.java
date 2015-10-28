@@ -343,15 +343,15 @@ public class Rule {
         List<T> result = null;
         if (moduleClazz == null) {
             result = new ArrayList<T>();
-            result.addAll((Collection<? extends T>) triggers);
-            result.addAll((Collection<? extends T>) conditions);
-            result.addAll((Collection<? extends T>) actions);
+            result.addAll((Collection<? extends T>) getTriggers());
+            result.addAll((Collection<? extends T>) getConditions());
+            result.addAll((Collection<? extends T>) getActions());
         } else if (Trigger.class == moduleClazz) {
-            result = (List<T>) triggers;
+            result = (List<T>) getTriggers();
         } else if (Condition.class == moduleClazz) {
-            result = (List<T>) conditions;
+            result = (List<T>) getConditions();
         } else if (Action.class == moduleClazz) {
-            result = (List<T>) actions;
+            result = (List<T>) getActions();
         }
         return result != null ? result : Collections.<T> emptyList();
     }
