@@ -7,7 +7,6 @@
  */
 package org.eclipse.smarthome.automation;
 
-import java.sql.Connection;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
@@ -39,7 +38,7 @@ public class Condition extends Module {
      * @param id id of the module.
      * @param typeUID unique module type id.
      * @param configuration configuration values of the {@link Condition} module.
-     * @param inputs set of {@link Connection}s used by this module.
+     * @param inputs set of {@link Input}s used by this module.
      */
     public Condition(String id, String typeUID, Map<String, ?> configuration, Map<String, String> inputs) {
         super(id, typeUID, configuration);
@@ -60,7 +59,7 @@ public class Condition extends Module {
     /**
      * This method is used to connect {@link Input}s of the Condition to {@link Output}s of other {@link Module}s.
      *
-     * @param connections a {@link Set} of input {@link Connection}s.
+     * @param connections a {@link Set} of input {@link Input}s.
      */
     public void setInputs(Map<String, String> inputs) {
         if (inputs != null) {

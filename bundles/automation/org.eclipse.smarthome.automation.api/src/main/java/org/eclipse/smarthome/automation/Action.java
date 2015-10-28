@@ -7,7 +7,6 @@
  */
 package org.eclipse.smarthome.automation;
 
-import java.sql.Connection;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
@@ -54,7 +53,7 @@ public class Action extends Module {
      * are links between {@link Input}s of the {@link Module} and {@link Output}s
      * of other {@link Module}s.
      *
-     * @return a {@link Set} of input {@link Connection}s.
+     * @return a {@link Set} of input {@link Input}s.
      */
     public Map<String, String> getInputs() {
         return inputs != null ? inputs : Collections.<String, String> emptyMap();
@@ -63,7 +62,7 @@ public class Action extends Module {
     /**
      * This method is used to connect {@link Input}s of the action to {@link Output}s of other {@link Module}s.
      *
-     * @param connections a {@link Set} of input {@link Connection}s.
+     * @param connections a {@link Set} of input {@link Input}s.
      */
     public void setInputs(Map<String, String> inputs) {
         if (inputs != null) {
