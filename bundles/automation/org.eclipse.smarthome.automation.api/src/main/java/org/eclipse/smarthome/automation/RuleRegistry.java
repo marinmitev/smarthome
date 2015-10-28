@@ -57,8 +57,8 @@ public interface RuleRegistry extends Registry<Rule, String> {
      * This method gets enable status for a rule.
      *
      * @param ruleUID uid of rule
-     * @return true when the rule is enabled, false when it is disabled or not available.
+     * @return true when the rule is enabled, false when it is disabled and null when it is not available.
      */
-    public boolean isEnabled(String ruleUID);
+    public Boolean isEnabled(String ruleUID);
 
 }

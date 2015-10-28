@@ -215,7 +215,11 @@ public class RuleRegistryImpl extends AbstractRegistry<Rule, String>implements R
     }
 
     @Override
-    public boolean isEnabled(String ruleUID) {
-        return disabledRuledSet.contains(ruleUID);
+    public Boolean isEnabled(String ruleUID) {
+        if (disabledRuledSet.contains(ruleUID)) {
+            return Boolean.FALSE;
+        }
+        return ruleEngine.hasRule(ruleUID) ? Boolean.TRUE : null;
+
     }
 }
