@@ -258,9 +258,9 @@ public class RuleEngine
     private void validateModules(List<Module> modules) {
         for (Module m : modules) {
             String mId = m.getId();
-            if (mId == null || mId.indexOf('.') > -1) {
-                throw new IllegalArgumentException(
-                        "Invalid module uid: " + mId != null ? mId : "null" + ". It must not be null or contain dot.");
+            if (mId == null || !mId.matches("[A-Za-z0-9_-]*")) {
+                throw new IllegalArgumentException("Invalid module uid: " + mId != null ? mId
+                        : "null" + ". It must not be null or not fit to the pattern: [A-Za-z0-9_-]*");
             }
         }
 
