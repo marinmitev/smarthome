@@ -682,7 +682,7 @@ class AutomationIntegrationTest extends OSGiTest{
             assertThat ruleRegistry.getAll().isEmpty(), is(false)
             def rule2 = ruleRegistry.get(rule.UID)
             assertThat rule2, is(notNullValue())
-            def ruleStatus2 = ruleRegistry.getStatus(rule2.uid) as RuleStatus
+            def ruleStatus2 = ruleRegistry.getStatus(rule2.uid).status as RuleStatus
             assertThat ruleStatus2, is(RuleStatus.IDLE)
         }, 10000, 200)
 
