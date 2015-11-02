@@ -118,7 +118,7 @@ public abstract class AbstractCommandProvider<E> implements ServiceTrackerCustom
     @Override
     public Object addingService(ServiceReference reference) {
         @SuppressWarnings("unchecked")
-        Parser<E> service = bc.getService(reference);
+        Parser<E> service = (Parser<E>) bc.getService(reference);
         String key = (String) reference.getProperty(Parser.FORMAT);
         key = key == null ? Parser.FORMAT_JSON : key;
         parsers.put(key, service);

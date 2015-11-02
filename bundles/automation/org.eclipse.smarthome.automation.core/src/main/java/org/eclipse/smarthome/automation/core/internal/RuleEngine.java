@@ -205,10 +205,11 @@ public class RuleEngine
      * This method add a new rule into rule engine. Scope identity of the Rule is the identity of the caller.
      *
      * @param rule a rule which has to be added.
+     * @param isEnabled
      * @return UID of added rule.
      */
-    public synchronized String addRule(Rule rule) {
-        return addRule0(rule, getScopeIdentifier());
+    public synchronized Rule addRule(Rule rule, boolean isEnabled) {
+        return addRule(rule, isEnabled, getScopeIdentifier());
     }
 
     /**
@@ -216,11 +217,12 @@ public class RuleEngine
      * must check permission of the caller if he can put rules into this scope.
      *
      * @param rule a rule which has to be added.
+     * @param isEnabled
      * @return UID of added rule.
      */
-    public synchronized String addRule(Rule rule, String identity) {
+    public synchronized Rule addRule(Rule rule, boolean isEnabled, String identity) {
         // TODO check permissions
-        return addRule0(rule, identity);
+        return addRule0(rule, isEnabled, identity);
     }
 
     /**
@@ -228,25 +230,41 @@ public class RuleEngine
      * passed {@link Rule} object and adds this copy into RuleEngine
      *
      * @param rule a rule which has to be added
+     * @param isEnabled
      * @param identity identity of the scope where the rule belongs to.
      * @throws IllegalArgumentException when the rule with the same UID is already added.
      */
-    private String addRule0(Rule rule, String identity) {
-        validateModules(rule.getModules(null));
+    private Rule addRule0(Rule rule, boolean isEnabled, String identity) {
+        List<Module> modules = new ArrayList<Module>();
+        modules.addAll(rule.getActions());
+        modules.addAll(rule.getConditions());
+        modules.addAll(rule.getTriggers());
+        validateModules(modules);
 
         RuntimeRule r1;
+        Rule ruleWithUID;
         String rUID = rule.getUID();
 
-        r1 = new RuntimeRule(rule);
+        if (rUID == null) {
+            rUID = getRuleUID(rUID);
+            ruleWithUID = new Rule(rUID, rule.getTriggers(), rule.getConditions(), rule.getActions(),
+                    rule.getConfigurationDescriptions(), rule.getConfiguration(), rule.getTemplateUID());
+            ruleWithUID.setName(rule.getName());
+            ruleWithUID.setTags(rule.getTags());
+            ruleWithUID.setDescription(rule.getDescription());
+        } else {
+            ruleWithUID = rule;
+        }
 
-        rUID = getRuleUID(rUID);
+        r1 = new RuntimeRule(ruleWithUID);
         r1.setScopeIdentifier(identity);
-        r1.setUID(rUID);
 
         rules.put(rUID, r1);
         logger.debug("Added rule '{}'", rUID);
 
-        return rUID;
+        setRuleEnabled(rUID, isEnabled);
+
+        return ruleWithUID;
     }
 
     /**
@@ -263,7 +281,6 @@ public class RuleEngine
                         : "null" + ". It must not be null or not fit to the pattern: [A-Za-z0-9_-]*");
             }
         }
-
     }
 
     /**
@@ -299,6 +316,7 @@ public class RuleEngine
             rUID = getUniqueId();
             r = new RuntimeRule(rule);
             r.setUID(rUID);
+            setRuleEnabled(rUID, true);
         } else {
             r = rules.get(rUID); // old rule
             if (r != null) {
@@ -310,7 +328,8 @@ public class RuleEngine
         rules.put(rUID, r);
         logger.debug("Updated rule '{}'.", rUID);
 
-        setRule(rUID);
+        if (!RuleStatus.DISABLED.equals(getRuleStatus(rUID)))
+            setRule(rUID);
     }
 
     /**
@@ -323,15 +342,10 @@ public class RuleEngine
      * @param rUID a UID of rule which tries to be initialized.
      */
     protected synchronized void setRule(String rUID) {
-        if (isDisposed) {
+        if (isDisposed)
             return;
-        }
 
         RuleStatusInfo ruleStatus = statusMap.get(rUID);
-        if (ruleStatus != null && RuleStatus.DISABLED == ruleStatus.getStatus()) {
-            return;
-        }
-
         if (ruleStatus != null && RuleStatus.NOT_INITIALIZED != ruleStatus.getStatus()) {
             setRuleStatusInfo(rUID, new RuleStatusInfo(RuleStatus.NOT_INITIALIZED));
         }
@@ -355,7 +369,6 @@ public class RuleEngine
                                 "The template: " + templateUID + " is not available!"));
                 return;
             }
-            r.setUID(rUID);
         }
 
         String errMsgs = null;
@@ -383,9 +396,9 @@ public class RuleEngine
                 ConnectionValidator.validateConnections(r);
             } catch (IllegalArgumentException e) {
                 unregister(r);
-                errMsgs = "\n Validation of rule" + r.getUID() + "has failed! " + e.getMessage();
+                errMsgs = "\n Validation of rule" + rUID + "has failed! " + e.getMessage();
                 // change state to NOTINITIALIZED
-                setRuleStatusInfo(r.getUID(), new RuleStatusInfo(RuleStatus.NOT_INITIALIZED,
+                setRuleStatusInfo(rUID, new RuleStatusInfo(RuleStatus.NOT_INITIALIZED,
                         RuleStatusDetail.CONFIGURATION_ERROR, errMsgs.trim()));
             }
         }
@@ -394,7 +407,7 @@ public class RuleEngine
             resolveDefaultValues(r);
             register(r);
             // change state to IDLE
-            setRuleStatusInfo(r.getUID(), new RuleStatusInfo(RuleStatus.IDLE));
+            setRuleStatusInfo(rUID, new RuleStatusInfo(RuleStatus.IDLE));
 
             Future f = scheduleTasks.get(rUID);
             if (f != null) {
@@ -415,7 +428,7 @@ public class RuleEngine
             unregister(r);
 
             // change state to NOTINITIALIZED
-            setRuleStatusInfo(r.getUID(), new RuleStatusInfo(RuleStatus.NOT_INITIALIZED,
+            setRuleStatusInfo(rUID, new RuleStatusInfo(RuleStatus.NOT_INITIALIZED,
                     RuleStatusDetail.HANDLER_INITIALIZING_ERROR, errMessage));
         }
     }
@@ -757,16 +770,25 @@ public class RuleEngine
      */
     public synchronized void setRuleEnabled(String rUID, boolean isEnabled) {
         RuleStatus status = getRuleStatus(rUID);
-        if (isEnabled) {
-            if (status == RuleStatus.DISABLED) {
+        if (status == null) {
+            if (isEnabled) {
                 setRuleStatusInfo(rUID, new RuleStatusInfo(RuleStatus.NOT_INITIALIZED));
                 setRule(rUID);
             } else {
-                logger.info("The rule rId = " + rUID + " is already enabled");
+                setRuleStatusInfo(rUID, new RuleStatusInfo(RuleStatus.DISABLED));
             }
         } else {
-            unregister(getRule0(rUID));
-            setRuleStatusInfo(rUID, new RuleStatusInfo(RuleStatus.DISABLED));
+            if (isEnabled) {
+                if (status == RuleStatus.DISABLED) {
+                    setRuleStatusInfo(rUID, new RuleStatusInfo(RuleStatus.NOT_INITIALIZED));
+                    setRule(rUID);
+                } else {
+                    logger.info("The rule rId = " + rUID + " is already enabled");
+                }
+            } else {
+                unregister(getRule0(rUID));
+                setRuleStatusInfo(rUID, new RuleStatusInfo(RuleStatus.DISABLED));
+            }
         }
     }
 

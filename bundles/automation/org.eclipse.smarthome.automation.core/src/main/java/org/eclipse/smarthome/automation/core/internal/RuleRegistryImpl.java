@@ -8,7 +8,6 @@
 package org.eclipse.smarthome.automation.core.internal;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -33,7 +32,6 @@ import org.slf4j.LoggerFactory;
 public class RuleRegistryImpl extends AbstractRegistry<Rule, String>implements RuleRegistry, StatusInfoCallback {
 
     private RuleEngine ruleEngine;
-    private Set<String> disabledRuledSet = new HashSet<String>(0);
     private Logger logger;
     private Storage<Boolean> disabledRulesStorage;
 
@@ -52,7 +50,12 @@ public class RuleRegistryImpl extends AbstractRegistry<Rule, String>implements R
         for (Iterator<Rule> it = rules.iterator(); it.hasNext();) {
             Rule rule = it.next();
             try {
-                addIntoRuleEngine(rule);
+                String rUID = rule.getUID();
+                if (rUID != null && disabledRulesStorage.get(rUID) != null) {
+                    ruleEngine.addRule(rule, false);
+                } else {
+                    ruleEngine.addRule(rule, true);
+                }
             } catch (Exception e) {
                 logger.error("Can't add rule: " + rule.getUID() + " into rule engine from provider " + provider, e);
             }
@@ -65,51 +68,34 @@ public class RuleRegistryImpl extends AbstractRegistry<Rule, String>implements R
         Collection<Rule> rules = provider.getAll();
         for (Iterator<Rule> it = rules.iterator(); it.hasNext();) {
             Rule rule = it.next();
-            removeFromRuleEngine(rule);
+            String uid = rule.getUID();
+            if (ruleEngine.removeRule(uid))
+                postEvent(RuleEventFactory.createRuleRemovedEvent(rule, SOURCE));
+            disabledRulesStorage.remove(uid);
         }
         super.removeProvider(provider);
     }
 
     @Override
     public synchronized void add(Rule element) {
-        String uid = addIntoRuleEngine(element);
-        if (element.getUID() == null) {
-            Rule elementNew = new Rule(uid, element.getTriggers(), element.getConditions(), element.getActions(),
-                    element.getConfigurationDescriptions(), element.getConfiguration(), element.getTemplateUID());
-            elementNew.setName(element.getName());
-            elementNew.setTags(element.getTags());
-            elementNew.setDescription(element.getDescription());
-
-            element = elementNew;
+        String rUID = element.getUID();
+        Rule ruleToPersist;
+        if (rUID != null && disabledRulesStorage.get(rUID) != null) {
+            ruleToPersist = ruleEngine.addRule(element, false);
+        } else {
+            ruleToPersist = ruleEngine.addRule(element, true);
         }
-        super.add(element);
+        super.add(ruleToPersist);
         postEvent(RuleEventFactory.createRuleAddedEvent(element, SOURCE));
-    }
-
-    private String addIntoRuleEngine(Rule element) {
-        String rUID = ruleEngine.addRule(element);
-        if (disabledRuledSet.contains(rUID)) {
-            ruleEngine.setRuleEnabled(rUID, false);
-        }
-
-        ruleEngine.setRule(rUID);
-        return rUID;
     }
 
     @Override
     public synchronized Rule remove(String key) {
-        Rule rule = get(key);
-        if (rule != null) {
-            removeFromRuleEngine(rule);
-        }
-        return super.remove(key);
-    }
-
-    private void removeFromRuleEngine(Rule rule) {
-        String ruleUID = rule.getUID();
-        ruleEngine.removeRule(ruleUID);
-        // setEnabled(ruleUID, false);
-        postEvent(RuleEventFactory.createRuleRemovedEvent(rule, SOURCE));
+        Rule rule = super.remove(key);
+        if (ruleEngine.removeRule(key))
+            postEvent(RuleEventFactory.createRuleRemovedEvent(rule, SOURCE));
+        disabledRulesStorage.remove(key);
+        return rule;
     }
 
     @Override
@@ -120,7 +106,7 @@ public class RuleRegistryImpl extends AbstractRegistry<Rule, String>implements R
             if (old != null) {
                 postEvent(RuleEventFactory.createRuleUpdatedEvent(element, old, SOURCE));
                 String rUID = element.getUID();
-                if (disabledRuledSet.contains(rUID)) {
+                if (disabledRulesStorage.get(rUID) != null) {
                     ruleEngine.setRuleEnabled(rUID, false);
                 }
                 ruleEngine.updateRule(element); // update memory map
@@ -146,22 +132,12 @@ public class RuleRegistryImpl extends AbstractRegistry<Rule, String>implements R
 
     @Override
     public synchronized void setEnabled(String uid, boolean isEnabled) {
-        if (isEnabled) {
-            if (disabledRuledSet.remove(uid)) {
-                if (disabledRulesStorage != null) {
-                    disabledRulesStorage.remove(uid);
-                }
-            }
-        } else {
-            if (!disabledRuledSet.contains(uid)) {
-                disabledRuledSet.add(uid);
-                if (disabledRulesStorage != null) {
-                    disabledRulesStorage.put(uid, Boolean.TRUE);
-                }
-            }
-        }
-
         ruleEngine.setRuleEnabled(uid, isEnabled);
+        if (isEnabled) {
+            disabledRulesStorage.remove(uid);
+        } else {
+            disabledRulesStorage.put(uid, isEnabled);
+        }
     }
 
     @Override
@@ -169,34 +145,8 @@ public class RuleRegistryImpl extends AbstractRegistry<Rule, String>implements R
         return ruleEngine.getRuleStatusInfo(ruleUID);
     }
 
-    protected synchronized void dispose() {
-        for (Iterator<String> it = disabledRuledSet.iterator(); it.hasNext();) {
-            String rUID = it.next();
-            if (!ruleEngine.hasRule(rUID)) {
-                it.remove();
-                if (disabledRulesStorage != null) {
-                    disabledRulesStorage.remove(rUID);
-                }
-            }
-        }
-
-        ruleEngine.dispose();
-    }
-
-    private synchronized Set<String> loadDisabledRuleMap() {
-        Set<String> result = disabledRuledSet == null ? new HashSet<String>() : disabledRuledSet;
-        if (disabledRulesStorage != null) {
-            for (Iterator<String> it = disabledRulesStorage.getKeys().iterator(); it.hasNext();) {
-                String key = it.next();
-                result.add(key);
-            }
-        }
-        return result;
-    }
-
     protected void setDisabledRuleStorage(Storage<Boolean> disabledRulesStorage) {
         this.disabledRulesStorage = disabledRulesStorage;
-        disabledRuledSet = loadDisabledRuleMap();
     }
 
     @Override
@@ -216,10 +166,9 @@ public class RuleRegistryImpl extends AbstractRegistry<Rule, String>implements R
 
     @Override
     public Boolean isEnabled(String ruleUID) {
-        if (disabledRuledSet.contains(ruleUID)) {
+        if (disabledRulesStorage.get(ruleUID) != null) {
             return Boolean.FALSE;
         }
         return ruleEngine.hasRule(ruleUID) ? Boolean.TRUE : null;
-
     }
 }

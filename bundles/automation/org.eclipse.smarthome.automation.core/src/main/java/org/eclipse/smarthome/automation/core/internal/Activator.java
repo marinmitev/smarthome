@@ -46,7 +46,6 @@ public class Activator implements BundleActivator {
     private ModuleTypeRegistryImpl moduleTypeRegistry;
     private TemplateRegistryImpl templateRegistry;
     private RuleEventFactory ruleEventFactory;
-    private BundleContext bc;
 
     private ModuleTypeManager mtManager;
     private TemplateManager tManager;
@@ -65,22 +64,22 @@ public class Activator implements BundleActivator {
     @SuppressWarnings("rawtypes")
     private ServiceTracker serviceTracker;
     private ServiceRegistration<?> configReg;
+    private RuleEngine ruleEngine;
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public void start(final BundleContext bc) throws Exception {
-        this.bc = bc;
-        final RuleEngine re = new RuleEngine(bc);
+        ruleEngine = new RuleEngine(bc);
 
         Hashtable props = new Hashtable(11);
         props.put(Constants.SERVICE_PID, "smarthome.rule.configuration");
-        configReg = bc.registerService(ManagedService.class.getName(), re, props);
+        configReg = bc.registerService(ManagedService.class.getName(), ruleEngine, props);
 
-        this.tManager = new TemplateManager(bc, re);
-        re.setTemplateManager(tManager);
-        mtManager = new ModuleTypeManager(bc, re);
-        re.setModuleTypeManager(mtManager);
-        re.setCompositeModuleFactory(new CompositeModuleHandlerFactory(bc, mtManager, re));
+        this.tManager = new TemplateManager(bc, ruleEngine);
+        ruleEngine.setTemplateManager(tManager);
+        mtManager = new ModuleTypeManager(bc, ruleEngine);
+        ruleEngine.setModuleTypeManager(mtManager);
+        ruleEngine.setCompositeModuleFactory(new CompositeModuleHandlerFactory(bc, mtManager, ruleEngine));
         ConnectionValidator.setManager(mtManager);
 
         templateRegistry = new TemplateRegistryImpl(tManager);
@@ -90,7 +89,7 @@ public class Activator implements BundleActivator {
         ruleEventFactory = new RuleEventFactory();
         ruleEventFactoryReg = bc.registerService(EventFactory.class, ruleEventFactory, null);
 
-        ruleRegistry = new RuleRegistryImpl(re);
+        ruleRegistry = new RuleRegistryImpl(ruleEngine);
         ruleRegistryReg = bc.registerService(RuleRegistry.class.getName(), ruleRegistry, null);
 
         Filter filter = bc.createFilter("(|(" + Constants.OBJECTCLASS + "=" + StorageService.class.getName() + ")("
@@ -158,20 +157,22 @@ public class Activator implements BundleActivator {
 
         if (ruleRegistryReg != null) {
             ruleRegistryReg.unregister();
-            ruleRegistry.dispose();
             ruleRegistryReg = null;
+            ruleRegistry = null;
         }
 
         if (templateRegistryReg != null) {
             templateRegistryReg.unregister();
-            templateRegistry.dispose();
             templateRegistryReg = null;
+            templateRegistry.dispose();
+            templateRegistry = null;
         }
 
         if (moduleTypeRegistryReg != null) {
             moduleTypeRegistryReg.unregister();
-            moduleTypeRegistry.dispose();
             moduleTypeRegistryReg = null;
+            moduleTypeRegistry.dispose();
+            moduleTypeRegistry = null;
         }
 
         if (ruleEventFactoryReg != null) {
@@ -180,9 +181,10 @@ public class Activator implements BundleActivator {
             ruleEventFactoryReg = null;
         }
 
+        ruleEngine.dispose();
+
         serviceTracker.close();
         serviceTracker = null;
-
     }
 
 }

@@ -109,7 +109,7 @@ public class ModuleTypeResourceBundleProvider extends AbstractResourceBundleProv
 
             @Override
             public Object addingService(ServiceReference reference) {
-                i18nProvider = bc.getService(reference);
+                i18nProvider = (I18nProvider) bc.getService(reference);
                 return i18nProvider;
             }
 

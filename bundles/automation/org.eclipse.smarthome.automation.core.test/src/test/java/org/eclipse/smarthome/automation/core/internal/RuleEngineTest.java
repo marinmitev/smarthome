@@ -53,7 +53,7 @@ public class RuleEngineTest {
     public void testAddRetrieveRules() {
         RuleEngine ruleEngine = createRuleEngine();
         Rule rule0 = new Rule();
-        ruleEngine.addRule(rule0);
+        ruleEngine.addRule(rule0, true);
         Collection<Rule> rules = ruleEngine.getRules();
         Assert.assertNotNull("null returned instead of rules list", rules);
         Assert.assertEquals("empty rules list is returned", 1, rules.size());
@@ -62,7 +62,7 @@ public class RuleEngineTest {
                 ruleEngine.getRules().hashCode());
 
         Rule rule1 = createRule();
-        ruleEngine.addRule(rule1);
+        ruleEngine.addRule(rule1, true);
         Rule rule1Get = ruleEngine.getRule("rule1");
         Assert.assertEquals("Returned rule with wrong UID", "rule1", rule1Get.getUID());
     }
@@ -79,7 +79,7 @@ public class RuleEngineTest {
         ruleTags.add("tag1");
         ruleTags.add("tag2");
         rule2.setTags(ruleTags);
-        ruleEngine.addRule(rule2);
+        ruleEngine.addRule(rule2, true);
 
         Rule rule2Get = ruleEngine.getRule("rule2");
         Assert.assertNotNull("Cannot find rule by UID", rule2Get);
@@ -106,7 +106,7 @@ public class RuleEngineTest {
         RuleEngine ruleEngine = createRuleEngine();
 
         Rule rule3 = new Rule("rule3", createTriggers(), createConditions(), createActions(), null, null);
-        ruleEngine.addRule(rule3);
+        ruleEngine.addRule(rule3, true);
         Rule rule3Get = ruleEngine.getRule("rule3");
         Assert.assertNotNull("Rule configuration description is null", rule3Get.getConfigurationDescriptions());
         Assert.assertNotNull("Rule configuration is null", rule3Get.getConfiguration());
@@ -125,7 +125,7 @@ public class RuleEngineTest {
 
         Rule rule4 = new Rule("rule4", createTriggers(), createConditions(), createActions(), configDescriptions,
                 configurations);
-        ruleEngine.addRule(rule4);
+        ruleEngine.addRule(rule4, true);
         Rule rule4Get = ruleEngine.getRule("rule4");
         Map<String, ?> rule4cfg = rule4Get.getConfiguration();
         List<ConfigDescriptionParameter> rule4cfgD = rule4Get.getConfigurationDescriptions();
@@ -152,7 +152,7 @@ public class RuleEngineTest {
         RuleEngine ruleEngine = createRuleEngine();
 
         Rule rule1 = createRule();
-        ruleEngine.addRule(rule1);
+        ruleEngine.addRule(rule1, true);
         Rule rule1Get = ruleEngine.getRule("rule1");
         List<Action> actionsGet = rule1Get.getActions();
         Assert.assertNotNull("Null actions list", actionsGet);
@@ -183,7 +183,7 @@ public class RuleEngineTest {
         RuleEngine ruleEngine = createRuleEngine();
 
         Rule rule1 = createRule();
-        ruleEngine.addRule(rule1);
+        ruleEngine.addRule(rule1, true);
         Rule rule1Get = ruleEngine.getRule("rule1");
         List<Trigger> triggersGet = rule1Get.getTriggers();
         Assert.assertNotNull("Null triggers list", triggersGet);
@@ -210,7 +210,7 @@ public class RuleEngineTest {
         RuleEngine ruleEngine = createRuleEngine();
 
         Rule rule1 = createRule();
-        ruleEngine.addRule(rule1);
+        ruleEngine.addRule(rule1, true);
         Rule rule1Get = ruleEngine.getRule("rule1");
         List<Condition> conditionsGet = rule1Get.getConditions();
         Assert.assertNotNull("Null conditions list", conditionsGet);
