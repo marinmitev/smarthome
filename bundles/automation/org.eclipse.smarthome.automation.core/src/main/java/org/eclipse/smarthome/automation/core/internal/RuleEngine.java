@@ -176,7 +176,7 @@ public class RuleEngine
 
     private int ruleMaxID = 0;
 
-    private Map<String, Future> scheduleTasks = new HashMap<>(31);
+    private Map<String, Future> scheduleTasks = new HashMap<String, Future>(31);
 
     private ScheduledExecutorService executor;
 
