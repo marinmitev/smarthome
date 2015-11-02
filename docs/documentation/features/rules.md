@@ -10,7 +10,6 @@ Eclipse SmartHome provides a modular rule engine than can be easily extended.
 
 ## Concept
 
-*Please describe the general concept/ideas*
 
 In general this rule engine aims to support rules defined with syntax similar to:
 ```
@@ -18,9 +17,15 @@ ON item_id state changed IF item_id.state == desired_value THEN item_id2.state =
 ```
 
 Each rule can have some basic information like name,tags,description and three module sections (**on,if,then**)
-The **'on'** sections is the trigger (eventing) part. 
-The **'then'** section contains the actions which specify what should be executed when the event is received.
-The **'if'** section lists the conditions which act as a filter for the events - actions of the rule will be executed only if the conditions evaluating the event data are satisfied and return 'true'.
+
+
+- The **'on'** sections is the trigger (eventing) part. 
+
+
+- The **'then'** section contains the actions which specify what should be executed when the event is received.
+
+
+- The **'if'** section lists the conditions which act as a filter for the events - actions of the rule will be executed only if the conditions evaluating the event data are satisfied and return 'true'.
 
 One rule can invoke one and the same operation upon receiving each trigger event, or the operation can be dynamic using input parameters from the event itself or from the system objects
 
@@ -30,21 +35,21 @@ Main building blocks of the rules are modules and each rule consists of one or m
     condition - which acts like a filter for the trigger event and can evaluate the event properties or the state of the system;
     action - which specifies the operation of the rule which will be executed if the condition is statisfied.
 
-Each module is created from a template called "module type" and can specify configuration parameters for the template, like "itemID" for the "ItemTrigger" or "operator" for the "ComparatorCondition"
-There are system module types which are provided by the system and there could be added custom module types which are based on the system module types with predefined configurations like "ItemTrigger:MotionTrigger" which is based on the ItemTrigger but specifies in its configuration that it is triggered only on item's motion events
+Each module is created from a template called "module type" and can specify configuration parameters for the template, like "eventTopic" for the "GenericEventTrigger" or "operator" for the "GenericCompareCondition"
+There are system module types which are provided by the system and there could be added composite module types which are extensions of the system module types with predefined configurations and/or modified module input/output objects like "ItemStateChangeTrigger" which is based on the GenericEventTrigger but specifies in its configuration that it is triggered only on item's state change events
 
 **Module type** has the following elements:
 
     ID
     label - localizable text
     description - localizable text
-    configuration properties
+    configDescriptions - meta data for the configuration properties
     input variables
     output variables
 
-**Configuration property** has the following metadata
+** configDescriptions** has the following metadata defined for each property
 
-    ID
+    name
     type - one of the following "text", "integer", "decimal", "boolean"
     label - localizable text
     description - localizable text
@@ -53,7 +58,7 @@ There are system module types which are provided by the system and there could b
 
 **Input property** has the following metadata
 
-    ID
+    name
     type - fully qualified name of Java class ("java.lang.Integer")
     label - localizable text
     description - localizable text
@@ -63,7 +68,7 @@ There are system module types which are provided by the system and there could b
 
 **Output property** has the following metadata
 
-    ID
+    name
     type - fully qualified name of Java class ("java.lang.Integer")
     label - localizable text
     description - localizable text
@@ -98,7 +103,7 @@ The types in the **Configuration** object are restricted to the following:
 
 ## Defining Rules via JSON
 
-*Please describe how do define rules with JSON in a bundle. Also showing the JSON syntax (incl. reference to the JSON schema)*
+
 
 **JSON schemas for:**
 
@@ -109,163 +114,227 @@ The types in the **Configuration** object are restricted to the following:
 
 ### Sample Rules
 
-*Show some sample rules*
     
 
  * **Sample rule instance referencing module types:**
+
 ```
-{  
-    "uid": "sample.rule1",
-    "name": "SampleRule",
-    "tags": [  
-      "sample",
-      "rule"
-    ],
-    "description": "Sample Rule definition.",
-    "on": [  
-      {  
-        "id": "SampleTriggerID",
-        "type": "SampleTrigger"
-      }
-    ],
-    "if": [
-      {
-        "id": "SampleConditionID",
-        "type": "SampleCondition",
-        "config": {
-          "operator": "=",
-          "constraint": "dtag"
-        },
-        "input": {
-          "conditionInput": "SampleTriggerID.triggerOutput"
-        }
-      }
-    ],
-    "then": [
-      {  
-        "id": "SampleActionID",
-        "type": "SampleAction",
-        "config": {  
-          "message": ">>> Hello World!!!"
-        }
-      }
-    ]
-  }
+{
+        "uid":"sample.rule1",
+        "name":"SampleRule",
+        "tags":[
+            "sample",
+            "rule"
+        ],
+        "description":"Sample Rule definition.",
+        "on":[
+            {
+                "id":"SampleTriggerID",
+                "type":"SampleTrigger"
+            }
+        ],
+        "if":[
+            {
+                "id":"SampleConditionID",
+                "type":"SampleCondition",
+                "config":{
+                    "operator":"=",
+                    "constraint":"dtag"
+                },
+                "inputs":{
+                    "conditionInput":"SampleTriggerID.triggerOutput"
+                }
+            }
+        ],
+        "then":[
+            {
+                "id":"SampleActionID",
+                "type":"SampleAction",
+                "config":{
+                    "message":">>> Hello World!!!"
+                }
+            }
+        ]
+}
 ```
 
  * **Sample module types:**
 
 ```
-  "triggers": {
-    "SampleTrigger": {
-      "label": "SampleTrigger label",
-      "description": "Sample Trigger description.",
-      "output": {
-        "triggerOutput": {
-          "type": "java.lang.String",
-          "label": "TriggerOutput label",
-          "description": "Text from user input or default message.",
-          "reference": "consoleInput",
-          "defaultValue": "dtag"
-        }
+"triggers":[  
+      {  
+         "uid":"SampleTrigger",
+         "label":"SampleTrigger label",
+         "description":"Sample Trigger description.",
+         "outputs":[  
+            {  
+               "name":"triggerOutput",
+               "type":"java.lang.String",
+               "label":"TriggerOutput label",
+               "description":"Text from user input or default message.",
+               "reference":"consoleInput",
+               "defaultValue":"dtag"
+            }
+         ]
+      },
+      {  
+         "uid":"CompositeSampleTrigger",
+         "label":"CompositeTrigger label",
+         "description":"Composite Trigger description.",
+         "outputs":[  
+            {  
+               "name":"compositeTriggerOutput",
+               "type":"java.lang.String",
+               "label":"compositeTriggerOutput label",
+               "description":"Text from user input or default message.",
+               "reference":"compositeChildTrigger1.triggerOutput"
+            }
+         ],
+         "children":[  
+            {  
+               "id":"compositeChildTrigger1",
+               "type":"SampleTrigger"
+            }
+         ]
       }
-	}, 
-    "SampleTrigger:CustomTrigger": {
-      "label": "CustomTrigger label",
-      "description": "Custom Trigger description.",
-      "output": {
-        "customTriggerOutput": {
-          "type": "java.lang.String",
-          "label": "CustomTriggerOutput label",
-          "description": "Text from user input or default message.",
-          "reference": "$triggerOutput"
-        }
-      }
-    }
-  }
+]
 ```
 
 ```
-  "conditions": {
-    "SampleCondition": {
-      "label": "SampleCondition label",
-      "description": "Sample Condition description",
-      "config": {
-        "operator": {
-          "type": "TEXT",
-          "description": "Valid operators are =,>,<,!=",
-          "required": true
-        },
-        "constraint": {
-          "type": "TEXT",
-          "description": "Right operand which is compared with the input.",
-          "required": true
-        }
-      },
-      "input": {
-        "conditionInput": {
-          "type": "java.lang.String",
-          "label": "ConditionInput label",
-          "description": "Left operand which will be evaluated.",
-          "required": true
-        }
+   "conditions":[  
+      {  
+         "uid":"SampleCondition",
+         "label":"SampleCondition label",
+         "description":"Sample Condition description",
+         "configDescriptions":[  
+            {  
+               "name":"operator",
+               "type":"TEXT",
+               "description":"Valid operators are =,>,<,!=",
+               "required":true
+            },
+            {  
+               "name":"constraint",
+               "type":"TEXT",
+               "description":"Right operand which is compared with the input.",
+               "required":true
+            }
+         ],
+         "inputs":[  
+            {  
+               "name":"conditionInput",
+               "type":"java.lang.String",
+               "label":"ConditionInput label",
+               "description":"Left operand which will be evaluated.",
+               "required":true
+            }
+         ]
       }
-    }
-  }
+   ]
 ```
 
 ```
-  "actions": {
-  	"SampleAction": {
-      "label": "SampleAction label",
-      "description": "Sample Action description.",
-      "config": {  
-        "message": {  
-          "type": "TEXT",
-          "label": "message label",
-          "description": "Defines the message description.",
-          "defaultValue": "Default message",
-          "required": false
-        }
-      }
-    },
-    "SampleAction:CustomAction": {
-      "label": "CustomAction label",
-      "description": "Custom Action description.",
-      "config": {  
-        "customMessage": {
-          "type": "TEXT",
-          "label": "custom message label",
-          "description": "Defines the custom message description.",
-          "context": "(nameRef=$message, valueRef=$customActionInput)",
-          "defaultValue": ">>> Default Custom Message",
-          "required": false
-        }
+"actions":[  
+      {  
+         "uid":"SampleAction",
+         "label":"SampleAction label",
+         "description":"Sample Action description.",
+         "configDescriptions":[  
+            {  
+               "name":"message",
+               "type":"TEXT",
+               "label":"message label",
+               "description":"Defines the message description.",
+               "defaultValue":"Default message",
+               "required":false
+            }
+         ]
       },
-      "input": {  
-        "customActionInput": {
-          "type": "java.lang.String",
-          "label": "ActionInput label",
-          "description": "Text that will be printed.",
-          "reference": "$actionInput",
-          "required": true
-        }
+      {  
+         "uid":"CompositeSampleAction",
+         "label":"CompositeAction label",
+         "description":"Composite Action description.",
+         "configDescriptions":[  
+            {  
+               "name":"compositeMessage",
+               "type":"TEXT",
+               "label":"custom message label",
+               "description":"Defines the custom message description.",
+               "defaultValue":">>> Default Custom Message",
+               "required":false
+            }
+         ],
+         "inputs":[  
+            {  
+               "name":"compositeActionInput",
+               "type":"java.lang.String",
+               "label":"ActionInput label",
+               "description":"Text that will be printed.",
+               "required":true
+            }
+         ],
+         "children":[  
+            {  
+               "id":"SampleAction1",
+               "type":"SampleAction",
+               "config":{  
+                  "message":"$compositeMessage"
+               }
+            },
+            {  
+               "id":"SampleAction2",
+               "type":"SampleAction",
+               "config":{  
+                  "message":"$compositeActionInput"
+               }
+            }
+         ]
       }
-    }
-  }
+]
 ```
 
 
 ## Working with Rules
 
-*listing the ways for interaction (bundle resources, console, Java API, etc.)*
 
 There are several ways to add new rules:
 
   * using **JAVA API** from package: **org.eclipse.smarthome.automation.api**
   * using **text console commands: smarthome automation**
   * using **resource bundles** that provide moduletypes, rules and rule templates stored in **.json** files
-  * using **REST API** - TODO
+  * using **REST API** - see the next chapter bellow
+
+## REST API
+* http://<host:port>/rest/module-types - list module types
+* http://<host:port>/rest/templates" - list rule templates 
+* http://<host:port>/rest/rules - list rule instances
+
+#### /rest/ruletemplates
+ - GET /rest/ruletemplates - returns all registered rule templates
+ - GET /rest/ruletemplates/{templateUID} - response includes only the content of the specified template
+
+#### /rest/module-types
+ - GET /rest/module-types - returns all registered module types
+ - optional parameter 'type' with possible values: 'trigger', 'condition' or 'action' - filters the response to include only module definitions of specified type
+ - optional parameter 'tags' - filters the response to include only module types which have specified tags
+ - GET /rest/module-types/{moduleTypeUID} - response includes only the content of the specified module type
+  
+#### /rest/rules
+ - GET /rest/rules - returns all registered rule instances
+ - POST /rest/rules - adds new rule instance to the rule registry
+ - DELETE /rest/rules/{ruleUID} - deletes the specified rule instance
+ - PUT /rest/rules/{ruleUID} - updates the specified rule instance
+ - GET /rest/rules/{ruleUID}/config - returns the configuration of the specified rule instance
+ - PUT /rest/rules/{ruleUID}/config - updates the configuration of the specified rule instance
+ - GET /rest/rules/{ruleUID}/triggers
+ - GET /rest/rules/{ruleUID}/conditions
+ - GET /rest/rules/{ruleUID}/actions
+ - GET /rest/rules/{ruleUID}/{moduleCategory}/{id} - returns module instance with specified id and category {triggers/conditions/actions} of the specified rule 
+ - GET /rest/rules/{ruleUID}/{moduleCategory}/{id}/config - returns the configuration of the specified module instance
+ - GET /rest/rules/{ruleUID}/{moduleCategory}/{id}/config/{param} - returns the value of specified module configuration parameter (media type is text/plain)
+ - PUT /rest/rules/{ruleUID}/{moduleCategory}/{id}/config/{param} - updates the value of specified module configuration parameter (media type is text/plain)
+ 
+
 
 ## JAVA API
 `org.eclipse.smarthome.automation.RuleRegistry` - provides main functionality to manage rules in the Rule Engine. It can add rules, get existing ones and remove them from the Rule Engine.
@@ -318,7 +387,6 @@ Bundles that provide rules in json format should have the following folder struc
 
 ## Rule Templates
 
-*Please describe rule template approach*
 
 Rule templates can simplify the definition of rules with similar behavior, by providing additional configuration properties. Then rule instance definition only refers the rule template and provides the values of the configuration properties.
 
@@ -397,15 +465,95 @@ The above example uses two rule configuration properties: "condition_operator" a
 
 ## System Module Types
 
-*Please describe the list of system module types*
 
-TODO: describe the sample module types
+### GenericEventTrigger
+GenericEventTrigger has 3 configuration paramters eventTopic, eventSource and eventTypes and one output: 'event'
 
-TODO: mention the Item triggers and actions
+      {  
+         "uid":"GenericEventTrigger",
+         "label":"Basic Event Trigger",
+         "description":"Triggers Rules on Events",
+         "configDescriptions":[  
+            {  
+               "name":"eventTopic",
+               "type":"TEXT",
+               "label":"Topic",
+               "description":"This is the topic, the trigger will listen to: >>smarthome/*<<",
+               "required":true,
+               "defaultValue":"smarthome/*"
+            },
+            {  
+               "name":"eventSource",
+               "type":"TEXT",
+               "label":"Source",
+               "description":"This is the source of the event (eg. item name)",
+               "required":true,
+               "defaultValue":""
+            },
+            {  
+               "name":"eventTypes",
+               "type":"TEXT",
+               "label":"Event Type",
+               "description":"the event type, the trigger should listen to. Multiple types can be specified comma-separated",
+               "required":true,
+               "defaultValue":""
+            }
+         ],
+         "outputs":[  
+            {  
+               "name":"event",
+               "type":"org.eclipse.smarthome.core.events.Event",
+               "label":"Event",
+               "description":"The events which was sent.",
+               "reference":"event"
+            }
+         ]
+      }
+
+
+### CompareCondition
+This module type is used to compare a value against a configuration property using an operator like <, >, =
+The value to be compared can be specified either as an input or as a configuration property
+
+	  {
+		  "uid":"GenericCompareCondition",
+		  "label":"CompareCondition",
+		  "description":"configurable compare condition",
+		  "configDescriptions":[
+			  {
+				  "name":"inputproperty",
+				  "label":"Input property",
+				  "type":"TEXT",
+				  "description":"property of the input to be compared",
+				  "required":false
+			  },
+			  {
+				  "name":"right",
+				  "type":"TEXT",
+				  "label":"compare with",
+				  "description":"the value to be compared with the input",
+				  "required":true
+			  },
+			  {
+			  	  "name":"operator",
+				  "type":"TEXT",
+				  "description":"the compare operator, allowed are <, >, =",
+				  "required":true,
+				  "defaultValue":"="
+			  }
+		  ],
+	      "inputs": [
+            {
+			  "name":"input",
+              "type": "java.lang.Object",
+              "label": "input",
+              "description": "The input which will be compared.",
+			  "required":true
+            }
+		]
+	  }
 
 ## Providing new Module Types
-
-*Please describe how to provide new module types (which interfaces to implement and so on)*
 
 The rule engine is pluggable - any OSGi bundle can provide implementation for triggers,actions and condition module types and their corresponding metatype definition in JSON format. 
 
@@ -417,56 +565,47 @@ and implement the needed methods to create instances of the supported module han
 - org.eclipse.smarthome.automation.handler.ActionHandler
 
 
-## Custom module types
-Another way to extend the supported module types is by defining custom module types as extension of the system module types. All module types which have in its type the symbol ':' are extensions of the system module types and they can redefine the configuration properties and the input objects of the parent type
+## Composite module types
 
-```
-    "SampleAction:CustomAction": {
-      "label": "CustomAction label",
-      "description": "Custom Action description.",
-      "config": {  
-        "customMessage": {
-          "type": "TEXT",
-          "label": "custom message label",
-          "description": "Defines the custom message description.",
-          "context": "(nameRef=$message, valueRef=$customActionInput)",
-          "defaultValue": ">>> Default Custom Message",
-          "required": false
-        }
-      },
-      "input": {  
-        "customActionInput": {
-          "type": "java.lang.String",
-          "label": "ActionInput label",
-          "description": "Text that will be printed.",
-          "reference": "$actionInput",
-          "required": true
-        }
-      }
-    }
-  }
-```
-This example demonstrates extending the system action "SampleAction", which has configuration property "message" with another action "SampleAction:CustomAction", which defines input object "customActionInput". This input object references the configuration property "message" via the "context" attribute of the auxiliary property "customMessage". 
-
-```
-"context": "(nameRef=$message, valueRef=$customActionInput)",
-```
-
-- `nameRef` specifies which property to be updated (in this case it is the property "message")
-- `valueRef` specifies that the value of the property will be provided by the input "customActionInput"
+Another way to extend the supported module types is by defining composite module types as an extension of the system module types. The composite module type wraps one or more instances of a system module type and defines new configuration parameters, inputs and outputs.
 
 
-Then the rule or rule template will use the CustomAction input object instead of the configuration property:
-
-```
-    "then": [
       {  
-        "id": "CustomActionTemplateID",
-        "type": "SampleAction:CustomAction",
-        "input": {  
-          "customActionInput": "CustomSampleTriggerTemplateID.customTriggerOutput"
-        }
+         "uid":"ItemStateChangeTrigger",
+         "label":"Item State Trigger",
+         "description":"This triggers a rule if an items state changed",
+         "configDescriptions":[  
+            {  
+               "name":"itemName",
+               "type":"TEXT",
+               "context":"item",
+               "label":"item name",
+               "description":"the name of the item which's state change should be observed",
+               "required":true
+            }
+         ],
+         "children":[  
+            {  
+               "id":"itemStateChangeTriggerID",
+               "type":"GenericEventTrigger",
+               "config":{  
+                  "eventSource":"$itemName",
+                  "eventTopic":"smarthome/items/*",
+                  "eventTypes":"ItemStateEvent"
+               }
+            }
+         ],
+         "outputs":[  
+            {  
+               "name":"event",
+               "type":"org.eclipse.smarthome.core.events.Event",
+               "description":"the event of the item state change",
+               "label":"event",
+               "reference":"itemStateChangeTriggerID.event"
+            }
+         ]
       }
-    ]
-```
- 
+
+This example demonstrates new module type ItemStateChangeTrigger which wraps the system module type GenericEventTrigger and defines new configuration property 'itemName' which is used as the 'eventSource' property of the GenericEventTrigger, the other config paramters eventTopic and eventTypes are fixed.
+The composite module type can have also inputs and outputs and can use a reference to map them to inputs and outputs of the nested system module type(s) 
+
