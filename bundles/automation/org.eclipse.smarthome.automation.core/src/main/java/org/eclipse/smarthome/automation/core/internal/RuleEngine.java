@@ -235,10 +235,7 @@ public class RuleEngine
      * @throws IllegalArgumentException when the rule with the same UID is already added.
      */
     private Rule addRule0(Rule rule, boolean isEnabled, String identity) {
-        List<Module> modules = new ArrayList<Module>();
-        modules.addAll(rule.getActions());
-        modules.addAll(rule.getConditions());
-        modules.addAll(rule.getTriggers());
+        List<Module> modules = rule.getModules(null);
         validateModules(modules);
 
         RuntimeRule r1;

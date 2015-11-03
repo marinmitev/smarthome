@@ -338,7 +338,6 @@ public class Rule {
      *         specified.
      */
     @SuppressWarnings("unchecked")
-    @Deprecated
     public <T extends Module> List<T> getModules(Class<T> moduleClazz) {
         List<T> result = null;
         if (moduleClazz == null) {
