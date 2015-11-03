@@ -158,6 +158,7 @@ public class Activator implements BundleActivator {
         if (ruleRegistryReg != null) {
             ruleRegistryReg.unregister();
             ruleRegistryReg = null;
+            ruleRegistry.dispose();
             ruleRegistry = null;
         }
 

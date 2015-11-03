@@ -13,6 +13,7 @@ import java.util.Set;
 
 import org.eclipse.smarthome.automation.Rule;
 import org.eclipse.smarthome.automation.RuleRegistry;
+import org.eclipse.smarthome.automation.RuleStatus;
 import org.eclipse.smarthome.automation.RuleStatusInfo;
 import org.eclipse.smarthome.automation.StatusInfoCallback;
 import org.eclipse.smarthome.automation.events.RuleEventFactory;
@@ -69,10 +70,12 @@ public class RuleRegistryImpl extends AbstractRegistry<Rule, String>implements R
         for (Iterator<Rule> it = rules.iterator(); it.hasNext();) {
             Rule rule = it.next();
             String uid = rule.getUID();
-            if (ruleEngine.removeRule(uid))
+            if (ruleEngine.removeRule(uid)) {
                 postEvent(RuleEventFactory.createRuleRemovedEvent(rule, SOURCE));
-            if (disabledRulesStorage != null)
+            }
+            if (disabledRulesStorage != null) {
                 disabledRulesStorage.remove(uid);
+            }
         }
         super.removeProvider(provider);
     }
@@ -93,10 +96,12 @@ public class RuleRegistryImpl extends AbstractRegistry<Rule, String>implements R
     @Override
     public synchronized Rule remove(String key) {
         Rule rule = super.remove(key);
-        if (ruleEngine.removeRule(key))
+        if (ruleEngine.removeRule(key)) {
             postEvent(RuleEventFactory.createRuleRemovedEvent(rule, SOURCE));
-        if (disabledRulesStorage != null)
+        }
+        if (disabledRulesStorage != null) {
             disabledRulesStorage.remove(key);
+        }
         return rule;
     }
 
@@ -150,6 +155,14 @@ public class RuleRegistryImpl extends AbstractRegistry<Rule, String>implements R
 
     protected void setDisabledRuleStorage(Storage<Boolean> disabledRulesStorage) {
         this.disabledRulesStorage = disabledRulesStorage;
+        for (Rule rule : ruleEngine.getRules()) {
+            String uid = rule.getUID();
+            if (ruleEngine.getRuleStatus(uid).equals(RuleStatus.DISABLED)) {
+                disabledRulesStorage.put(uid, false);
+            } else {
+                disabledRulesStorage.remove(uid);
+            }
+        }
     }
 
     @Override
@@ -172,6 +185,9 @@ public class RuleRegistryImpl extends AbstractRegistry<Rule, String>implements R
         if (disabledRulesStorage != null && disabledRulesStorage.get(ruleUID) != null) {
             return Boolean.FALSE;
         }
-        return ruleEngine.hasRule(ruleUID) ? Boolean.TRUE : null;
+        return ruleEngine.hasRule(ruleUID) ? !ruleEngine.getRuleStatus(ruleUID).equals(RuleStatus.DISABLED) : null;
+    }
+
+    public void dispose() {
     }
 }
