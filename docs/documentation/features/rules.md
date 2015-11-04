@@ -19,7 +19,7 @@ ON item_id state changed IF item_id.state == desired_value THEN item_id2.state =
 Each rule can have some basic information like name,tags,description and three module sections (**on,if,then**)
 
 
-- The **'on'** sections is the trigger (eventing) part. 
+- The **'on'** section is the trigger (eventing) part. 
 
 
 - The **'if'** section lists the conditions which act as a filter for the events - actions of the rule will be executed only if the conditions evaluating the event data are satisfied and return 'true'. In case there are multiple conditions in the 'if' section then all of them must be satisfied - logical AND is used 
@@ -31,9 +31,9 @@ One rule can invoke one and the same operation upon receiving each trigger event
 
 Main building blocks of the rules are modules and each rule consists of one or more instances of each of the following modules:
 
-    trigger - which specifies on which event to execute the rule;
-    condition - which acts like a filter for the trigger event and can evaluate the event properties or the state of the system;
-    action - which specifies the operation of the rule which will be executed if the condition is statisfied.
+    trigger - which specifies when to execute the rule, usually it is an event;
+    condition - which acts like a filter depending on the defined condition type and its input and configuration. For example evaluation of trigger outputs or the state of the system / items;
+    action - which specifies the operation of the rule which will be executed if the condition is statisfied. If more than one actions are specified in a rule they will be executed sequentially where the output of the previous action can be used as an input for the next action - like a processor modifying the data of the trigger output (e.g. converting temperature values from Celsius to Fahrenheit)
 
 Each module is created from a template called "module type" and can specify configuration parameters for the template, like "eventTopic" for the "GenericEventTrigger" or "operator" for the "GenericCompareCondition"
 There are system module types which are provided by the system and there could be added composite module types which are extensions of the system module types with predefined configurations and/or modified module input/output objects like "ItemStateChangeTrigger" which is based on the GenericEventTrigger but specifies in its configuration that it is triggered only on item's state change events
