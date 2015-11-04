@@ -22,10 +22,10 @@ Each rule can have some basic information like name,tags,description and three m
 - The **'on'** sections is the trigger (eventing) part. 
 
 
+- The **'if'** section lists the conditions which act as a filter for the events - actions of the rule will be executed only if the conditions evaluating the event data are satisfied and return 'true'. In case there are multiple conditions in the 'if' section then all of them must be satisfied - logical AND is used 
+
 - The **'then'** section contains the actions which specify what should be executed when the event is received.
 
-
-- The **'if'** section lists the conditions which act as a filter for the events - actions of the rule will be executed only if the conditions evaluating the event data are satisfied and return 'true'.
 
 One rule can invoke one and the same operation upon receiving each trigger event, or the operation can be dynamic using input parameters from the event itself or from the system objects
 
