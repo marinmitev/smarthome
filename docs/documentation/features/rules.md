@@ -40,12 +40,12 @@ There are system module types which are provided by the system and there could b
 
 **Module type** has the following elements:
 
-    ID
+    uid - unique id
     label - localizable text
     description - localizable text
-    configDescriptions - meta data for the configuration properties
-    input variables
-    output variables
+    configDescriptions - list of meta data for the configuration properties
+    input variables - list of meta data for the supported input objects
+    output variables - list of meta data for the supported output objects
 
 ** configDescriptions** has the following metadata defined for each property
 
@@ -388,7 +388,7 @@ Bundles that provide rules in json format should have the following folder struc
 ## Rule Templates
 
 
-Rule templates can simplify the definition of rules with similar behavior, by providing additional configuration properties. Then rule instance definition only refers the rule template and provides the values of the configuration properties.
+Rule templates can simplify the definition of rules with similar behavior, by providing additional configuration properties. Then rule instance definition only refers the rule template and provides the values of the configuration properties. The rule template is used only once when the rule is imported in the Rule Engine. After that the reference from the rule instance to the rule template is removed and rule may exists even if the rule template is removed or modified - this will not have effect to already imported rules.
 
  * **Sample rule instance referencing rule template:**
 ```
