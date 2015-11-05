@@ -65,7 +65,10 @@ class ScriptRuleTest extends OSGiTest {
         enableItemAutoUpdate()
 
         def eventSubscriber = [
-            receive: { event -> receivedEvent = event },
+            receive: {  event ->
+                receivedEvent = event
+                logger.info("received event from item {}, command {}", receivedEvent.itemName, receivedEvent.itemCommand)
+            },
             getSubscribedEventTypes: {
                 Sets.newHashSet(ItemCommandEvent.TYPE)
             },
@@ -105,16 +108,17 @@ class ScriptRuleTest extends OSGiTest {
         assertThat condition1, is(notNullValue())
         assertThat condition1.typeUID, is("ScriptCondition")
         assertThat condition1.configuration.get("type"), is("application/javascript")
-        assertThat condition1.configuration.get("script"), is("trigger_event.itemState==ON")
+        assertThat condition1.configuration.get("script"), is("trigger.event.itemState==ON")
         def action = rule.actions.find{it.id.equals("action")} as Action
         assertThat action, is(notNullValue())
         assertThat action.typeUID, is("ScriptAction")
         assertThat action.configuration.get("type"), is("application/javascript")
-        assertThat action.configuration.get("script"), is("print(ir.getItems()), print(tr.getAll()), print(trigger_event), be.sendCommand('ScriptItem', 'ON')")
-        def ruleStatus = ruleRegistry.getStatus(rule.uid) as RuleStatus
-        assertThat ruleStatus, is(RuleStatus.IDLE)
+        assertThat action.configuration.get("script"), is("print(ir.getItems()), print(tr.getAll()), print(trigger.event), be.sendCommand('ScriptItem', 'ON')")
+        def ruleStatus = ruleRegistry.getStatus(rule.uid) as RuleStatusInfo
+        assertThat ruleStatus.getStatus(), is(RuleStatus.IDLE)
 
         SwitchItem myTriggerItem = itemRegistry.getItem("MyTrigger")
+        logger.info("Triggering item: {}", myTriggerItem.name)
         eventPublisher.post(ItemEventFactory.createStateEvent("MyTrigger", OnOffType.ON))
 
         waitForAssert {

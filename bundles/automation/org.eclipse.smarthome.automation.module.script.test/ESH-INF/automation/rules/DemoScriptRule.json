@@ -20,7 +20,7 @@
         "type": "ScriptCondition",
         "config": {  
           "type": "application/javascript",
-          "script": "trigger_event.itemState==ON"
+          "script": "trigger.event.itemState==ON"
         }
       }
     ],
@@ -30,7 +30,7 @@
         "type": "ScriptAction",
         "config": {  
           "type": "application/javascript",
-          "script": "print(ir.getItems()), print(tr.getAll()), print(trigger_event), be.sendCommand('ScriptItem', 'ON')"
+          "script": "print(ir.getItems()), print(tr.getAll()), print(trigger.event), be.sendCommand('ScriptItem', 'ON')"
         }
       }
     ]
