@@ -131,6 +131,30 @@ public class CommandlineTemplateProvider extends AbstractCommandProvider<RuleTem
         }
     }
 
+    /**
+     * This method is responsible for removing a set of objects loaded from a specified file or URL resource.
+     *
+     * @param providerType specifies the provider responsible for removing the objects loaded from a specified file or
+     *            URL resource.
+     * @param url is a specified file or URL resource.
+     * @return <b>true</b> if succeeds and <b>false</b> if fails.
+     */
+    public boolean remove(URL url) {
+        List<String> portfolio = null;
+        synchronized (providerPortfolio) {
+            portfolio = providerPortfolio.remove(url);
+        }
+        if (portfolio != null && !portfolio.isEmpty()) {
+            synchronized (providedObjectsHolder) {
+                for (String uid : portfolio) {
+                    providedObjectsHolder.remove(uid);
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public void close() {
         if (tpReg != null) {

@@ -106,7 +106,10 @@ public class AutomationCommandsPluggable extends AutomationCommands
      */
     @SuppressWarnings("unchecked")
     public AutomationCommandsPluggable(BundleContext bc) {
-        super(bc);
+        this.bc = bc;
+        moduleTypeProvider = new CommandlineModuleTypeProvider(bc);
+        templateProvider = new CommandlineTemplateProvider(bc);
+        ruleImporter = new CommandlineRuleImporter(bc);
         try {
             Filter filter = bc.createFilter("(|(objectClass=" + RuleRegistry.class.getName() + ")(objectClass="
                     + TemplateRegistry.class.getName() + ")(objectClass=" + ModuleTypeRegistry.class.getName() + "))");

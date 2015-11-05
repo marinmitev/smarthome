@@ -11,7 +11,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collection;
-import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
@@ -214,21 +213,6 @@ public abstract class AutomationCommands {
      * This field holds a reference to the {@link CommandlineRuleImporter} instance.
      */
     protected CommandlineRuleImporter ruleImporter;
-
-    /**
-     * This constructor is responsible for initializing instances of {@link CommandlineModuleTypeProvider},
-     * {@link CommandlineTemplateProvider} and {@link CommandlineRuleImporter} and for registering the services
-     * {@link ModuleTypeProvider} and {@link TemplateProvider}
-     *
-     * @param bc it is the {@link BundleContext}. It serves here to register the services {@link ModuleTypeProvider} and
-     *            {@link TemplateProvider}
-     */
-    public AutomationCommands(BundleContext bc) {
-        this.bc = bc;
-        moduleTypeProvider = new CommandlineModuleTypeProvider(bc);
-        templateProvider = new CommandlineTemplateProvider(bc);
-        ruleImporter = new CommandlineRuleImporter(bc);
-    }
 
     /**
      * This method is used for getting the rule corresponding to the specified UID from the RuleEngine.
@@ -434,26 +418,14 @@ public abstract class AutomationCommands {
         switch (providerType) {
             case AutomationCommands.MODULE_TYPE_PROVIDER:
                 if (moduleTypeProvider != null) {
-                    List<String> portfolio = moduleTypeProvider.providerPortfolio.remove(url);
-                    if (portfolio != null && !portfolio.isEmpty()) {
-                        for (String uid : portfolio) {
-                            moduleTypeProvider.providedObjectsHolder.remove(uid);
-                        }
-                        return true;
-                    }
+                    return moduleTypeProvider.remove(url);
                 }
-                return false;
+                break;
             case AutomationCommands.TEMPLATE_PROVIDER:
                 if (templateProvider != null) {
-                    List<String> portfolio = templateProvider.providerPortfolio.remove(url);
-                    if (portfolio != null && !portfolio.isEmpty()) {
-                        for (String uid : portfolio) {
-                            templateProvider.providedObjectsHolder.remove(uid);
-                        }
-                        return true;
-                    }
+                    return templateProvider.remove(url);
                 }
-                return false;
+                break;
         }
         return false;
     }
