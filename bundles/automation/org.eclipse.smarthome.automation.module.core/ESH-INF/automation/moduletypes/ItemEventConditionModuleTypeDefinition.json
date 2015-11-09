@@ -9,7 +9,7 @@
                "name":"itemName",
                "type":"TEXT",
                "context":"item",
-               "label":"ItemName",
+               "label":"Item Name",
                "description":"The itemName which should match",
                "required":true
             },
@@ -55,7 +55,7 @@
                "name":"itemName",
                "type":"TEXT",
                "context":"item",
-               "label":"ItemName",
+               "label":"Item Name",
                "description":"The itemName which should match",
                "required":true
             }
@@ -92,7 +92,7 @@
                "name":"itemName",
                "type":"TEXT",
                "context":"item",
-               "label":"ItemName",
+               "label":"Item Name",
                "description":"The itemName which should match",
                "required":true
             }

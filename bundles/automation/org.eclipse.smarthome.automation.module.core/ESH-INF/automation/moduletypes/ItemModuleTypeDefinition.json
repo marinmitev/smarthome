@@ -8,12 +8,14 @@
             {  
                "name":"operator",
                "type":"TEXT",
+			   "label":"Operator",
                "description":"the compare operator (one of =,<,>,!=)",
                "required":true
             },
             {  
                "name":"itemName",
                "type":"TEXT",
+			   "label":"Item Name",
                "context":"item",
                "description":"the name of the Item",
                "required":true
@@ -21,6 +23,7 @@
             {  
                "name":"state",
                "type":"TEXT",
+			   "label":"State",
                "description":"the state to be compared with",
                "required":true
             }
@@ -30,12 +33,13 @@
    "actions":[  
       {  
          "uid":"ItemPostCommandAction",
-         "label":"ItemPostCommandAction",
+         "label":"Post command to an item",
          "description":"posts commands on items",
          "configDescriptions":[  
             {  
                "name":"itemName",
                "type":"TEXT",
+			   "label":"Item Name",
                "context":"item",
                "description":"the name of the item to post the command for",
                "required":true
@@ -43,6 +47,7 @@
             {  
                "name":"command",
                "type":"TEXT",
+			   "label":"Command",
                "description":"the command to be posted",
                "required":true
             }

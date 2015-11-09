@@ -9,7 +9,7 @@
 				  "name":"inputproperty",
 				  "label":"Input property",
 				  "type":"TEXT",
-				  "description":"property of the input to be compared",
+				  "description":"property of the input type to be compared",
 				  "required":false
 			  },
 			  {
@@ -22,7 +22,7 @@
 			  {
 			  	  "name":"operator",
 				  "type":"TEXT",
-				  "description":"the compare operator, allowed are <, >, =",
+				  "description":"the compare operator, allowed are <, >, =, matches",
 				  "required":true,
 				  "defaultValue":"="
 			  }
@@ -31,7 +31,7 @@
             {
 			  "name":"input",
               "type": "java.lang.Object",
-              "label": "input",
+              "label": "input which will be compared",
               "description": "The input which will be compared.",
 			  "required":true
             }

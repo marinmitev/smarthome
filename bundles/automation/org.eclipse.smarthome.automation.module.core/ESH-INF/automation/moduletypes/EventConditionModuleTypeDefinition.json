@@ -2,8 +2,8 @@
    "conditions":[  
       {  
          "uid":"EventCondition",
-         "label":"StateCondition",
-         "description":"checks if the State matches",
+         "label":"Event Condition",
+         "description":"Condition for events",
          "configDescriptions":[  
             {  
                "name":"topic",
