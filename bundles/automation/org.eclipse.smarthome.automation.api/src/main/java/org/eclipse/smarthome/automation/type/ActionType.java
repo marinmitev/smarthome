@@ -84,7 +84,7 @@ public class ActionType extends ModuleType {
      * @param tags defines categories that fit the {@link ActionType} and which can serve as criteria for searching
      *            or filtering it.
      * @param visibility determines whether the {@link ActionType} can be used by anyone if it is
-     *            {@link Visibility#PUBLIC} or only by its creator if it is {@link Visibility#PRIVATE}.
+     *            {@link Visibility#VISIBLE} or only by its creator if it is {@link Visibility#HIDDEN}.
      * @param inputs is a {@link List} of {@link Input} meta-information descriptions.
      * @param outputs is a {@link List} of {@link Output} meta-information descriptions.
      */

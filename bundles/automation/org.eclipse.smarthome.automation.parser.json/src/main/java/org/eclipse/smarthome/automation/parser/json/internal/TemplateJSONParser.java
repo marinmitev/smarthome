@@ -254,7 +254,12 @@ public class TemplateJSONParser implements Parser<RuleTemplate> {
             }
         }
         // get visibility of rule template
-        Visibility visibility = getVisibility(ruleTemplateUID, jsonRuleTemplate, exceptions);
+        Visibility visibility = getVisibility(ruleTemplateUID, JSONStructureConstants.VISIBILITY, jsonRuleTemplate,
+                exceptions);
+
+        // get rule visibility of rule template
+        Visibility ruleVisibility = getVisibility(ruleTemplateUID, JSONStructureConstants.RULE_VISIBILITY,
+                jsonRuleTemplate, exceptions);
 
         // get tags of rule template
         Set<String> tags = getTags(ruleTemplateUID, jsonRuleTemplate, exceptions);
@@ -269,7 +274,7 @@ public class TemplateJSONParser implements Parser<RuleTemplate> {
 
         // create rule template
         return new RuleTemplate(ruleTemplateUID, label, description, tags, triggers, conditions, actions,
-                configDescriptions, visibility);
+                configDescriptions, visibility, ruleVisibility);
     }
 
     /**
@@ -280,12 +285,13 @@ public class TemplateJSONParser implements Parser<RuleTemplate> {
      * @param exceptions is a list used for collecting the exceptions occurred during {@link Visibility} creation.
      * @return parsed Visibility of the RuleTemplate.
      */
-    private Visibility getVisibility(String UID, JSONObject json, List<ParsingNestedException> exceptions) {
-        String visibility = JSONUtility.getString(ParsingNestedException.TEMPLATE, UID, exceptions,
-                JSONStructureConstants.VISIBILITY, true, json, log);
+    private Visibility getVisibility(String UID, String visibilityProperty, JSONObject json,
+            List<ParsingNestedException> exceptions) {
+        String visibility = JSONUtility.getString(ParsingNestedException.TEMPLATE, UID, exceptions, visibilityProperty,
+                true, json, log);
         Visibility v = null;
         if (visibility == null) {
-            v = Visibility.PUBLIC;
+            v = Visibility.VISIBLE;
         } else {
             try {
                 v = Visibility.valueOf(visibility.toUpperCase());
