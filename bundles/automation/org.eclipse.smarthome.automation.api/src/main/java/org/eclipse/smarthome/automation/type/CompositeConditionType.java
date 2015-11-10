@@ -59,7 +59,7 @@ public class CompositeConditionType extends ConditionType {
      *            searching
      *            or filtering it.
      * @param visibility determines whether the {@code CompositeConditionType} can be used by anyone if it is
-     *            {@link Visibility#PUBLIC} or only by its creator if it is {@link Visibility#PRIVATE}.
+     *            {@link Visibility#VISIBLE} or only by its creator if it is {@link Visibility#HIDDEN}.
      * @param inputs is a {@link List} of {@link Input} descriptions.
      * @param children is a {@link LinkedHashSet} of {@link Condition}s.
      */

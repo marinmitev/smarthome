@@ -411,7 +411,7 @@ public class ModuleTypeJSONParser implements Parser<ModuleType> {
                 JSONStructureConstants.VISIBILITY, true, json, log);
         Visibility v = null;
         if (visibility == null) {
-            v = Visibility.PUBLIC;
+            v = Visibility.VISIBLE;
         } else {
             try {
                 v = Visibility.valueOf(visibility.toUpperCase());

@@ -82,9 +82,14 @@ public class RuleTemplate implements Template {
     private String description;
 
     /**
-     * This field determines if the template will be public or private.
+     * This field determines {@link Visibility} of the template.
      */
     private Visibility visibility;
+
+    /**
+     * This field determines {@link Visibility} of the rule.
+     */
+    private Visibility ruleVisibility;
 
     /**
      * This field defines a set of configuration properties of the {@link Rule}.
@@ -103,7 +108,7 @@ public class RuleTemplate implements Template {
      */
     public RuleTemplate(String UID, String label, String description, Set<String> tags, List<Trigger> triggers,
             List<Condition> conditions, List<Action> actions, List<ConfigDescriptionParameter> configDescriptions,
-            Visibility visibility) {
+            Visibility visibility, Visibility ruleVisibility) {
 
         this.uid = UID;
         this.label = label;
@@ -113,7 +118,7 @@ public class RuleTemplate implements Template {
         this.actions = actions;
         this.configDescriptions = configDescriptions;
         this.visibility = visibility;
-
+        this.ruleVisibility = ruleVisibility;
         if (tags == null || tags.isEmpty())
             return;
         this.tags = new HashSet<String>(tags);
@@ -170,9 +175,22 @@ public class RuleTemplate implements Template {
     @Override
     public Visibility getVisibility() {
         if (visibility == null) {
-            return Visibility.PUBLIC;
+            return Visibility.VISIBLE;
         }
         return visibility;
+    }
+
+    /**
+     * This method is used to show visibility of the template
+     *
+     * @return visibility of template
+     */
+    @Override
+    public Visibility getRuleVisibility() {
+        if (ruleVisibility == null) {
+            return Visibility.VISIBLE;
+        }
+        return ruleVisibility;
     }
 
     /**

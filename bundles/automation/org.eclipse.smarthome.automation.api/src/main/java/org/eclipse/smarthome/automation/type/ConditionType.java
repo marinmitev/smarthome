@@ -56,7 +56,7 @@ public class ConditionType extends ModuleType {
      * @param tags defines categories that fit the {@link ConditionType} and which can serve as criteria for searching
      *            or filtering it.
      * @param visibility determines whether the {@link ConditionType} can be used by anyone if it is
-     *            {@link Visibility#PUBLIC} or only by its creator if it is {@link Visibility#PRIVATE}.
+     *            {@link Visibility#VISIBLE} or only by its creator if it is {@link Visibility#HIDDEN}.
      * @param inputs is a {@link List} of {@link Input} meta-information descriptions.
      */
     public ConditionType(String UID, List<ConfigDescriptionParameter> configDescriptions, String label,

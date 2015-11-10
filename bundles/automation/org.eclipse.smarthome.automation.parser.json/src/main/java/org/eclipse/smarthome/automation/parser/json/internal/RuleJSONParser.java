@@ -21,6 +21,7 @@ import org.eclipse.smarthome.automation.Action;
 import org.eclipse.smarthome.automation.Condition;
 import org.eclipse.smarthome.automation.Rule;
 import org.eclipse.smarthome.automation.Trigger;
+import org.eclipse.smarthome.automation.Visibility;
 import org.eclipse.smarthome.automation.parser.Parser;
 import org.eclipse.smarthome.automation.parser.ParsingException;
 import org.eclipse.smarthome.automation.parser.ParsingNestedException;
@@ -115,6 +116,9 @@ public class RuleJSONParser implements Parser<Rule> {
         Rule rule = null;
         String uid = JSONUtility.getString(ParsingNestedException.RULE, null, exceptions, JSONStructureConstants.UID,
                 true, jsonRule, log);
+        String visibilityString = JSONUtility.getString(ParsingNestedException.RULE, null, exceptions,
+                JSONStructureConstants.VISIBILITY, true, jsonRule, log);
+        Visibility visibility = JSONUtility.getVisibility(visibilityString);
         String ruleTemplateUID = JSONUtility.getString(ParsingNestedException.RULE, uid, exceptions,
                 JSONStructureConstants.TEMPLATE_UID, true, jsonRule, log);
         if (ruleTemplateUID != null) {
@@ -150,10 +154,7 @@ public class RuleJSONParser implements Parser<Rule> {
                 configurations = ConfigPropertyJSONParser.getConfiguration(ParsingNestedException.RULE, uid, exceptions,
                         jsonConfig, configDescriptions, log);
             }
-            if (uid != null)
-                rule = new Rule(uid, triggers, conditions, actions, configDescriptions, configurations);
-            else
-                rule = new Rule(triggers, conditions, actions, configDescriptions, configurations);
+            rule = new Rule(uid, triggers, conditions, actions, configDescriptions, configurations, visibility);
         }
         String ruleName = JSONUtility.getString(ParsingNestedException.RULE, uid, exceptions,
                 JSONStructureConstants.NAME, true, jsonRule, log);
