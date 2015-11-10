@@ -567,7 +567,7 @@ class AutomationIntegrationTest extends OSGiTest{
         ]
 
         def template = new RuleTemplate(templateUID, "Test template Label", "Test template description", tags, templateTriggers, templateConditions,
-                templateActions, templateConfigDescriptionParameters, Visibility.PUBLIC)
+                templateActions, templateConfigDescriptionParameters, Visibility.VISIBLE)
 
         def triggerTypeUID = "testTrigger1"
         def triggerType = new TriggerType(triggerTypeUID, templateConfigDescriptionParameters, null)

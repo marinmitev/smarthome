@@ -39,9 +39,9 @@ public abstract class ModuleType {
 
     /**
      * The value of this field determines whether the {@link ModuleType}s can be used by anyone if they are
-     * {@link Visibility#PUBLIC} or only by their creator if they are {@link Visibility#PRIVATE}.
+     * {@link Visibility#VISIBLE} or only by their creator if they are {@link Visibility#HIDDEN}.
      */
-    private Visibility visibility = Visibility.PUBLIC;
+    private Visibility visibility = Visibility.VISIBLE;
 
     /**
      * Tags define categories that fit the particular {@link ModuleType} and which can serve as criteria for searching
@@ -83,7 +83,7 @@ public abstract class ModuleType {
      * @param tags defines categories that fit the {@link ModuleType} and which can serve as criteria for searching
      *            or filtering it.
      * @param visibility determines whether the {@link ModuleType} can be used by anyone if it is
-     *            {@link Visibility#PUBLIC} or only by its creator if it is {@link Visibility#PRIVATE}.
+     *            {@link Visibility#VISIBLE} or only by its creator if it is {@link Visibility#HIDDEN}.
      */
     public ModuleType(String UID, List<ConfigDescriptionParameter> configDescriptions, String label, String description,
             Set<String> tags, Visibility visibility) {
@@ -151,14 +151,14 @@ public abstract class ModuleType {
 
     /**
      * This method is used for getting visibility of the {@link ModuleType}. The visibility determines whether the
-     * {@link ModuleType}s can be used by anyone if they are {@link Visibility#PUBLIC} or only by their creator if they
-     * are {@link Visibility#PRIVATE}. The default visibility is {@link Visibility#PUBLIC}.
+     * {@link ModuleType}s can be used by anyone if they are {@link Visibility#VISIBLE} or only by their creator if they
+     * are {@link Visibility#HIDDEN}. The default visibility is {@link Visibility#VISIBLE}.
      *
      * @return the {@link #visibility} of the {@link ModuleType}.
      */
     public Visibility getVisibility() {
         if (visibility == null) {
-            return Visibility.PUBLIC;
+            return Visibility.VISIBLE;
         }
         return visibility;
     }

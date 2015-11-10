@@ -10,6 +10,7 @@ package org.eclipse.smarthome.automation.parser.json.internal;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
+import org.eclipse.smarthome.automation.Visibility;
 import org.eclipse.smarthome.automation.parser.ParsingNestedException;
 import org.eclipse.smarthome.config.core.ConfigDescriptionParameter.Type;
 import org.json.JSONArray;
@@ -486,4 +487,14 @@ public class JSONUtility {
         exceptions.add(pne);
     }
 
+    static Visibility getVisibility(String visibilityString) {
+        if (visibilityString == null) {
+            return Visibility.VISIBLE;
+        } else if (visibilityString.equalsIgnoreCase("hidden")) {
+            return Visibility.HIDDEN;
+        } else if (visibilityString.equalsIgnoreCase("expert")) {
+            return Visibility.EXPERT;
+        }
+        return Visibility.VISIBLE;
+    }
 }

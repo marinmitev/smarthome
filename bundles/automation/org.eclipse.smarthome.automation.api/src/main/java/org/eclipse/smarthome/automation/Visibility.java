@@ -5,18 +5,24 @@ import org.eclipse.smarthome.automation.type.ModuleType;
 
 /**
  * Defines visibility values of {@link ModuleType}s and {@link Template}s
- * 
+ *
  * @author Yordan Mihaylov - Initial Contribution
  *
  */
 public enum Visibility {
     /**
-     * The template is visible by everyone.
+     * The UI has to show this object.
      */
-    PUBLIC,
+    VISIBLE,
 
     /**
-     * The template is visible only by its creator.
+     * The UI has to hide this object.
      */
-    PRIVATE
+    HIDDEN,
+
+    /**
+     * The UI has to show this object only to experts.
+     */
+    EXPERT
+
 }

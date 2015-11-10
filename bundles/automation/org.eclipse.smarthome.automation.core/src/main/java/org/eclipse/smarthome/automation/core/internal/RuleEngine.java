@@ -245,7 +245,8 @@ public class RuleEngine
         if (rUID == null) {
             rUID = getRuleUID(rUID);
             ruleWithUID = new Rule(rUID, rule.getTriggers(), rule.getConditions(), rule.getActions(),
-                    rule.getConfigurationDescriptions(), rule.getConfiguration(), rule.getTemplateUID());
+                    rule.getConfigurationDescriptions(), rule.getConfiguration(), rule.getTemplateUID(),
+                    rule.getVisibility());
             ruleWithUID.setName(rule.getName());
             ruleWithUID.setTags(rule.getTags());
             ruleWithUID.setDescription(rule.getDescription());

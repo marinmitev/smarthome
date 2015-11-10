@@ -46,9 +46,9 @@ public class RuntimeRule extends Rule {
     }
 
     public RuntimeRule(String ruleUID, RuleTemplate template, Map<String, ?> configuration) {
-        super(getRuntimeTriggersCopy(template.getTriggers()), getRuntimeConditionsCopy(template.getConditions()),
-                getRuntimeActionsCopy(template.getActions()), template.getConfigurationDescription(), configuration);
-        this.uid = ruleUID;
+        super(ruleUID, getRuntimeTriggersCopy(template.getTriggers()),
+                getRuntimeConditionsCopy(template.getConditions()), getRuntimeActionsCopy(template.getActions()),
+                template.getConfigurationDescription(), configuration, template.getRuleVisibility());
     }
 
     /**
@@ -60,7 +60,7 @@ public class RuntimeRule extends Rule {
     protected RuntimeRule(Rule rule) {
         super(rule.getUID(), getRuntimeTriggersCopy(rule.getTriggers()), getRuntimeConditionsCopy(rule.getConditions()),
                 getRuntimeActionsCopy(rule.getActions()), rule.getConfigurationDescriptions(), rule.getConfiguration(),
-                rule.getTemplateUID());
+                rule.getTemplateUID(), rule.getVisibility());
         setName(rule.getName());
         setTags(rule.getTags());
         setDescription(rule.getDescription());
@@ -347,7 +347,8 @@ public class RuntimeRule extends Rule {
 
     protected Rule getRuleCopy() {
         Rule rule = new Rule(getUID(), getTriggersCopy(getTriggers()), getConditionsCopy(getConditions()),
-                getActionsCopy(getActions()), getConfigurationDescriptions(), getConfiguration(), getTemplateUID());
+                getActionsCopy(getActions()), getConfigurationDescriptions(), getConfiguration(), getTemplateUID(),
+                getVisibility());
         rule.setName(getName());
         rule.setTags(getTags());
         rule.setDescription(getDescription());

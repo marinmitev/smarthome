@@ -51,25 +51,69 @@ public class Rule {
     protected String uid;
     protected String name;
     protected Set<String> tags;
+    protected Visibility visibility;
     protected String description;
 
     public Rule() {
     }
 
     /**
-     * This constructor is used when creating the rule from template and there is not provided UID for the rule.
+     * This constructor is used to create a rule with specified rule uid.
+     *
+     * @param uid is the unique identifier of the rule provided by its creator.
+     * @param triggers
+     * @param conditions
+     * @param actions
+     * @param configDescriptions
+     * @param configurations are values of the configuration parameters that are needed for configuring the rule,
+     *            represented as pairs key-value, where the key is the name of the configuration parameter and the value
+     *            is its value.
+     */
+    public Rule(String uid, List<Trigger> triggers, //
+            List<Condition> conditions, //
+            List<Action> actions, List<ConfigDescriptionParameter> configDescriptions, //
+            Map<String, ?> configurations, Visibility visibility) {
+        this.triggers = triggers;
+        this.actions = actions;
+        this.conditions = conditions;
+        this.configDescriptions = configDescriptions;
+        setConfiguration(configurations);
+        this.uid = uid;
+        this.visibility = visibility;
+    }
+
+    /**
+     * Utility constructor which creates a rule with uid and default {@link Visibility} = {@link Visibility#VISIBLE}.
+     *
+     * @param uid is the unique identifier of the rule provided by its creator.
+     * @param triggers
+     * @param conditions
+     * @param actions
+     * @param configDescriptions
+     * @param configurations are values of the configuration parameters that are needed for configuring the rule,
+     *            represented as pairs key-value, where the key is the name of the configuration parameter and the value
+     *            is its value.
+     */
+    public Rule(String uid, List<Trigger> triggers, //
+            List<Condition> conditions, //
+            List<Action> actions, List<ConfigDescriptionParameter> configDescriptions, //
+            Map<String, ?> configurations) {
+        this(uid, triggers, conditions, actions, configDescriptions, configurations, Visibility.VISIBLE);
+    }
+
+    /**
+     * This constructor is used to create a rule from template when the does not have defined uid in template.
      *
      * @param ruleTemplateUID is the unique identifier of the template, used for creation of the rule.
      * @param are values of the configuration parameters that are needed for configuring the rule, represented as pairs
      *            key-value, where the key is the name of the configuration parameter and the value is its value.
      */
     public Rule(String ruleTemplateUID, Map<String, ?> configurations) {
-        this.ruleTemplateUID = ruleTemplateUID;
-        setConfiguration(configurations);
+        this(null, ruleTemplateUID, configurations);
     }
 
     /**
-     * This constructor is used when creating the rule from template and there is provided UID for the rule.
+     * This constructor is used to create a rule from template.
      *
      * @param uid is the unique identifier of the rule provided by its creator.
      * @param ruleTemplateUID is the unique identifier of the template, used for creation of the rule.
@@ -84,48 +128,7 @@ public class Rule {
     }
 
     /**
-     * This constructor is used when creating the rule and there is not provided UID for the rule.
-     *
-     * @param triggers
-     * @param conditions
-     * @param actions
-     * @param configDescriptions
-     * @param configurations
-     */
-    public Rule(List<Trigger> triggers, //
-            List<Condition> conditions, //
-            List<Action> actions, //
-            List<ConfigDescriptionParameter> configDescriptions, //
-            Map<String, ?> configurations) {
-        this.triggers = triggers;
-        this.actions = actions;
-        this.conditions = conditions;
-        this.configDescriptions = configDescriptions;
-        setConfiguration(configurations);
-    }
-
-    /**
-     * This constructor is used when creating the rule and there is provided UID for the rule.
-     *
-     * @param uid is the unique identifier of the rule provided by its creator.
-     * @param triggers
-     * @param conditions
-     * @param actions
-     * @param configDescriptions
-     * @param configurations are values of the configuration parameters that are needed for configuring the rule,
-     *            represented as pairs key-value, where the key is the name of the configuration parameter and the value
-     *            is its value.
-     */
-    public Rule(String uid, List<Trigger> triggers, //
-            List<Condition> conditions, //
-            List<Action> actions, List<ConfigDescriptionParameter> configDescriptions, //
-            Map<String, ?> configurations) {
-        this(triggers, conditions, actions, configDescriptions, configurations);
-        this.uid = uid;
-    }
-
-    /**
-     * This constructor is used when creating the rule and there is provided UID for the rule.
+     * This constructor is used to create a rule from template.
      *
      * @param uid is the unique identifier of the rule provided by its creator.
      * @param triggers
@@ -136,12 +139,13 @@ public class Rule {
      *            represented as pairs key-value, where the key is the name of the configuration parameter and the value
      *            is its value.
      * @param templateUID the unique identifier of the RuleTemplate
+     * @param visibility visibility of rule
      */
     public Rule(String uid, List<Trigger> triggers, //
             List<Condition> conditions, //
             List<Action> actions, List<ConfigDescriptionParameter> configDescriptions, //
-            Map<String, ?> configurations, String templateUID) {
-        this(uid, triggers, conditions, actions, configDescriptions, configurations);
+            Map<String, ?> configurations, String templateUID, Visibility visibility) {
+        this(uid, triggers, conditions, actions, configDescriptions, configurations, visibility);
         this.ruleTemplateUID = templateUID;
     }
 
@@ -230,6 +234,18 @@ public class Rule {
      */
     public void setDescription(String ruleDescription) {
         description = ruleDescription;
+    }
+
+    /**
+     * This method is used to show visibility of the Rule
+     *
+     * @return visibility of rule
+     */
+    public Visibility getVisibility() {
+        if (visibility == null) {
+            return Visibility.VISIBLE;
+        }
+        return visibility;
     }
 
     /**
