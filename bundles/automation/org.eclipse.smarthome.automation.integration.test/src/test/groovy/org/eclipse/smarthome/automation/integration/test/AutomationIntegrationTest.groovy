@@ -100,6 +100,8 @@ class AutomationIntegrationTest extends OSGiTest{
                     new SwitchItem("myMotionItem5"),
                     new SwitchItem("myPresenceItem5"),
                     new SwitchItem("myLampItem5"),
+                    new SwitchItem("xtempl_MotionItem"),
+                    new SwitchItem("xtempl_LampItem")
                 ]
             },
             addProviderChangeListener: {},
@@ -547,6 +549,38 @@ class AutomationIntegrationTest extends OSGiTest{
 
         waitForAssert({
             def lamp = itemRegistry.getItem("templ_LampItem") as SwitchItem
+            assertThat lamp.state, is(OnOffType.ON)
+        })
+
+    }
+    
+    @Test
+    public void 'assert that a rule created from a more complex template is executed as expected' () {
+        logger.info('assert that a rule created from a more complex template is executed as expected');
+        def templateRegistry = getService(TemplateRegistry)
+        assertThat templateRegistry, is(notNullValue())
+        def template = null
+        waitForAssert({
+            template = templateRegistry.get("TestTemplateWithCompositeModules") as Template
+            assertThat template, is(notNullValue())
+        })
+        assertThat template.tags, is(notNullValue())
+        assertThat template.tags.size(), is(not(0))
+        def configs = [onItem:"xtempl_MotionItem", ifState: ".*ON.*", updateItem:"xtempl_LampItem", updateCommand:"ON"]
+        def templateRule = new Rule("xtemplateRuleUID", "TestTemplateWithCompositeModules", configs)
+        ruleRegistry.add(templateRule)
+        assertThat ruleRegistry.getAll().find{it.UID==templateRule.UID}, is(notNullValue())
+        waitForAssert {
+            assertThat ruleRegistry.get(templateRule.UID), is(notNullValue())
+            assertThat ruleRegistry.getStatus(templateRule.UID).status, is(RuleStatus.IDLE)
+        }
+
+        //bring the rule to execution:
+        def commandObj = TypeParser.parseCommand(itemRegistry.getItem("xtempl_MotionItem").getAcceptedCommandTypes(),"ON")
+        eventPublisher.post(ItemEventFactory.createCommandEvent("xtempl_MotionItem", commandObj))
+
+        waitForAssert({
+            def lamp = itemRegistry.getItem("xtempl_LampItem") as SwitchItem
             assertThat lamp.state, is(OnOffType.ON)
         })
 
