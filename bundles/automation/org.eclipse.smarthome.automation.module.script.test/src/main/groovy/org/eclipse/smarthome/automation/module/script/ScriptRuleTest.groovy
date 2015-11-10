@@ -32,6 +32,7 @@ import org.junit.Before
 import org.junit.Test
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.eclipse.smarthome.automation.module.script.ScriptScopeProvider
 
 import com.google.common.collect.Sets
 
@@ -75,6 +76,8 @@ class ScriptRuleTest extends OSGiTest {
             getEventFilter: { null },
         ] as EventSubscriber
         registerService(eventSubscriber)
+        def scriptScopeProvider = getService(ScriptScopeProvider)
+        assertThat ScriptScopeProvider, is(notNullValue())
     }
 
 

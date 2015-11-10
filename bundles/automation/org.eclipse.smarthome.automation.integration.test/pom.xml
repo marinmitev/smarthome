@@ -70,6 +70,23 @@
 							<artifactId>org.eclipse.smarthome.core.autoupdate</artifactId>
 							<version>0.0.0</version>
 						</dependency>
+						<!-- LOGGING -->
+						<dependency>
+                            <type>eclipse-plugin</type>
+                            <artifactId>ch.qos.logback.classic</artifactId>
+                            <version>0.0.0</version>
+                        </dependency>
+                        <dependency>
+                            <type>eclipse-plugin</type>
+                            <artifactId>ch.qos.logback.core</artifactId>
+                            <version>0.0.0</version>
+                        </dependency>
+                        <dependency>
+                            <type>eclipse-plugin</type>
+                            <artifactId>ch.qos.logback.slf4j</artifactId>
+                            <version>0.0.0</version>
+                        </dependency>
+						
 					</dependencies>
 					<bundleStartLevel>
 						<bundle>
