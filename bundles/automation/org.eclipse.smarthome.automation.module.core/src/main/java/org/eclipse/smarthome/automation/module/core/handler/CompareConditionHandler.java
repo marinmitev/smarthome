@@ -175,7 +175,7 @@ public class CompareConditionHandler extends BaseModuleHandler<Condition>impleme
     }
 
     private Object getCompareValue(Object leftObj, String leftObjFieldName) {
-        if (leftObjFieldName == null || leftObjFieldName.isEmpty() || leftObj instanceof String
+        if (leftObj==null || leftObjFieldName == null || leftObjFieldName.isEmpty() || leftObj instanceof String
                 || leftObj instanceof Integer || leftObj instanceof Long || leftObj instanceof Double) {
             return leftObj;
         } else {
