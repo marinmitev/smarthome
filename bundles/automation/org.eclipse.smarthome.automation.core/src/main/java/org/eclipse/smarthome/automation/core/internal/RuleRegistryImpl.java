@@ -94,8 +94,8 @@ public class RuleRegistryImpl extends AbstractRegistry<Rule, String>implements R
         }
         String rUID = element.getUID();
         if (!hasManagedRuleProvider) {
-            throw new IllegalStateException(
-                    "ManagedProvider is not available. The rule" + (rUID != null ? rUID : element) + "can't be added!");
+            throw new IllegalStateException("ManagedProvider is not available. The rule '"
+                    + (rUID != null ? rUID : element) + "' can't be added!");
         }
         Rule ruleToPersist;
         if (rUID != null && disabledRulesStorage != null && disabledRulesStorage.get(rUID) != null) {
