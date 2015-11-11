@@ -38,7 +38,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This class acts as a REST resource for rules and is registered with the Jersey servlet.
- *
+ * 
  * @author Kai Kreuzer - Initial contribution
  */
 @Path("rules")
@@ -281,16 +281,12 @@ public class RuleResource implements RESTResource {
 
     protected Module getModule(Rule rule, String moduleCategory, String id) {
         Module module = null;
-        switch (moduleCategory) {
-            case "triggers":
-                module = getTrigger(rule, id);
-                break;
-            case "conditions":
-                module = getCondition(rule, id);
-                break;
-            case "actions":
-                module = getAction(rule, id);
-                break;
+        if (moduleCategory.equals("triggers")) {
+            module = getTrigger(rule, id);
+        } else if (moduleCategory.equals("conditions")) {
+            module = getCondition(rule, id);
+        } else if (moduleCategory.equals("actions")) {
+            module = getAction(rule, id);
         }
         return module;
     }

@@ -62,6 +62,8 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.prosyst.mbs.impl.services.ham.RuleManager;
+
 /**
  * This class is used to initialized and execute {@link Rule}s added in rule engine.
  * Each Rule has associated {@link RuleStatusInfo} object which shows status and status details of of the Rule.
@@ -145,7 +147,7 @@ public class RuleEngine
     /**
      * Bundle context field.
      */
-    private BundleContext bc;
+    BundleContext bc;
 
     /**
      * {@link Map} system module type to corresponding module handler factories.
