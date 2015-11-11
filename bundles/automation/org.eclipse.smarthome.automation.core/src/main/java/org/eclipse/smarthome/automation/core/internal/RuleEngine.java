@@ -62,8 +62,6 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.prosyst.mbs.impl.services.ham.RuleManager;
-
 /**
  * This class is used to initialized and execute {@link Rule}s added in rule engine.
  * Each Rule has associated {@link RuleStatusInfo} object which shows status and status details of of the Rule.
@@ -680,7 +678,7 @@ public class RuleEngine
      * Gets copy of the {@link Rule} corresponding to the passed id
      *
      * @param rId rule id
-     * @return {@link Rule} object or null when rule with such id is not added to the {@link RuleManager}.
+     * @return {@link Rule} object or null when rule with such id is not added to the rule engine.
      */
     public synchronized Rule getRule(String rId) {
         RuntimeRule rule = rules.get(rId);
