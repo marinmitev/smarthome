@@ -145,7 +145,7 @@ public class RuleEngine
     /**
      * Bundle context field.
      */
-    private BundleContext bc;
+    BundleContext bc;
 
     /**
      * {@link Map} system module type to corresponding module handler factories.
@@ -678,7 +678,7 @@ public class RuleEngine
      * Gets copy of the {@link Rule} corresponding to the passed id
      *
      * @param rId rule id
-     * @return {@link Rule} object or null when rule with such id is not added to the {@link RuleManager}.
+     * @return {@link Rule} object or null when rule with such id is not added to the rule engine.
      */
     public synchronized Rule getRule(String rId) {
         RuntimeRule rule = rules.get(rId);

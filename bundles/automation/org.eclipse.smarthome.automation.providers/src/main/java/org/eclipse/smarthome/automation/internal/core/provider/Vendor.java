@@ -18,6 +18,8 @@ import java.util.StringTokenizer;
  *
  */
 public class Vendor {
+    
+    private static final String DELIMITER = ";";
 
     /**
      * This field provides a bundle symbolic name of a bundle that provides resources for automation objects.
@@ -39,6 +41,13 @@ public class Vendor {
      * This field keeps the count of the rules provided from this vendor.
      */
     private int rulesCount = 0;
+    
+    public Vendor(String nameversion) {
+        int index = nameversion.indexOf(DELIMITER);
+        vendorSymbolicName = nameversion.substring(0, index);
+        vendorVersion = nameversion.substring(++index);
+        vendorID = parseSymbolicName();
+    }
 
     /**
      * This constructor initialize the {@link vendorId} and the {@link vendorVersion} of the vendor with corresponding
@@ -116,6 +125,14 @@ public class Vendor {
     @Override
     public int hashCode() {
         return vendorSymbolicName.hashCode() + vendorVersion.hashCode();
+    }
+    
+    /**
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return vendorSymbolicName + DELIMITER + vendorVersion;
     }
 
     private String parseSymbolicName() {
