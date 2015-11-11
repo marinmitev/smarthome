@@ -257,10 +257,6 @@ public class TemplateJSONParser implements Parser<RuleTemplate> {
         Visibility visibility = getVisibility(ruleTemplateUID, JSONStructureConstants.VISIBILITY, jsonRuleTemplate,
                 exceptions);
 
-        // get rule visibility of rule template
-        Visibility ruleVisibility = getVisibility(ruleTemplateUID, JSONStructureConstants.RULE_VISIBILITY,
-                jsonRuleTemplate, exceptions);
-
         // get tags of rule template
         Set<String> tags = getTags(ruleTemplateUID, jsonRuleTemplate, exceptions);
 
@@ -274,7 +270,7 @@ public class TemplateJSONParser implements Parser<RuleTemplate> {
 
         // create rule template
         return new RuleTemplate(ruleTemplateUID, label, description, tags, triggers, conditions, actions,
-                configDescriptions, visibility, ruleVisibility);
+                configDescriptions, visibility);
     }
 
     /**

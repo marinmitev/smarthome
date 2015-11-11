@@ -226,9 +226,4 @@ public interface JSONStructureConstants {
      */
     public final String VISIBILITY = "visibility";
 
-    /**
-     * This constant is used as json property that serves to define the visibility of {@link Rule}s defined by templates
-     * .
-     */
-    public final String RULE_VISIBILITY = "ruleVisibility";
 }
