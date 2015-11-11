@@ -65,8 +65,8 @@ public class ModuleTypeResource implements RESTResource {
     public Response getAll(@HeaderParam("Accept-Language") String language, @QueryParam("tags") String tagList,
             @QueryParam("type") String type) {
         Locale locale = LocaleUtil.getLocale(language);
-        Set<String> tags = tagList != null ? new HashSet<>(Arrays.asList(tagList.split(","))) : null;
-        List<ModuleType> allModules = new ArrayList<>();
+        Set<String> tags = tagList != null ? new HashSet<String>(Arrays.asList(tagList.split(","))) : null;
+        List<ModuleType> allModules = new ArrayList<ModuleType>();
         if (type == null || type.equals("trigger")) {
             if (tags == null) {
                 allModules.addAll(moduleTypeRegistry.getAll(TriggerType.class, locale));
