@@ -312,8 +312,7 @@ public class TemplateResourceBundleProvider extends AbstractResourceBundleProvid
                     ((RuleTemplate) defTemplate).getTriggers(), bundle, uid, RuleTemplateI18nUtil.RULE_TEMPLATE,
                     locale);
             return new RuleTemplate(uid, llabel, ldescription, ((RuleTemplate) defTemplate).getTags(), ltriggers,
-                    lconditions, lactions, lconfigDescriptions, ((RuleTemplate) defTemplate).getVisibility(),
-                    ((RuleTemplate) defTemplate).getRuleVisibility());
+                    lconditions, lactions, lconfigDescriptions, ((RuleTemplate) defTemplate).getVisibility());
         }
         return null;
     }

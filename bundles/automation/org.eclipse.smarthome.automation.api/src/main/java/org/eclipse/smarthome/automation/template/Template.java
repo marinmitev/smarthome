@@ -69,11 +69,4 @@ public interface Template {
      */
     public Visibility getVisibility();
 
-    /**
-     * This method is used to show visibility of the rule devined by this template
-     *
-     * @return visibility of template
-     */
-    public Visibility getRuleVisibility();
-
 }
