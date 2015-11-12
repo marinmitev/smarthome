@@ -98,7 +98,7 @@ public class CompositeModuleHandlerFactory extends BaseModuleHandlerFactory impl
         if (module != null) {
             logger.debug("create composite module:" + module + ", of rule: " + ruleUID);
             String moduleType = module.getTypeUID();
-            ModuleType mt = mtManager.getType(moduleType);
+            ModuleType mt = mtManager.get(moduleType);
             if (mt instanceof CompositeTriggerType) {
                 List<Trigger> childModules = ((CompositeTriggerType) mt).getChildren();
                 LinkedHashMap<Trigger, TriggerHandler> mapModuleToHandler = getChildHandlers(module.getConfiguration(),

@@ -27,12 +27,12 @@ public class TemplateRegistryImpl implements TemplateRegistry {
 
     @Override
     public <T extends Template> T get(String key) {
-        return templateManager.getTemplate(key);
+        return templateManager.get(key);
     }
 
     @Override
     public <T extends Template> T get(String uid, Locale locale) {
-        return templateManager.getTemplate(uid, locale);
+        return templateManager.get(uid, locale);
     }
 
     @Override
@@ -42,7 +42,7 @@ public class TemplateRegistryImpl implements TemplateRegistry {
 
     @Override
     public <T extends Template> Collection<T> getByTag(String tag, Locale locale) {
-        return templateManager.getTemplatesByTag(tag, locale);
+        return templateManager.getByTag(tag, locale);
     }
 
     @Override
@@ -52,7 +52,7 @@ public class TemplateRegistryImpl implements TemplateRegistry {
 
     @Override
     public <T extends Template> Collection<T> getByTags(Set<String> tags, Locale locale) {
-        return templateManager.getTemplatesByTags(tags, locale);
+        return templateManager.getByTags(tags, locale);
     }
 
     @Override
@@ -62,7 +62,7 @@ public class TemplateRegistryImpl implements TemplateRegistry {
 
     @Override
     public <T extends Template> Collection<T> getAll(Locale locale) {
-        return templateManager.getTemplates(locale);
+        return templateManager.getAll(locale);
     }
 
     public void dispose() {

@@ -41,11 +41,11 @@ public class TemplateManager implements ServiceTrackerCustomizer {
         templateProviderTracker.open();
     }
 
-    public <T extends Template> T getTemplate(String templateUID) {
-        return getTemplate(templateUID, null);
+    public <T extends Template> T get(String templateUID) {
+        return get(templateUID, null);
     }
 
-    public <T extends Template> T getTemplate(String templateUID, Locale locale) {
+    public <T extends Template> T get(String templateUID, Locale locale) {
         T template = null;
         for (TemplateProvider templateProvider : providers) {
             template = templateProvider.getTemplate(templateUID, locale);
@@ -57,10 +57,10 @@ public class TemplateManager implements ServiceTrackerCustomizer {
     }
 
     public <T extends Template> Collection<T> getTemplatesByTag(String tag) {
-        return getTemplatesByTag(tag, null);
+        return getByTag(tag, null);
     }
 
-    public <T extends Template> Collection<T> getTemplatesByTag(String tag, Locale locale) {
+    public <T extends Template> Collection<T> getByTag(String tag, Locale locale) {
         Collection<T> result = new ArrayList<T>(20);
         Collection<T> templates = null;
         Object[] providers = templateProviderTracker.getServices();
@@ -84,10 +84,10 @@ public class TemplateManager implements ServiceTrackerCustomizer {
     }
 
     public <T extends Template> Collection<T> getTemplatesByTags(Set<String> tags) {
-        return getTemplatesByTags(tags, null);
+        return getByTags(tags, null);
     }
 
-    public <T extends Template> Collection<T> getTemplatesByTags(Set<String> tags, Locale locale) {
+    public <T extends Template> Collection<T> getByTags(Set<String> tags, Locale locale) {
         Collection<T> result = new ArrayList<T>(20);
         Collection<T> templates = null;
         Object[] providers = templateProviderTracker.getServices();
@@ -117,11 +117,11 @@ public class TemplateManager implements ServiceTrackerCustomizer {
     }
 
     public <T extends Template> Collection<T> getTemplates() {
-        return getTemplates(null);
+        return getAll(null);
     }
 
-    public <T extends Template> Collection<T> getTemplates(Locale locale) {
-        return getTemplatesByTag(null, locale);
+    public <T extends Template> Collection<T> getAll(Locale locale) {
+        return getByTag(null, locale);
     }
 
     public void dispose() {

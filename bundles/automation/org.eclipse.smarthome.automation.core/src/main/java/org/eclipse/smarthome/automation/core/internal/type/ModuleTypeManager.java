@@ -56,12 +56,12 @@ public class ModuleTypeManager implements ServiceTrackerCustomizer {
         moduleTypeTracker.open();
     }
 
-    public <T extends ModuleType> T getType(String typeUID) {
-        return getType(typeUID, null);
+    public <T extends ModuleType> T get(String typeUID) {
+        return get(typeUID, null);
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends ModuleType> T getType(String typeUID, Locale locale) {
+    public <T extends ModuleType> T get(String typeUID, Locale locale) {
         ModuleType mType = null;
         for (ModuleTypeProvider provider : providers) {
             mType = provider.getModuleType(typeUID, locale);
@@ -73,12 +73,12 @@ public class ModuleTypeManager implements ServiceTrackerCustomizer {
         return null;
     }
 
-    public <T extends ModuleType> Collection<T> getTypesByTag(String tag) {
-        return getTypesByTag(tag, null);
+    public <T extends ModuleType> Collection<T> getByTag(String tag) {
+        return getByTag(tag, null);
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends ModuleType> Collection<T> getTypesByTag(String tag, Locale locale) {
+    public <T extends ModuleType> Collection<T> getByTag(String tag, Locale locale) {
         Collection<T> result = new ArrayList<T>(20);
         Collection<ModuleType> moduleTypes = null;
         for (ModuleTypeProvider provider : providers) {
@@ -101,11 +101,11 @@ public class ModuleTypeManager implements ServiceTrackerCustomizer {
     }
 
     public <T extends ModuleType> Collection<T> getTypesByTags(Set<String> tags) {
-        return getTypesByTags(tags, null);
+        return getByTags(tags, null);
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends ModuleType> Collection<T> getTypesByTags(Set<String> tags, Locale locale) {
+    public <T extends ModuleType> Collection<T> getByTags(Set<String> tags, Locale locale) {
         Collection<T> result = new ArrayList<T>(20);
         Collection<ModuleType> moduleTypes = null;
         for (ModuleTypeProvider provider : providers) {
@@ -131,12 +131,12 @@ public class ModuleTypeManager implements ServiceTrackerCustomizer {
         return result;
     }
 
-    public <T extends ModuleType> Collection<T> getTypes(Class<T> classModuleType) {
-        return getTypes(classModuleType, null);
+    public <T extends ModuleType> Collection<T> getAll(Class<T> classModuleType) {
+        return getAll(classModuleType, null);
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends ModuleType> Collection<T> getTypes(Class<T> moduleType, Locale locale) {
+    public <T extends ModuleType> Collection<T> getAll(Class<T> moduleType, Locale locale) {
         Collection<T> result = new ArrayList<T>(20);
         Collection<ModuleType> moduleTypes = null;
         for (ModuleTypeProvider provider : providers) {

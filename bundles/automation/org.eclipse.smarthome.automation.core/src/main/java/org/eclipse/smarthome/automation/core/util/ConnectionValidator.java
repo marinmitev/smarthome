@@ -109,7 +109,7 @@ public class ConnectionValidator {
         for (Action a : actions) {
             actionsMap.put(a.getId(), a);
         }
-        ActionType type = (ActionType) mtManager.getType(action.getTypeUID());
+        ActionType type = (ActionType) mtManager.get(action.getTypeUID());
         if (type == null)
             throw new IllegalArgumentException("Action Type with UID \"" + action.getTypeUID() + "\" not exists!");
         List<Input> inputs = type.getInputs();
@@ -133,7 +133,7 @@ public class ConnectionValidator {
                 boolean notFound = true;
                 if (trigger != null) {
                     String triggerTypeUID = trigger.getTypeUID();
-                    TriggerType triggerType = mtManager.getType(triggerTypeUID);
+                    TriggerType triggerType = mtManager.get(triggerTypeUID);
                     if (triggerType == null) {
                         throw new IllegalArgumentException(
                                 msg + " Trigger Type with UID \"" + triggerTypeUID + "\" not exists!");
@@ -145,7 +145,7 @@ public class ConnectionValidator {
                         throw new IllegalArgumentException(msg + " Action " + moduleId + " not exists!");
                     }
                     String processorTypeUID = processor.getTypeUID();
-                    ActionType processorType = mtManager.getType(processorTypeUID);
+                    ActionType processorType = mtManager.get(processorTypeUID);
                     if (processorType == null) {
                         throw new IllegalArgumentException(
                                 msg + " Action Type with UID \"" + processorTypeUID + "\" not exists!");
@@ -196,7 +196,7 @@ public class ConnectionValidator {
         for (Trigger trigger : triggers) {
             triggersMap.put(trigger.getId(), trigger);
         }
-        ConditionType type = (ConditionType) mtManager.getType(condition.getTypeUID());
+        ConditionType type = (ConditionType) mtManager.get(condition.getTypeUID());
         if (type == null)
             throw new IllegalArgumentException("Condition Type \"" + condition.getTypeUID() + "\" does not exist!");
         List<Input> inputs = type.getInputs();
@@ -220,7 +220,7 @@ public class ConnectionValidator {
                     throw new IllegalArgumentException(msg + " Trigger with ID \"" + moduleId + "\" not exists!");
                 }
                 String triggerTypeUID = trigger.getTypeUID();
-                TriggerType triggerType = mtManager.getType(triggerTypeUID);
+                TriggerType triggerType = mtManager.get(triggerTypeUID);
                 if (triggerType == null) {
                     throw new IllegalArgumentException(
                             msg + " Trigger Type with UID \"" + triggerTypeUID + "\" not exists!");
