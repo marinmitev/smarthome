@@ -5,7 +5,6 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.eclipse.smarthome.automation.core.internal.composite;
 
 import java.util.HashMap;
