@@ -7,6 +7,8 @@
  */
 package org.eclipse.smarthome.core.thing.internal;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -157,17 +159,24 @@ public class ThingManager extends AbstractItemEventSubscriber implements ThingTr
             setThingStatus(thing, thingStatus);
 
             if (thing instanceof Bridge) {
-                Bridge bridge = (Bridge) thing;
-                for (Thing bridgeThing : bridge.getThings()) {
-                    if (thingStatus.getStatus() == ThingStatus.ONLINE) {
-                        ThingStatusInfo statusInfo = ThingStatusInfoBuilder.create(ThingStatus.ONLINE).build();
-                        setThingStatus(bridgeThing, statusInfo);
-                    } else if (thingStatus.getStatus() == ThingStatus.OFFLINE) {
-                        ThingStatusInfo statusInfo = ThingStatusInfoBuilder
-                                .create(ThingStatus.OFFLINE, ThingStatusDetail.BRIDGE_OFFLINE).build();
-                        setThingStatus(bridgeThing, statusInfo);
-                    }
-                }
+            	Bridge bridge = (Bridge) thing;
+            	for (Thing bridgeChildThing : bridge.getThings()) {
+            		ThingStatusInfo bridgeChildThingStatus = bridgeChildThing.getStatusInfo();
+            		if (bridgeChildThingStatus.getStatus() == ThingStatus.ONLINE
+            				|| bridgeChildThingStatus.getStatus() == ThingStatus.OFFLINE) {
+
+            			if (thingStatus.getStatus() == ThingStatus.ONLINE
+            					&& bridgeChildThingStatus.getStatusDetail() == ThingStatusDetail.BRIDGE_OFFLINE) {
+            				ThingStatusInfo statusInfo = ThingStatusInfoBuilder.create(ThingStatus.OFFLINE,
+            						ThingStatusDetail.NONE).build();
+            				setThingStatus(bridgeChildThing, statusInfo);
+            			} else if (thingStatus.getStatus() == ThingStatus.OFFLINE) {
+            				ThingStatusInfo statusInfo = ThingStatusInfoBuilder.create(ThingStatus.OFFLINE,
+            						ThingStatusDetail.BRIDGE_OFFLINE).build();
+            				setThingStatus(bridgeChildThing, statusInfo);
+            			}
+            		}
+            	}
             }
 
             if (ThingStatus.REMOVING.equals(thing.getStatus())) {
@@ -186,7 +195,13 @@ public class ThingManager extends AbstractItemEventSubscriber implements ThingTr
                     @Override
                     public void run() {
                         try {
-                            thingRegistry.forceRemove(thing.getUID());
+                            AccessController.doPrivileged(new PrivilegedAction<Void>() {
+                                @Override
+                                public Void run() {
+                                    thingRegistry.forceRemove(thing.getUID());
+                                    return null;
+                                }
+                            });
                         } catch (IllegalStateException ex) {
                             logger.debug("Could not remove thing {}. Most likely because it is not managed.",
                                     thing.getUID(), ex);
@@ -202,9 +217,17 @@ public class ThingManager extends AbstractItemEventSubscriber implements ThingTr
         }
 
         @Override
-        public void thingUpdated(Thing thing) {
+        public void thingUpdated(final Thing thing) {
             thingUpdatedLock.add(thing.getUID());
-            managedThingProvider.update(thing);
+            AccessController.doPrivileged(new PrivilegedAction<Void>() {
+
+                @Override
+                public Void run() {
+                    managedThingProvider.update(thing);
+                    return null;
+                }
+
+            });
             thingUpdatedLock.remove(thing.getUID());
         }
 
@@ -278,8 +301,8 @@ public class ThingManager extends AbstractItemEventSubscriber implements ThingTr
                                 }
                             });
                         } catch (TimeoutException ex) {
-                            logger.warn("Handler for thing {} took more than {}ms for processing event",
-                                    handler.getThing().getUID().toString(), SafeMethodCaller.DEFAULT_TIMEOUT);
+                            logger.warn("Handler for thing '{}' takes more than {}ms for processing event",
+                                    handler.getThing().getUID(), SafeMethodCaller.DEFAULT_TIMEOUT);
                         } catch (Exception ex) {
                             logger.error("Exception occured while calling handler: " + ex.getMessage(), ex);
                         }
@@ -321,8 +344,8 @@ public class ThingManager extends AbstractItemEventSubscriber implements ThingTr
                                 }
                             });
                         } catch (TimeoutException ex) {
-                            logger.warn("Handler for thing {} took more than {}ms for processing event",
-                                    handler.getThing().getUID().toString(), SafeMethodCaller.DEFAULT_TIMEOUT);
+                            logger.warn("Handler for thing {} takes more than {}ms for processing event",
+                                    handler.getThing().getUID(), SafeMethodCaller.DEFAULT_TIMEOUT);
                         } catch (Exception ex) {
                             logger.error("Exception occured while calling handler: " + ex.getMessage(), ex);
                         }
@@ -331,7 +354,6 @@ public class ThingManager extends AbstractItemEventSubscriber implements ThingTr
                                 + "because no handler is assigned. Maybe the binding is not installed or not "
                                 + "propertly initialized.", newState, itemName, channelUID);
                     }
-
                 } else {
                     logger.warn(
                             "Cannot delegate update '{}' for item '{}' to handler for channel '{}', "
@@ -493,7 +515,8 @@ public class ThingManager extends AbstractItemEventSubscriber implements ThingTr
             ThingStatusInfo statusInfo = buildStatusInfo(ThingStatus.UNINITIALIZED,
                     ThingStatusDetail.HANDLER_INITIALIZING_ERROR, ex.getMessage());
             setThingStatus(thing, statusInfo);
-            logger.error("Registering thing handler timed out: " + ex.getMessage(), ex);
+            logger.warn("Registering handler for thing '{}' takes more than {}ms.", thing.getUID(),
+                    SafeMethodCaller.DEFAULT_TIMEOUT);
         } catch (Exception ex) {
             ThingStatusInfo statusInfo = buildStatusInfo(ThingStatus.UNINITIALIZED,
                     ThingStatusDetail.HANDLER_INITIALIZING_ERROR, ex.getMessage());
@@ -620,13 +643,16 @@ public class ThingManager extends AbstractItemEventSubscriber implements ThingTr
     }
 
     private void setThingStatus(Thing thing, ThingStatusInfo thingStatusInfo) {
+        ThingStatusInfo oldStatusInfo = thing.getStatusInfo();
         thing.setStatusInfo(thingStatusInfo);
-        if (eventPublisher != null) {
-            try {
-                eventPublisher.post(ThingEventFactory.createStatusInfoEvent(thing.getUID(), thingStatusInfo));
-            } catch (Exception ex) {
-                logger.error("Could not post 'ThingStatusInfoEvent' event: " + ex.getMessage(), ex);
+        try {
+            eventPublisher.post(ThingEventFactory.createStatusInfoEvent(thing.getUID(), thingStatusInfo));
+            if (!oldStatusInfo.equals(thingStatusInfo)) {
+                eventPublisher.post(
+                        ThingEventFactory.createStatusInfoChangedEvent(thing.getUID(), thingStatusInfo, oldStatusInfo));
             }
+        } catch (Exception ex) {
+            logger.error("Could not post 'ThingStatusInfoEvent' event: " + ex.getMessage(), ex);
         }
     }
 

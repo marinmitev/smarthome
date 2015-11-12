@@ -19,30 +19,17 @@
     <module>org.eclipse.smarthome.transform.exec</module>
     <module>org.eclipse.smarthome.transform.javascript</module>
     <module>org.eclipse.smarthome.transform.map</module>
+    <module>org.eclipse.smarthome.transform.map.test</module>
+    <module>org.eclipse.smarthome.transform.scale</module>
+    <module>org.eclipse.smarthome.transform.scale.test</module>
     <module>org.eclipse.smarthome.transform.regex</module>
 	<module>org.eclipse.smarthome.transform.regex.test</module>
     <module>org.eclipse.smarthome.transform.xpath</module>
 	<module>org.eclipse.smarthome.transform.xpath.test</module>
+    <module>org.eclipse.smarthome.transform.jsonpath</module>
+	<module>org.eclipse.smarthome.transform.jsonpath.test</module>
 	<module>org.eclipse.smarthome.transform.xslt</module>
 	<module>org.eclipse.smarthome.transform.xslt.test</module>
   </modules>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.eclipse.tycho</groupId>
-        <artifactId>tycho-source-plugin</artifactId>
-        <version>${tycho-version}</version>
-        <executions>
-          <execution>
-            <id>plugin-source</id>
-            <goals>
-              <goal>plugin-source</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
 
 </project>
