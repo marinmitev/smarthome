@@ -439,7 +439,7 @@ public class RuleEngine
      */
     private RuntimeRule getRuleByTemplate(RuntimeRule rule) {
         String ruleTemplateUID = rule.getTemplateUID();
-        RuleTemplate template = (RuleTemplate) tManager.getTemplate(ruleTemplateUID);
+        RuleTemplate template = (RuleTemplate) tManager.get(ruleTemplateUID);
         if (template == null) {
             logger.debug("Rule template '" + ruleTemplateUID + "' does not exist.");
             return null;
@@ -591,7 +591,7 @@ public class RuleEngine
     public ModuleHandler getModuleHandler(Module m, String ruleUID) {
         String moduleTypeId = m.getTypeUID();
         ModuleHandlerFactory mhf = getModuleHandlerFactory(moduleTypeId, ruleUID);
-        if (mhf == null || mtManager.getType(moduleTypeId) == null) {
+        if (mhf == null || mtManager.get(moduleTypeId) == null) {
             return null;
         }
         return mhf.getHandler(m, ruleUID);
@@ -600,7 +600,7 @@ public class RuleEngine
     public ModuleHandlerFactory getModuleHandlerFactory(String moduleTypeId, String rUID) {
         ModuleHandlerFactory mhf = moduleHandlerFactories.get(moduleTypeId);
         if (mhf == null) {
-            ModuleType mt = mtManager.getType(moduleTypeId);
+            ModuleType mt = mtManager.get(moduleTypeId);
             if (mt instanceof CompositeTriggerType || //
                     mt instanceof CompositeConditionType || //
                     mt instanceof CompositeActionType) {
@@ -1274,7 +1274,7 @@ public class RuleEngine
         for (T module : modules) {
             Map<String, Object> moduleConfiguration = module.getConfiguration();
             String typeId = module.getTypeUID();
-            ModuleType mt = mtManager.getType(typeId);
+            ModuleType mt = mtManager.get(typeId);
             List<ConfigDescriptionParameter> configs = mt.getConfigurationDescription();
             if (configs != null) {
                 for (ConfigDescriptionParameter config : configs) {
