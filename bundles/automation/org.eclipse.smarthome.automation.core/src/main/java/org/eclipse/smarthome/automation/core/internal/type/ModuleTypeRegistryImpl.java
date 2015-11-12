@@ -28,22 +28,22 @@ public class ModuleTypeRegistryImpl implements ModuleTypeRegistry {
 
     @Override
     public <T extends ModuleType> T get(String key) {
-        return moduleTypeManager.getType(key);
+        return moduleTypeManager.get(key);
     }
 
     @Override
     public <T extends ModuleType> T get(String moduleTypeUID, Locale locale) {
-        return moduleTypeManager.getType(moduleTypeUID, locale);
+        return moduleTypeManager.get(moduleTypeUID, locale);
     }
 
     @Override
     public <T extends ModuleType> Collection<T> getByTag(String moduleTypeTag) {
-        return moduleTypeManager.getTypesByTag(moduleTypeTag);
+        return moduleTypeManager.getByTag(moduleTypeTag);
     }
 
     @Override
     public <T extends ModuleType> Collection<T> getByTag(String moduleTypeTag, Locale locale) {
-        return moduleTypeManager.getTypesByTag(moduleTypeTag, locale);
+        return moduleTypeManager.getByTag(moduleTypeTag, locale);
     }
 
     @Override
@@ -53,12 +53,12 @@ public class ModuleTypeRegistryImpl implements ModuleTypeRegistry {
 
     @Override
     public <T extends ModuleType> Collection<T> getByTags(Set<String> tags, Locale locale) {
-        return moduleTypeManager.getTypesByTags(tags, locale);
+        return moduleTypeManager.getByTags(tags, locale);
     }
 
     @Override
     public <T extends ModuleType> Collection<T> getAll(Class<T> moduleType, Locale locale) {
-        return moduleTypeManager.getTypes(moduleType, locale);
+        return moduleTypeManager.getAll(moduleType, locale);
     }
 
     public void dispose() {
@@ -67,7 +67,7 @@ public class ModuleTypeRegistryImpl implements ModuleTypeRegistry {
 
     @Override
     public <T extends ModuleType> Collection<T> getAll(Class<T> classModuleType) {
-        return moduleTypeManager.getTypes(classModuleType);
+        return moduleTypeManager.getAll(classModuleType);
     }
 
 }
