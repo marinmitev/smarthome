@@ -17,7 +17,6 @@
 
   <modules>
     <module>org.eclipse.smarthome.automation.api</module>
-    <module>org.eclipse.smarthome.automation.json</module>
     <module>org.eclipse.smarthome.automation.commands</module>
     <module>org.eclipse.smarthome.automation.parser.gson</module>
     <module>org.eclipse.smarthome.automation.parser.json</module>
