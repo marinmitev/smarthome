@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-2015 openHAB UG (haftungsbeschraenkt) and others.
+ * Copyright (c) 1997, 2015 by ProSyst Software GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,6 +24,7 @@ import org.eclipse.smarthome.automation.Trigger
 import org.eclipse.smarthome.automation.type.ModuleTypeRegistry
 import org.eclipse.smarthome.automation.events.RuleStatusInfoEvent
 import org.eclipse.smarthome.automation.module.core.handler.CompareConditionHandler;
+import org.eclipse.smarthome.automation.module.core.handler.TimerTriggerHandler
 import org.eclipse.smarthome.core.events.Event
 import org.eclipse.smarthome.core.events.EventPublisher
 import org.eclipse.smarthome.core.events.EventSubscriber
@@ -75,7 +76,8 @@ class RuntimeRuleTest extends OSGiTest{
                     new SwitchItem("myLampItem3"),
                     new SwitchItem("myMotionItem4"),
                     new SwitchItem("myPresenceItem4"),
-                    new SwitchItem("myLampItem4")
+                    new SwitchItem("myLampItem4"),
+                    new SwitchItem("myLampItem5")
                 ]
             },
             addProviderChangeListener: {},
@@ -193,6 +195,7 @@ class RuntimeRuleTest extends OSGiTest{
         def mtr = getService(ModuleTypeRegistry) as ModuleTypeRegistry
         waitForAssert({
             assertThat mtr.get("GenericEventTrigger"), is(notNullValue())
+            assertThat mtr.get("TimerTrigger"), is(notNullValue())
             assertThat mtr.get("ItemStateChangeTrigger"), is(notNullValue())
             assertThat mtr.get("EventCondition"), is(notNullValue())
             assertThat mtr.get("ItemStateEventCondition"), is(notNullValue())
@@ -200,6 +203,43 @@ class RuntimeRuleTest extends OSGiTest{
             assertThat mtr.get("ItemStateEvent_OFF_Condition"), is(notNullValue())
             assertThat mtr.get(CompareConditionHandler.MODULE_TYPE), is(notNullValue())
         },3000,100)
+    }
+    
+    @Test
+    public void 'assert that timerTrigger works'(){
+        def testExpression = "* * * * * ?" 
+        def testItemName = "myLampItem5"
+
+        def triggerConfig = [cronExpression:testExpression]
+        def triggers = [new Trigger("MyTimerTrigger", "TimerTrigger", triggerConfig)] 
+       
+        def actionConfig = [itemName:testItemName, command:"ON"]
+        def actions = [new Action("MyItemPostCommandAction", "ItemPostCommandAction", actionConfig, null)]
+        
+        def conditionConfig = [operator:"=", itemName:testItemName, state:"OFF"]
+        def conditions = [new Condition("MyItemStateCondition", "ItemStateCondition", conditionConfig, null)]
+             
+        def rule = new Rule("MyRule"+new Random().nextInt(),triggers, conditions, actions, null, null)
+        rule.name="MyTimerTriggerTestRule"
+        logger.info("Rule created: "+rule.getUID())
+        
+        def ItemRegistry itemRegistry = getService(ItemRegistry)
+        def SwitchItem lampItem = itemRegistry.getItem(testItemName)
+        lampItem.send(OnOffType.OFF); 
+        waitForAssert({
+            assertThat lampItem.state,is(OnOffType.OFF)
+        })
+  
+        def ruleRegistry = getService(RuleRegistry) as RuleRegistry
+        ruleRegistry.add(rule)
+        ruleRegistry.setEnabled(rule.UID, true)
+        waitForAssert({
+          assertThat ruleRegistry.getStatus(rule.UID).status, is(RuleStatus.IDLE)
+        })
+        
+        waitForAssert({  
+            assertThat lampItem.state,is(OnOffType.ON)
+        })
     }
     
     @Test

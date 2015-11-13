@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-2015 openHAB UG (haftungsbeschraenkt) and others.
+ * Copyright (c) 1997, 2015 by ProSyst Software GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,7 @@ import org.eclipse.smarthome.automation.module.core.handler.EventConditionHandle
 import org.eclipse.smarthome.automation.module.core.handler.GenericEventTriggerHandler;
 import org.eclipse.smarthome.automation.module.core.handler.ItemPostCommandActionHandler;
 import org.eclipse.smarthome.automation.module.core.handler.ItemStateConditionHandler;
+import org.eclipse.smarthome.automation.module.core.handler.TimerTriggerHandler;
 import org.eclipse.smarthome.core.events.EventPublisher;
 import org.eclipse.smarthome.core.items.ItemRegistry;
 import org.osgi.framework.BundleContext;
@@ -45,7 +46,7 @@ public class BasicModuleHandlerFactory extends BaseModuleHandlerFactory {
     private static final Collection<String> types = Arrays
             .asList(new String[] { ItemStateConditionHandler.ITEM_STATE_CONDITION,
                     ItemPostCommandActionHandler.ITEM_POST_COMMAND_ACTION, GenericEventTriggerHandler.MODULE_TYPE_ID,
-                    EventConditionHandler.MODULETYPE_ID, CompareConditionHandler.MODULE_TYPE });
+                    EventConditionHandler.MODULETYPE_ID, CompareConditionHandler.MODULE_TYPE, TimerTriggerHandler.MODULE_TYPE_ID });
 
     @SuppressWarnings("rawtypes")
     private ServiceTracker itemRegistryTracker;
@@ -231,10 +232,18 @@ public class BasicModuleHandlerFactory extends BaseModuleHandlerFactory {
             CompareConditionHandler compareConditionHandler = handler != null
                     && handler instanceof CompareConditionHandler ? (CompareConditionHandler) handler : null;
             if (compareConditionHandler == null) {
-                compareConditionHandler = new CompareConditionHandler((Condition)module);
-                handlers.put(ruleUID+module.getId(), compareConditionHandler);
+                compareConditionHandler = new CompareConditionHandler((Condition) module);
+                handlers.put(ruleUID + module.getId(), compareConditionHandler);
             }
             return compareConditionHandler;
+        } else if (TimerTriggerHandler.MODULE_TYPE_ID.equals(moduleTypeUID) && module instanceof Trigger) {
+            TimerTriggerHandler timerTriggerHandler = handler != null && handler instanceof TimerTriggerHandler
+                    ? (TimerTriggerHandler) handler : null;
+            if (timerTriggerHandler == null) {
+                timerTriggerHandler = new TimerTriggerHandler((Trigger) module);
+                handlers.put(ruleUID + module.getId(), timerTriggerHandler);
+            }
+            return timerTriggerHandler;
         } else {
             logger.error("The ModuleHandler is not supported:" + moduleTypeUID);
         }
