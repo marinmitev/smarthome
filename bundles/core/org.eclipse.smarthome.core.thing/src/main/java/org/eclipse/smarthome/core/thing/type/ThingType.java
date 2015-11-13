@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.smarthome.config.core.ConfigDescription;
+import org.eclipse.smarthome.core.thing.ChannelUID;
 import org.eclipse.smarthome.core.thing.Thing;
 import org.eclipse.smarthome.core.thing.ThingTypeUID;
 
@@ -63,9 +64,9 @@ public class ThingType extends AbstractDescriptionType {
      *
      * @param channelGroupDefinitions the channel groups defining the channels this Thing type
      *            provides (could be null or empty)
-     * 
+     *
      * @param properties the properties this Thing type provides (could be null)
-     * 
+     *
      * @param configDescriptionURI the link to the concrete ConfigDescription (could be null)
      *
      * @throws IllegalArgumentException
@@ -180,11 +181,43 @@ public class ThingType extends AbstractDescriptionType {
 
     /**
      * Returns the properties for this {@link ThingType}
-     * 
+     *
      * @return the properties for this {@link ThingType} (not null)
      */
     public Map<String, String> getProperties() {
         return properties;
+    }
+
+    /**
+     * Returns a channel type UID for the given channel UID from the thing type. The channel UID must be a channel,
+     * which is defined in a thing, which thing types matches this thing type.
+     *
+     * @param channelUID channel UID
+     * @return channel type UID or null if no matching channel type UID could be found in the thing type
+     */
+    public ChannelTypeUID getChannelTypeUID(ChannelUID channelUID) {
+        if (!channelUID.isInGroup()) {
+            for (ChannelDefinition channelDefinition : this.getChannelDefinitions()) {
+                if (channelDefinition.getId().equals(channelUID.getId())) {
+                    return channelDefinition.getChannelTypeUID();
+                }
+            }
+        } else {
+            List<ChannelGroupDefinition> channelGroupDefinitions = this.getChannelGroupDefinitions();
+            for (ChannelGroupDefinition channelGroupDefinition : channelGroupDefinitions) {
+                if (channelGroupDefinition.getId().equals(channelUID.getGroupId())) {
+                    ChannelGroupType channelGroupType = TypeResolver.resolve(channelGroupDefinition.getTypeUID());
+                    if (channelGroupType != null) {
+                        for (ChannelDefinition channelDefinition : channelGroupType.getChannelDefinitions()) {
+                            if (channelDefinition.getId().equals(channelUID.getIdWithoutGroup())) {
+                                return channelDefinition.getChannelTypeUID();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return null;
     }
 
     @Override

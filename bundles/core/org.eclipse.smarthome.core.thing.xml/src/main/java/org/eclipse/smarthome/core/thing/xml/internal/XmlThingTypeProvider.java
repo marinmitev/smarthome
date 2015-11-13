@@ -10,6 +10,7 @@ package org.eclipse.smarthome.core.thing.xml.internal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -24,16 +25,8 @@ import org.eclipse.smarthome.core.thing.i18n.ThingTypeI18nUtil;
 import org.eclipse.smarthome.core.thing.type.BridgeType;
 import org.eclipse.smarthome.core.thing.type.ChannelDefinition;
 import org.eclipse.smarthome.core.thing.type.ChannelGroupDefinition;
-import org.eclipse.smarthome.core.thing.type.ChannelGroupType;
-import org.eclipse.smarthome.core.thing.type.ChannelGroupTypeUID;
-import org.eclipse.smarthome.core.thing.type.ChannelType;
-import org.eclipse.smarthome.core.thing.type.ChannelTypeUID;
-import org.eclipse.smarthome.core.thing.type.SystemChannelTypeProvider;
 import org.eclipse.smarthome.core.thing.type.ThingType;
-import org.eclipse.smarthome.core.types.StateDescription;
-import org.eclipse.smarthome.core.types.StateOption;
 import org.osgi.framework.Bundle;
-import org.osgi.util.tracker.ServiceTracker;
 
 /**
  * The {@link XmlThingTypeProvider} is a concrete implementation of the {@link ThingTypeProvider} service interface.
@@ -42,24 +35,68 @@ import org.osgi.util.tracker.ServiceTracker;
  * disappears, any registered {@link ThingType} objects associated with that module are released.
  *
  * @author Michael Grammling - Initial Contribution
- * @author Dennis Nobel - Added locale support
+ * @author Dennis Nobel - Added locale support, Added cache for localized thing types
  * @author Ivan Iliev - Added support for system wide channel types
  */
 public class XmlThingTypeProvider implements ThingTypeProvider {
+
+    private class LocalizedThingTypeKey {
+        public ThingTypeUID uid;
+        public String locale;
+
+        public LocalizedThingTypeKey(ThingTypeUID uid, String locale) {
+            this.uid = uid;
+            this.locale = locale;
+        }
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + getOuterType().hashCode();
+            result = prime * result + ((locale == null) ? 0 : locale.hashCode());
+            result = prime * result + ((uid == null) ? 0 : uid.hashCode());
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            LocalizedThingTypeKey other = (LocalizedThingTypeKey) obj;
+            if (!getOuterType().equals(other.getOuterType()))
+                return false;
+            if (locale == null) {
+                if (other.locale != null)
+                    return false;
+            } else if (!locale.equals(other.locale))
+                return false;
+            if (uid == null) {
+                if (other.uid != null)
+                    return false;
+            } else if (!uid.equals(other.uid))
+                return false;
+            return true;
+        }
+
+        private XmlThingTypeProvider getOuterType() {
+            return XmlThingTypeProvider.this;
+        }
+
+    }
+
+    private Map<LocalizedThingTypeKey, ThingType> localizedThingTypeCache = new HashMap<>();
 
     private Map<Bundle, List<ThingType>> bundleThingTypesMap;
 
     private ThingTypeI18nUtil thingTypeI18nUtil;
 
-    private ServiceTracker<SystemChannelTypeProvider, SystemChannelTypeProvider> serviceTracker;
-
-    private XmlSystemChannelTypeProvider xmlSystemChannelTypeProvider;
-
-    public XmlThingTypeProvider(ServiceTracker<SystemChannelTypeProvider, SystemChannelTypeProvider> serviceTracker,
-            XmlSystemChannelTypeProvider xmlSystemChannelTypeProvider) {
+    public XmlThingTypeProvider() {
         this.bundleThingTypesMap = new HashMap<>(10);
-        this.serviceTracker = serviceTracker;
-        this.xmlSystemChannelTypeProvider = xmlSystemChannelTypeProvider;
     }
 
     private List<ThingType> acquireThingTypes(Bundle bundle) {
@@ -95,87 +132,21 @@ public class XmlThingTypeProvider implements ThingTypeProvider {
 
             if (thingTypes != null) {
                 thingTypes.add(thingType);
+                // just make sure no old entry remains in the cache
+                removeCachedEntries(thingType);
             }
         }
-    }
-
-    private ChannelDefinition createLocalizedChannelDefinition(Bundle bundle, ChannelDefinition channelDefinition,
-            Locale locale) {
-
-        if (this.thingTypeI18nUtil != null) {
-            ChannelType channelType = channelDefinition.getType();
-
-            ChannelTypeUID channelTypeUID = channelType.getUID();
-
-            String label = this.thingTypeI18nUtil.getChannelLabel(bundle, channelTypeUID, channelType.getLabel(),
-                    locale);
-            String description = this.thingTypeI18nUtil.getChannelDescription(bundle, channelTypeUID,
-                    channelType.getDescription(), locale);
-
-            StateDescription state = createLocalizedChannelState(bundle, channelType, channelTypeUID, locale);
-
-            ChannelType localizedChannelType = new ChannelType(channelTypeUID, channelType.isAdvanced(),
-                    channelType.getItemType(), label, description, channelType.getCategory(), channelType.getTags(),
-                    state, channelType.getConfigDescriptionURI());
-
-            return new ChannelDefinition(channelDefinition.getId(), localizedChannelType,
-                    channelDefinition.getProperties(), channelDefinition.getLabel(),
-                    channelDefinition.getDescription());
-        }
-        return channelDefinition;
-    }
-
-    private ChannelGroupDefinition createLocalizedChannelGroupDefinition(Bundle bundle,
-            ChannelGroupDefinition channelGroupDefinition, Locale locale) {
-
-        ChannelGroupType channelGroupType = channelGroupDefinition.getType();
-
-        List<ChannelDefinition> localizedChannelDefinitions = new ArrayList<>();
-        List<ChannelDefinition> channelDefinitions = channelGroupType.getChannelDefinitions();
-
-        for (ChannelDefinition channelDefinition : channelDefinitions) {
-            ChannelDefinition localizedChannelDefinition = createLocalizedChannelDefinition(bundle, channelDefinition,
-                    locale);
-            localizedChannelDefinitions.add(localizedChannelDefinition);
-        }
-
-        ChannelGroupTypeUID channelGroupTypeUID = channelGroupType.getUID();
-
-        String label = this.thingTypeI18nUtil.getChannelGroupLabel(bundle, channelGroupTypeUID,
-                channelGroupType.getLabel(), locale);
-        String description = this.thingTypeI18nUtil.getChannelGroupDescription(bundle, channelGroupTypeUID,
-                channelGroupType.getDescription(), locale);
-
-        ChannelGroupType localizedChannelGroupType = new ChannelGroupType(channelGroupTypeUID,
-                channelGroupType.isAdvanced(), label, description, localizedChannelDefinitions);
-
-        return new ChannelGroupDefinition(channelGroupDefinition.getId(), localizedChannelGroupType);
-    }
-
-    private StateDescription createLocalizedChannelState(Bundle bundle, ChannelType channelType,
-            ChannelTypeUID channelTypeUID, Locale locale) {
-
-        StateDescription state = channelType.getState();
-
-        if (state != null) {
-            String pattern = this.thingTypeI18nUtil.getChannelStatePattern(bundle, channelTypeUID, state.getPattern(),
-                    locale);
-
-            List<StateOption> localizedOptions = new ArrayList<>();
-            List<StateOption> options = state.getOptions();
-            for (StateOption stateOption : options) {
-                String optionLabel = this.thingTypeI18nUtil.getChannelStateOption(bundle, channelTypeUID,
-                        stateOption.getValue(), stateOption.getLabel(), locale);
-                localizedOptions.add(new StateOption(stateOption.getValue(), optionLabel));
-            }
-
-            return new StateDescription(state.getMinimum(), state.getMaximum(), state.getStep(), pattern,
-                    state.isReadOnly(), localizedOptions);
-        }
-        return null;
     }
 
     private ThingType createLocalizedThingType(Bundle bundle, ThingType thingType, Locale locale) {
+
+        LocalizedThingTypeKey localizedThingTypeKey = getLocalizedThingTypeKey(thingType, locale);
+
+        ThingType cacheEntry = localizedThingTypeCache.get(localizedThingTypeKey);
+        if (cacheEntry != null) {
+            return cacheEntry;
+        }
+
         if (this.thingTypeI18nUtil != null) {
             String label = this.thingTypeI18nUtil.getLabel(bundle, thingType.getUID(), thingType.getLabel(), locale);
             String description = this.thingTypeI18nUtil.getDescription(bundle, thingType.getUID(),
@@ -185,31 +156,56 @@ public class XmlThingTypeProvider implements ThingTypeProvider {
                     thingType.getChannelDefinitions().size());
 
             for (ChannelDefinition channelDefinition : thingType.getChannelDefinitions()) {
-                ChannelDefinition localizedChannelDefinition = createLocalizedChannelDefinition(bundle,
-                        channelDefinition, locale);
-                localizedChannelDefinitions.add(localizedChannelDefinition);
+                localizedChannelDefinitions.add(channelDefinition);
             }
 
             List<ChannelGroupDefinition> localizedChannelGroupDefinitions = new ArrayList<>(
                     thingType.getChannelGroupDefinitions().size());
             for (ChannelGroupDefinition channelGroupDefinition : thingType.getChannelGroupDefinitions()) {
-                ChannelGroupDefinition localizedchannelGroupDefinition = createLocalizedChannelGroupDefinition(bundle,
-                        channelGroupDefinition, locale);
-                localizedChannelGroupDefinitions.add(localizedchannelGroupDefinition);
+                localizedChannelGroupDefinitions.add(channelGroupDefinition);
             }
 
             if (thingType instanceof BridgeType) {
                 BridgeType bridgeType = (BridgeType) thingType;
-                return new BridgeType(bridgeType.getUID(), bridgeType.getSupportedBridgeTypeUIDs(), label, description,
-                        localizedChannelDefinitions, localizedChannelGroupDefinitions, thingType.getProperties(),
+                BridgeType localizedBridgeType = new BridgeType(bridgeType.getUID(),
+                        bridgeType.getSupportedBridgeTypeUIDs(), label, description, localizedChannelDefinitions,
+                        localizedChannelGroupDefinitions, thingType.getProperties(),
                         bridgeType.getConfigDescriptionURI());
+                localizedThingTypeCache.put(localizedThingTypeKey, localizedBridgeType);
+                return localizedBridgeType;
+            } else {
+                ThingType localizedThingType = new ThingType(thingType.getUID(), thingType.getSupportedBridgeTypeUIDs(),
+                        label, description, localizedChannelDefinitions, localizedChannelGroupDefinitions,
+                        thingType.getProperties(), thingType.getConfigDescriptionURI());
+                localizedThingTypeCache.put(localizedThingTypeKey, localizedThingType);
+                return localizedThingType;
             }
-            return new ThingType(thingType.getUID(), thingType.getSupportedBridgeTypeUIDs(), label, description,
-                    localizedChannelDefinitions, localizedChannelGroupDefinitions, thingType.getProperties(),
-                    thingType.getConfigDescriptionURI());
 
         }
         return thingType;
+    }
+
+    private LocalizedThingTypeKey getLocalizedThingTypeKey(ThingType thingType, Locale locale) {
+        String localeString = locale != null ? locale.toLanguageTag() : null;
+        LocalizedThingTypeKey localizedThingTypeKey = new LocalizedThingTypeKey(thingType.getUID(),
+                locale != null ? localeString : null);
+        return localizedThingTypeKey;
+    }
+
+    private void removeCachedEntries(List<ThingType> thingTypes) {
+        for (ThingType thingType : thingTypes) {
+            removeCachedEntries(thingType);
+        }
+    }
+
+    private void removeCachedEntries(ThingType thingType) {
+        for (Iterator<Entry<LocalizedThingTypeKey, ThingType>> iterator = this.localizedThingTypeCache.entrySet()
+                .iterator(); iterator.hasNext();) {
+            Entry<LocalizedThingTypeKey, ThingType> entry = iterator.next();
+            if (entry.getKey().uid.equals(thingType.getUID())) {
+                iterator.remove();
+            }
+        }
     }
 
     @Override
@@ -262,29 +258,9 @@ public class XmlThingTypeProvider implements ThingTypeProvider {
 
             if (thingTypes != null) {
                 this.bundleThingTypesMap.remove(bundle);
+                removeCachedEntries(thingTypes);
             }
         }
-    }
-
-    public void addXmlSystemChannelType(ChannelType type) {
-        xmlSystemChannelTypeProvider.addChannelType(type);
-    }
-
-    public boolean removeXmlSystemChannelType(ChannelType type) {
-        return xmlSystemChannelTypeProvider.removeChannelType(type);
-    }
-
-    public List<ChannelType> getAllSystemChannelTypes() {
-
-        List<ChannelType> channelTypes = new ArrayList<ChannelType>();
-
-        Object[] providers = serviceTracker.getServices();
-
-        for (Object provider : providers) {
-            channelTypes.addAll(((SystemChannelTypeProvider) provider).getSystemChannelTypes());
-        }
-
-        return channelTypes;
     }
 
     @Bind

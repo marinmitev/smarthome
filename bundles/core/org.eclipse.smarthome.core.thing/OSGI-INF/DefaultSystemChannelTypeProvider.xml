@@ -11,6 +11,6 @@
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="true" name="org.eclipse.smarthome.core.thing.internal.SystemChannelTypeProviderImpl">
    <implementation class="org.eclipse.smarthome.core.thing.DefaultSystemChannelTypeProvider"/>
    <service>
-      <provide interface="org.eclipse.smarthome.core.thing.type.SystemChannelTypeProvider"/>
+      <provide interface="org.eclipse.smarthome.core.thing.type.ChannelTypeProvider"/>
    </service>
 </scr:component>
