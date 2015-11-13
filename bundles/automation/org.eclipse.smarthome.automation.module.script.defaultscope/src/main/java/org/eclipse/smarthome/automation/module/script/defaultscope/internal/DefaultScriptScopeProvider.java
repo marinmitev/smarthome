@@ -34,7 +34,6 @@ import org.eclipse.smarthome.core.types.Command;
 import org.eclipse.smarthome.core.types.State;
 import org.joda.time.DateTime;
 import org.joda.time.LocalTime;
-import org.openhab.io.multimedia.actions.Audio;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -142,13 +141,6 @@ public class DefaultScriptScopeProvider implements ScriptScopeProvider {
             elements.put("items", new ItemRegistryDelegate(itemRegistry));
             elements.put("things", thingRegistry);
             elements.put("events", busEvent);
-
-            try {
-                elements.put("audio", new Audio());
-            } catch (NoClassDefFoundError e) {
-                logger.debug("Audio support not present, therefore no support for Audio in scripts");
-            }
-
         }
         return elements;
     }
