@@ -7,7 +7,10 @@
  */
 package org.eclipse.smarthome.automation.events;
 
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.smarthome.automation.Rule;
 import org.eclipse.smarthome.automation.RuleStatusInfo;
@@ -15,9 +18,6 @@ import org.eclipse.smarthome.core.events.AbstractEventFactory;
 import org.eclipse.smarthome.core.events.Event;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 
 /**
  * this is a factory to create Rule Events
@@ -37,9 +37,17 @@ public class RuleEventFactory extends AbstractEventFactory {
 
     private static final String RULE_UPDATED_EVENT_TOPIC = "smarthome/rules/{ruleID}/updated";
 
+    private static final Set<String> SUPPORTED_TYPES = new HashSet<String>();
+
+    static {
+        SUPPORTED_TYPES.add(RULE_ADDED_EVENT_TOPIC);
+        SUPPORTED_TYPES.add(RULE_REMOVED_EVENT_TOPIC);
+        SUPPORTED_TYPES.add(RULE_STATE_EVENT_TOPIC);
+        SUPPORTED_TYPES.add(RULE_UPDATED_EVENT_TOPIC);
+    }
+
     public RuleEventFactory() {
-        super(Sets.newHashSet(RuleAddedEvent.TYPE, RuleRemovedEvent.TYPE, RuleStatusInfoEvent.TYPE,
-                RuleUpdatedEvent.TYPE));
+        super(SUPPORTED_TYPES);
     }
 
     @Override
@@ -100,7 +108,7 @@ public class RuleEventFactory extends AbstractEventFactory {
      */
     public static RuleUpdatedEvent createRuleUpdatedEvent(Rule rule, Rule oldRule, String source) {
         String topic = buildTopic(RULE_UPDATED_EVENT_TOPIC, rule);
-        List<Rule> rules = Lists.newLinkedList();
+        List<Rule> rules = new LinkedList<Rule>();
         rules.add(rule);
         rules.add(oldRule);
         String payload = serializePayload(rules);
