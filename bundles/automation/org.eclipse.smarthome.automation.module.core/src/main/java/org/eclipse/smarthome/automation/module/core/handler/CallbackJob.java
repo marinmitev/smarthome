@@ -38,14 +38,20 @@ public class CallbackJob implements Job {
         try {
             schedulerContext = context.getScheduler().getContext();
         } catch (SchedulerException e1) {
-            logger.error("Can't get scheduler context");
+            logger.error("Error while resolving scheduler context");
         }
-        RuleEngineCallback callback = (RuleEngineCallback) schedulerContext
-                .get(TimerTriggerHandler.CALLBACK_CONTEXT_NAME);
-        Trigger module = (Trigger) schedulerContext.get(TimerTriggerHandler.MODULE_CONTEXT_NAME);
-        if (callback != null) {
-            Map<String, Object> values = Maps.newHashMap();
-            callback.triggered(module, values);
+        if (schedulerContext == null) {
+            logger.error("Can't execute CallbackJob. SchedulerContext is null");
+        } else {
+            RuleEngineCallback callback = (RuleEngineCallback) schedulerContext
+                    .get(TimerTriggerHandler.CALLBACK_CONTEXT_NAME);
+            Trigger module = (Trigger) schedulerContext.get(TimerTriggerHandler.MODULE_CONTEXT_NAME);
+            if (callback == null || module == null) {
+                logger.error("Can't execute CallbackJob. Callback or module is null");
+            } else {
+                Map<String, Object> values = Maps.newHashMap();
+                callback.triggered(module, values);
+            }
         }
     }
 
