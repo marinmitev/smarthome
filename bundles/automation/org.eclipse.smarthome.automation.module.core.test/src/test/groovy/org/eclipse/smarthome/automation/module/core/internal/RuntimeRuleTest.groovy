@@ -147,7 +147,7 @@ class RuntimeRuleTest extends OSGiTest{
         ruleRegistry.setEnabled(rule.UID, true)
 
         waitForAssert({
-          assertThat ruleRegistry.getStatus(rule.UID).status, is(RuleStatus.IDLE)
+            assertThat ruleRegistry.getStatus(rule.UID).status, is(RuleStatus.IDLE)
         })
         //TEST RULE
 
@@ -156,7 +156,7 @@ class RuntimeRuleTest extends OSGiTest{
         SwitchItem myMotionItem = itemRegistry.getItem("myMotionItem2")
         Command commandObj = TypeParser.parseCommand(myMotionItem.getAcceptedCommandTypes(), "ON")
         eventPublisher.post(ItemEventFactory.createCommandEvent("myPresenceItem2", commandObj))
-        //		eventPublisher.post(ItemEventFactory.createStateEvent("myPresenceItem2", OnOffType.ON))
+        //      eventPublisher.post(ItemEventFactory.createStateEvent("myPresenceItem2", OnOffType.ON))
 
         Event itemEvent = null
 
@@ -179,7 +179,7 @@ class RuntimeRuleTest extends OSGiTest{
         registerService(itemEventHandler)
         commandObj = TypeParser.parseCommand(itemRegistry.getItem("myMotionItem2").getAcceptedCommandTypes(),"ON")
         eventPublisher.post(ItemEventFactory.createCommandEvent("myMotionItem2", commandObj))
-        //		eventPublisher.post(ItemEventFactory.createStateEvent("myMotionItem2", OnOffType.ON))
+        //      eventPublisher.post(ItemEventFactory.createStateEvent("myMotionItem2", OnOffType.ON))
         waitForAssert ({ assertThat itemEvent, is(notNullValue())} , 3000, 100)
         assertThat itemEvent.topic, is(equalTo("smarthome/items/myLampItem2/state"))
         assertThat (((ItemStateEvent)itemEvent).itemState, is(OnOffType.ON))
@@ -204,87 +204,93 @@ class RuntimeRuleTest extends OSGiTest{
             assertThat mtr.get(CompareConditionHandler.MODULE_TYPE), is(notNullValue())
         },3000,100)
     }
-    
+
     @Test
     public void 'assert that timerTrigger works'(){
-        def testExpression = "* * * * * ?" 
+        def testExpression = "* * * * * ?"
         def testItemName = "myLampItem5"
 
         def triggerConfig = [cronExpression:testExpression]
-        def triggers = [new Trigger("MyTimerTrigger", "TimerTrigger", triggerConfig)] 
-       
+        def triggers = [new Trigger("MyTimerTrigger", "TimerTrigger", triggerConfig)]
+
         def actionConfig = [itemName:testItemName, command:"ON"]
         def actions = [new Action("MyItemPostCommandAction", "ItemPostCommandAction", actionConfig, null)]
-        
+
         def conditionConfig = [operator:"=", itemName:testItemName, state:"OFF"]
         def conditions = [new Condition("MyItemStateCondition", "ItemStateCondition", conditionConfig, null)]
-             
+
         def rule = new Rule("MyRule"+new Random().nextInt(),triggers, conditions, actions, null, null)
         rule.name="MyTimerTriggerTestRule"
         logger.info("Rule created: "+rule.getUID())
-        
+
         def ItemRegistry itemRegistry = getService(ItemRegistry)
         def SwitchItem lampItem = itemRegistry.getItem(testItemName)
-        lampItem.send(OnOffType.OFF); 
+        lampItem.send(OnOffType.OFF);
         waitForAssert({
             assertThat lampItem.state,is(OnOffType.OFF)
         })
-  
+
         def ruleRegistry = getService(RuleRegistry) as RuleRegistry
         ruleRegistry.add(rule)
         ruleRegistry.setEnabled(rule.UID, true)
         waitForAssert({
-          assertThat ruleRegistry.getStatus(rule.UID).status, is(RuleStatus.IDLE)
+            assertThat ruleRegistry.getStatus(rule.UID).status, is(RuleStatus.IDLE)
         })
-        
-        waitForAssert({  
-            assertThat lampItem.state,is(OnOffType.ON)
-        })
+
+        def numberOfTests = 3
+        for (int i=0; i < numberOfTests;i++){
+            lampItem.send(OnOffType.OFF);
+            waitForAssert({
+                assertThat lampItem.state,is(OnOffType.ON)
+            })
+        }
+
+
     }
-    
+
     @Test
     public void 'assert that compareCondition works'(){
         def conditionConfiguration = [right:"ON", operator:"="]
         def inputs = [input:"someTrigger.someoutput"]
         def Condition condition = new Condition("id", "GenericCompareCondition", conditionConfiguration, inputs)
         def handler = new CompareConditionHandler(condition)
-        
+
         assertThat handler.isSatisfied([input:OnOffType.ON]), is(true)
         assertThat handler.isSatisfied([input:"ON"]), is(true)
         assertThat handler.isSatisfied([input:"OFF"]), is(false)
         assertThat handler.isSatisfied([input:OnOffType.OFF]), is(false)
-        
+
         condition.configuration=[right:"21", operator:"="]
-        
+
         assertThat handler.isSatisfied([input:21]), is(true)
         assertThat handler.isSatisfied([input:22]), is(false)
-        
+
         condition.configuration=[right:"21", operator:"<"]
         assertThat handler.isSatisfied([input:20]), is(true)
         assertThat handler.isSatisfied([input:22]), is(false)
-        
+
         assertThat handler.isSatisfied([input:20l]), is(true)
         assertThat handler.isSatisfied([input:22l]), is(false)
-        
+
         assertThat handler.isSatisfied([input:20.9d]), is(true)
         assertThat handler.isSatisfied([input:21.1d]), is(false)
-        
+
         condition.configuration=[right:"21", operator:">"]
         assertThat handler.isSatisfied([input:20]), is(false)
         assertThat handler.isSatisfied([input:22]), is(true)
-        
+
         assertThat handler.isSatisfied([input:20l]), is(false)
         assertThat handler.isSatisfied([input:22l]), is(true)
-        
+
         assertThat handler.isSatisfied([input:20.9d]), is(false)
         assertThat handler.isSatisfied([input:21.1d]), is(true)
-        
+
         condition.configuration=[right:".*anything.*", operator:"matches"]
         assertThat handler.isSatisfied([input:'something matches?']), is(false)
         assertThat handler.isSatisfied([input:'anything matches?']), is(true)
 
         assertThat handler.isSatisfied([noting:"nothing"]), is(false)
-        
+
         condition.configuration=[right:"ONOFF", operator:"matches"]
         assertThat handler.isSatisfied([input:OnOffType.ON]), is(false)
         def Event event = ItemEventFactory.createStateEvent("itemName", OnOffType.OFF, "source")
@@ -298,12 +304,12 @@ class RuntimeRuleTest extends OSGiTest{
         assertThat handler.isSatisfied([input:null]), is(false)
         condition.configuration=[right:"ON", operator:"<"]
         assertThat handler.isSatisfied([input:OnOffType.ON]), is(false)
-        
+
         condition.configuration=[right:"ON", operator:"<", inputproperty:"nothing"]
         assertThat handler.isSatisfied([input:event]), is(false)
         condition.configuration=[right:"ON", operator:"=", inputproperty:"nothing"]
         assertThat handler.isSatisfied([input:"ON"]), is(true)
-        
+
     }
 
     @Test
