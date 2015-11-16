@@ -241,6 +241,9 @@ class RuntimeRuleTest extends OSGiTest{
         for (int i=0; i < numberOfTests;i++){
             lampItem.send(OnOffType.OFF);
             waitForAssert({
+                assertThat lampItem.state,is(OnOffType.OFF)
+            })
+            waitForAssert({
                 assertThat lampItem.state,is(OnOffType.ON)
             })
         }
