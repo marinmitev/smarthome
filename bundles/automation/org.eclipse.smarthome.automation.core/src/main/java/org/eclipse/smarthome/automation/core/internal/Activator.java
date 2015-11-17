@@ -87,7 +87,7 @@ public class Activator implements BundleActivator {
         moduleTypeRegistry = new ModuleTypeRegistryImpl(mtManager);
         moduleTypeRegistryReg = bc.registerService(ModuleTypeRegistry.class.getName(), moduleTypeRegistry, null);
         ruleEventFactory = new RuleEventFactory();
-        ruleEventFactoryReg = bc.registerService(EventFactory.class, ruleEventFactory, null);
+        ruleEventFactoryReg = bc.registerService(EventFactory.class.getName(), ruleEventFactory, null);
 
         ruleRegistry = new RuleRegistryImpl(ruleEngine);
         ruleRegistryReg = bc.registerService(RuleRegistry.class.getName(), ruleRegistry, null);

@@ -74,7 +74,7 @@ public class ScriptModuleActivator implements BundleActivator {
         this.factoryRegistration = bundleContext.registerService(ModuleHandlerFactory.class.getName(),
                 this.moduleHandlerFactory, null);
         scriptScopeProviders = new CopyOnWriteArraySet<ScriptScopeProvider>();
-        scriptScopeProviderServiceTracker = new ServiceTracker(bundleContext, ScriptScopeProvider.class,
+        scriptScopeProviderServiceTracker = new ServiceTracker(bundleContext, ScriptScopeProvider.class.getName(),
                 new ServiceTrackerCustomizer() {
 
                     @Override

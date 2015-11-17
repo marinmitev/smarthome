@@ -56,7 +56,8 @@ public class GenericEventTriggerHandler extends BaseModuleHandler<Trigger>implem
     private static final String CFG_EVENT_SOURCE = "eventSource";
     private static final String CFG_EVENT_TYPES = "eventTypes";
 
-    private ServiceRegistration<EventSubscriber> eventSubscriberRegistration;
+    @SuppressWarnings("rawtypes")
+    private ServiceRegistration eventSubscriberRegistration;
 
     public GenericEventTriggerHandler(Trigger module, BundleContext bundleContext) {
         super(module);
@@ -66,7 +67,7 @@ public class GenericEventTriggerHandler extends BaseModuleHandler<Trigger>implem
         this.bundleContext = bundleContext;
         Dictionary<String, Object> properties = new Hashtable<String, Object>();
         properties.put("event.topics", topic);
-        eventSubscriberRegistration = this.bundleContext.registerService(EventSubscriber.class, this, properties);
+        eventSubscriberRegistration = this.bundleContext.registerService(EventSubscriber.class.getName(), this, properties);
         logger.trace("Registered EventSubscriber: Topic: {} Type: {} Source: {}", topic, types, source);
     }
 

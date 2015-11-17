@@ -62,7 +62,7 @@ public class BasicModuleHandlerFactory extends BaseModuleHandlerFactory {
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     private void initializeServiceTrackers() {
-        this.itemRegistryTracker = new ServiceTracker(this.bundleContext, ItemRegistry.class,
+        this.itemRegistryTracker = new ServiceTracker(this.bundleContext, ItemRegistry.class.getName(),
                 new ServiceTrackerCustomizer() {
 
                     @Override
@@ -83,7 +83,7 @@ public class BasicModuleHandlerFactory extends BaseModuleHandlerFactory {
                 });
         this.itemRegistryTracker.open();
 
-        this.eventPublisherTracker = new ServiceTracker(this.bundleContext, EventPublisher.class,
+        this.eventPublisherTracker = new ServiceTracker(this.bundleContext, EventPublisher.class.getName(),
                 new ServiceTrackerCustomizer() {
 
                     @Override
