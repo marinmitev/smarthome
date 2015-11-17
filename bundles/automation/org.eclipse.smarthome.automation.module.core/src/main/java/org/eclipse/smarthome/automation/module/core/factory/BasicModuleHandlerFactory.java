@@ -113,7 +113,7 @@ public class BasicModuleHandlerFactory extends BaseModuleHandlerFactory {
             new TimerTriggerHandler(null);
             types.add(TimerTriggerHandler.MODULE_TYPE_ID);
         } catch (NoClassDefFoundError e) {
-            logger.trace("Optional Quart Scheduler not imported. {} module type not supported",
+            logger.trace("Optional Quartz Scheduler not imported. {} module type not supported",
                     TimerTriggerHandler.MODULE_TYPE_ID);
         }
         return types;
@@ -252,7 +252,7 @@ public class BasicModuleHandlerFactory extends BaseModuleHandlerFactory {
                 }
                 return timerTriggerHandler;
             } catch (NoClassDefFoundError e) {
-                logger.error("Optional Quart Scheduler not imported. Can't create TimerTriggerHandler.");
+                logger.error("Optional Quartz Scheduler not imported. Can't create TimerTriggerHandler.");
                 return null;
             }
         } else {
