@@ -15,7 +15,7 @@
       provider-name="Eclipse.org/SmartHome">
 
    <description>
-      This features defines all bundles that form the Eclipse SmartHome
+      This feature defines all bundles that form the Eclipse SmartHome
 Automation support
    </description>
 
@@ -89,6 +89,13 @@ Automation support
 
    <plugin
          id="org.eclipse.smarthome.automation.rest"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.smarthome.automation.sample.handler.factories"
          download-size="0"
          install-size="0"
          version="0.0.0"
