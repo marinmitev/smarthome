@@ -46,7 +46,7 @@ public class BasicModuleHandlerFactory extends BaseModuleHandlerFactory {
 	private static final Collection<String> types = Arrays.asList(new String[] {
 			ItemStateConditionHandler.ITEM_STATE_CONDITION, ItemPostCommandActionHandler.ITEM_POST_COMMAND_ACTION,
 			GenericEventTriggerHandler.MODULE_TYPE_ID, EventConditionHandler.MODULETYPE_ID,
-			CompareConditionHandler.MODULE_TYPE, TimerTriggerHandler.MODULE_TYPE_ID });
+			CompareConditionHandler.MODULE_TYPE});
 
 	@SuppressWarnings("rawtypes")
 	private ServiceTracker itemRegistryTracker;
@@ -109,6 +109,12 @@ public class BasicModuleHandlerFactory extends BaseModuleHandlerFactory {
 
 	@Override
 	public Collection<String> getTypes() {
+	    try {
+	        new TimerTriggerHandler(null); 
+	        types.add(TimerTriggerHandler.MODULE_TYPE_ID); 
+	    }catch (NoClassDefFoundError e){
+	        logger.trace("Optional Quart Scheduler not imported. {} module type not supported",TimerTriggerHandler.MODULE_TYPE_ID);
+	    } 
 		return types;
 	}
 
