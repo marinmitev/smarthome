@@ -136,10 +136,14 @@ public class Activator implements BundleActivator {
                         managedRuleProviderReg = null;
                     }
                 } else if (service instanceof EventPublisher) {
-                    ruleRegistry.unsetEventPublisher((EventPublisher) service);
+                    if (ruleRegistry != null) {
+                        ruleRegistry.unsetEventPublisher((EventPublisher) service);
+                    }
                 } else if (service instanceof RuleProvider) {
-                    RuleProvider rp = (RuleProvider) service;
-                    ruleRegistry.removeProvider(rp);
+                    if (ruleRegistry != null) {
+                        RuleProvider rp = (RuleProvider) service;
+                        ruleRegistry.removeProvider(rp);
+                    }
                 }
 
             }
@@ -150,6 +154,9 @@ public class Activator implements BundleActivator {
 
     @Override
     public void stop(BundleContext bc) throws Exception {
+        serviceTracker.close();
+        serviceTracker = null;
+
         if (configReg != null) {
             configReg.unregister();
             configReg = null;
@@ -184,8 +191,6 @@ public class Activator implements BundleActivator {
 
         ruleEngine.dispose();
 
-        serviceTracker.close();
-        serviceTracker = null;
     }
 
 }
