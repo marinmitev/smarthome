@@ -30,7 +30,6 @@ import org.eclipse.smarthome.automation.type.TriggerType;
  * </ul>
  *
  * @author Ana Dimova - Initial Contribution
- * @author Ana Dimova - refactor Parser interface.
  *
  */
 public class AutomationCommandExport extends AutomationCommand {

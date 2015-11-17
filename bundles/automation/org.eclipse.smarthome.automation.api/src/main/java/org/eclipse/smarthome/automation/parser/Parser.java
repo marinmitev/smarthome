@@ -15,7 +15,6 @@ import java.util.Set;
  * This interface provides opportunity to plug different parsers, for example JSON, GSON or other.
  *
  * @author Ana Dimova - Initial Contribution
- * @author Ana Dimova - refactor Parser interface.
  *
  */
 public interface Parser<T> {

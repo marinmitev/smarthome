@@ -29,7 +29,6 @@ import org.eclipse.smarthome.automation.parser.Parser;
  * </ul>
  *
  * @author Ana Dimova - Initial Contribution
- * @author Ana Dimova - refactor Parser interface.
  *
  */
 public class AutomationCommandImport extends AutomationCommand {

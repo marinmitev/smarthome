@@ -51,8 +51,6 @@ import org.slf4j.LoggerFactory;
  *
  * @author Ana Dimova - Initial Contribution
  * @author Kai Kreuzer - refactored (managed) provider and registry implementation
- * @author Ana Dimova - provides localization
- * @author Ana Dimova - refactor Parser interface.
  */
 @SuppressWarnings("rawtypes")
 public abstract class AbstractResourceBundleProvider<E> implements ServiceTrackerCustomizer {

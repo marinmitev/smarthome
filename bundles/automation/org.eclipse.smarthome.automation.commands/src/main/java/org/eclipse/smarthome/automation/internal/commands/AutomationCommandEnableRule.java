@@ -69,11 +69,6 @@ public class AutomationCommandEnableRule extends AutomationCommand {
             if (uid == null) {
                 uid = parameterValues[i];
                 continue;
-                // Rule rule = autoCommands.getRule(parameterValues[i]);
-                // if (rule != null) {
-                // uid = rule.getUID();
-                // continue;
-                // }
             }
             getEnable(parameterValues[i]);
             if (hasEnable)

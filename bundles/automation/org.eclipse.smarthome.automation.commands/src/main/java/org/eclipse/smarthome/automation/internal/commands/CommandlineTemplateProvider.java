@@ -44,7 +44,6 @@ import org.osgi.framework.ServiceRegistration;
  *
  * @author Ana Dimova - Initial Contribution
  * @author Kai Kreuzer - refactored (managed) provider and registry implementation
- * @author Ana Dimova - refactor Parser interface.
  *
  */
 public class CommandlineTemplateProvider extends AbstractCommandProvider<RuleTemplate>implements TemplateProvider {
