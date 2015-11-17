@@ -32,7 +32,6 @@ import org.junit.Before
 import org.junit.Test
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.eclipse.smarthome.automation.module.script.ScriptScopeProvider
 
 import com.google.common.collect.Sets
 
@@ -55,7 +54,10 @@ class ScriptRuleTest extends OSGiTest {
 
         def itemProvider = [
             getAll: {
-                [new SwitchItem("MyTrigger"), new SwitchItem("ScriptItem")]
+                [
+                    new SwitchItem("MyTrigger"),
+                    new SwitchItem("ScriptItem")
+                ]
             },
             addProviderChangeListener: {},
             removeProviderChangeListener: {},
@@ -116,7 +118,7 @@ class ScriptRuleTest extends OSGiTest {
         assertThat action, is(notNullValue())
         assertThat action.typeUID, is("ScriptAction")
         assertThat action.configuration.get("type"), is("application/javascript")
-        assertThat action.configuration.get("script"), is("print(ir.getItems()), print(tr.getAll()), print(trigger.event), be.sendCommand('ScriptItem', 'ON')")
+        assertThat action.configuration.get("script"), is("print(items.MyTrigger), print(things.getAll()), print(trigger.event), events.sendCommand('ScriptItem', 'ON')")
         def ruleStatus = ruleRegistry.getStatus(rule.uid) as RuleStatusInfo
         assertThat ruleStatus.getStatus(), is(RuleStatus.IDLE)
 

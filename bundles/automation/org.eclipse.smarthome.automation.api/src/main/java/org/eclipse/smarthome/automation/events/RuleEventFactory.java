@@ -40,10 +40,10 @@ public class RuleEventFactory extends AbstractEventFactory {
     private static final Set<String> SUPPORTED_TYPES = new HashSet<String>();
 
     static {
-        SUPPORTED_TYPES.add(RULE_ADDED_EVENT_TOPIC);
-        SUPPORTED_TYPES.add(RULE_REMOVED_EVENT_TOPIC);
-        SUPPORTED_TYPES.add(RULE_STATE_EVENT_TOPIC);
-        SUPPORTED_TYPES.add(RULE_UPDATED_EVENT_TOPIC);
+        SUPPORTED_TYPES.add(RuleAddedEvent.TYPE);
+        SUPPORTED_TYPES.add(RuleRemovedEvent.TYPE);
+        SUPPORTED_TYPES.add(RuleStatusInfoEvent.TYPE);
+        SUPPORTED_TYPES.add(RuleUpdatedEvent.TYPE);
     }
 
     public RuleEventFactory() {

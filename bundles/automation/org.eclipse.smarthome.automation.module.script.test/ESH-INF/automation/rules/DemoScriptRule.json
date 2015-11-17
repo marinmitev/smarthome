@@ -30,7 +30,7 @@
         "type": "ScriptAction",
         "config": {  
           "type": "application/javascript",
-          "script": "print(ir.getItems()), print(tr.getAll()), print(trigger.event), be.sendCommand('ScriptItem', 'ON')"
+          "script": "print(items.MyTrigger), print(things.getAll()), print(trigger.event), events.sendCommand('ScriptItem', 'ON')"
         }
       }
     ]
