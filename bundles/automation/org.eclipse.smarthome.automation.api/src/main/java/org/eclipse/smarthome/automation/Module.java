@@ -15,8 +15,6 @@ import org.eclipse.smarthome.automation.type.ModuleType;
 import org.eclipse.smarthome.automation.type.Output;
 import org.eclipse.smarthome.config.core.ConfigDescriptionParameter;
 
-import com.google.gson.annotations.SerializedName;
-
 /**
  * Modules are building components of the {@link Rule}s. Each Module is
  * identified by id, which is unique in scope of the {@link Rule}. It also has a {@link ModuleType} which provides meta
@@ -55,14 +53,12 @@ public abstract class Module {
      *
      * @see {@link ConfigDescriptionParameter}.
      */
-    @SerializedName("config")
     protected Map<String, Object> configuration;
 
     /**
      * Unique type id of this module.
      */
-    @SerializedName("type")
-    protected String typeUID;
+    protected String type;
 
     /**
      * Constructor of the module.
@@ -73,7 +69,7 @@ public abstract class Module {
      */
     public Module(String id, String typeUID, Map<String, ?> configuration) {
         this.id = id;
-        this.typeUID = typeUID;
+        this.type = typeUID;
         setConfiguration(configuration);
     }
 
@@ -98,7 +94,7 @@ public abstract class Module {
      * @return unique id of the {@link ModuleType} of this {@link Module}.
      */
     public String getTypeUID() {
-        return typeUID;
+        return type;
     }
 
     /**

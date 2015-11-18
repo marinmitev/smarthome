@@ -17,8 +17,6 @@ import java.util.Set;
 
 import org.eclipse.smarthome.config.core.ConfigDescriptionParameter;
 
-import com.google.gson.annotations.SerializedName;
-
 /**
  * Rule is built from {@link Module}s and consists of three sections:
  * ON/IF/THEN.
@@ -38,11 +36,8 @@ import com.google.gson.annotations.SerializedName;
  */
 public class Rule {
 
-    @SerializedName("on")
     protected List<Trigger> triggers;
-    @SerializedName("if")
     protected List<Condition> conditions;
-    @SerializedName("then")
     protected List<Action> actions;
     protected String scopeId;
     protected Map<String, ?> config;

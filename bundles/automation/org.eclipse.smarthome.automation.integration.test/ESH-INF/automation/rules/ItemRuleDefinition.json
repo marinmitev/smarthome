@@ -8,24 +8,24 @@
 	  "jsonTest",
       "rule"
     ],
-    "config": {},
+    "configuration": {},
     "description": "Sample Rule for items definition.",
-    "on": [  
+    "triggers": [  
       {  
         "id": "ItemStateChangeTriggerID",
         "type": "GenericEventTrigger",
-		"config":{
+		"configuration":{
 			"eventSource":"myMotionItem",
 			"eventTopic":"smarthome/items/*",
 			"eventTypes":"ItemStateEvent"
 		}
       }
     ],
-    "if": [
+    "conditions": [
       {
         "id": "ItemStateConditionID",
         "type": "EventCondition",
-        "config": {
+        "configuration": {
           "topic": "smarthome/items/myMotionItem/state",
 		  "payload":".*ON.*"
         },
@@ -34,11 +34,11 @@
 		}
 	  }
     ],
-    "then": [
+    "actions": [
       {  
         "id": "ItemPostCommandActionID",
         "type": "ItemPostCommandAction",
-        "config": {  
+        "configuration": {  
           "itemName": "myLampItem",
 		  "command": "ON"
         }

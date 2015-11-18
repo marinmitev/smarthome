@@ -6,13 +6,13 @@
 	  "item",
       "rule"
     ],
-    "config": {},
+    "configuration": {},
     "description": "Sample Rule for items definition.",
     "on": [  
       {  
         "id": "ItemStateChangeTriggerID",
         "type": "ItemStateChangeTrigger",
-		"config":{
+		"configuration":{
 			"itemName":"myMotionItem"
 		}
       }
@@ -21,7 +21,7 @@
       {
         "id": "ItemStateConditionID",
         "type": "ItemStateCondition",
-        "config": {
+        "configuration": {
           "operator": "=",
           "itemName": "myPresenceItem",
 		  "state":"ON"
@@ -30,7 +30,7 @@
 	  {
 		  "id": "ItemStateConditionID2",
 		  "type": "ItemStateCondition",
-		  "config":{
+		  "configuration":{
 			  "operator":"=",
 			  "itemName":"myMotionItem",
 			  "state":"ON"
@@ -41,7 +41,7 @@
       {  
         "id": "ItemPostCommandActionID",
         "type": "ItemPostCommandAction",
-        "config": {  
+        "configuration": {  
           "itemName": "myLampItem",
 		  "command": "ON"
         }
@@ -56,13 +56,13 @@
 	  "motion",
       "rule"
     ],
-    "config": {},
+    "configuration": {},
     "description": "This rule switches on a lamp if a motion was detected.",
     "on": [  
       {  
         "id": "CameraMotionDetectionTrigger",
         "type": "ItemStateChangeTrigger",
-		"config":{
+		"configuration":{
 			"itemName":"dlink_camera_DCS_2330L_b0c5540047bd_motion"
 		}
       }
@@ -73,7 +73,7 @@
       {  
         "id": "SwitchOnLamp",
         "type": "ItemPostCommandAction",
-        "config": {  
+        "configuration": {  
           "itemName": "hue_LCT001_001788141b41_2_color",
 		  "command": "240,100,100"
         }
