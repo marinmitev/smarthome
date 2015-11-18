@@ -21,7 +21,6 @@ import org.eclipse.smarthome.automation.module.core.handler.EventConditionHandle
 import org.eclipse.smarthome.automation.module.core.handler.GenericEventTriggerHandler;
 import org.eclipse.smarthome.automation.module.core.handler.ItemPostCommandActionHandler;
 import org.eclipse.smarthome.automation.module.core.handler.ItemStateConditionHandler;
-import org.eclipse.smarthome.automation.module.core.handler.TimerTriggerHandler;
 import org.eclipse.smarthome.core.events.EventPublisher;
 import org.eclipse.smarthome.core.items.ItemRegistry;
 import org.osgi.framework.BundleContext;
@@ -63,7 +62,7 @@ public class BasicModuleHandlerFactory extends BaseModuleHandlerFactory {
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     private void initializeServiceTrackers() {
-        this.itemRegistryTracker = new ServiceTracker(this.bundleContext, ItemRegistry.class,
+        this.itemRegistryTracker = new ServiceTracker(this.bundleContext, ItemRegistry.class.getName(),
                 new ServiceTrackerCustomizer() {
 
                     @Override
@@ -84,7 +83,7 @@ public class BasicModuleHandlerFactory extends BaseModuleHandlerFactory {
                 });
         this.itemRegistryTracker.open();
 
-        this.eventPublisherTracker = new ServiceTracker(this.bundleContext, EventPublisher.class,
+        this.eventPublisherTracker = new ServiceTracker(this.bundleContext, EventPublisher.class.getName(),
                 new ServiceTrackerCustomizer() {
 
                     @Override
@@ -109,13 +108,6 @@ public class BasicModuleHandlerFactory extends BaseModuleHandlerFactory {
 
     @Override
     public Collection<String> getTypes() {
-        try {
-            new TimerTriggerHandler(null);
-            types.add(TimerTriggerHandler.MODULE_TYPE_ID);
-        } catch (NoClassDefFoundError e) {
-            logger.trace("Optional Quartz Scheduler not imported. {} module type not supported",
-                    TimerTriggerHandler.MODULE_TYPE_ID);
-        }
         return types;
     }
 
@@ -242,19 +234,6 @@ public class BasicModuleHandlerFactory extends BaseModuleHandlerFactory {
                 handlers.put(ruleUID + module.getId(), compareConditionHandler);
             }
             return compareConditionHandler;
-        } else if (TimerTriggerHandler.MODULE_TYPE_ID.equals(moduleTypeUID) && module instanceof Trigger) {
-            try {
-                TimerTriggerHandler timerTriggerHandler = handler != null && handler instanceof TimerTriggerHandler
-                        ? (TimerTriggerHandler) handler : null;
-                if (timerTriggerHandler == null) {
-                    timerTriggerHandler = new TimerTriggerHandler((Trigger) module);
-                    handlers.put(ruleUID + module.getId(), timerTriggerHandler);
-                }
-                return timerTriggerHandler;
-            } catch (NoClassDefFoundError e) {
-                logger.error("Optional Quartz Scheduler not imported. Can't create TimerTriggerHandler.");
-                return null;
-            }
         } else {
             logger.error("The ModuleHandler is not supported:" + moduleTypeUID);
         }
