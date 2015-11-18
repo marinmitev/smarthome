@@ -21,17 +21,17 @@
           "required": true
         }
     ],
-    "on": [  
+    "triggers": [  
       {  
         "id": "CompositeSampleTriggerTemplateID",
         "type": "CompositeSampleTrigger"
       }
     ],
-    "if": [
+    "conditions": [
       {
         "id": "SampleConditionTemplateID",
         "type": "SampleCondition",
-        "config": {
+        "configuration": {
           "operator": "$condition_operator",
           "constraint": "$condition_constraint"
         },
@@ -40,7 +40,7 @@
         }
       }
     ],
-    "then": [
+    "actions": [
       {  
         "id": "CompositeActionTemplateID",
         "type": "CompositeSampleAction",

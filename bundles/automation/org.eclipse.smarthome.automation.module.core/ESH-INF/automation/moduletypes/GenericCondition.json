@@ -70,7 +70,7 @@
 			  {
 				  "id":"ItemEvent_ItemNameEquals",
 				  "type":"GenericCompareCondition",
-				  "config":{
+				  "configuration":{
 					  "inputproperty":"itemName",
 					  "operator":"=",
 					  "right":"$itemName"
@@ -82,7 +82,7 @@
 			  {
 				  "id":"ItemEvent_StateMatches",
 				  "type":"GenericCompareCondition",
-				  "config":{
+				  "configuration":{
 					  "inputproperty":"payload",
 					  "operator":"matches",
 					  "right":"$state"

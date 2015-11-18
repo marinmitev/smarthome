@@ -34,33 +34,33 @@
             "required":true
          }
       ],
-      "on":[  
+      "triggers":[  
          {  
             "id":"ItemUpdateTrigger_1",
             "type":"GenericEventTrigger",
-            "config":{  
+            "configuration":{  
                "eventSource":"$onItem",
                "eventTopic":"smarthome/items/*",
                "eventTypes":"ItemStateEvent"
             }
          }
       ],
-      "if":[  
+      "conditions":[  
          {  
             "id":"ItemStateConditionID_1",
             "type":"ItemStateCondition",
-            "config":{  
+            "configuration":{  
                "operator":"=",
                "itemName":"$onItem",
                "state":"$ifState"
             }
          }
       ],
-      "then":[  
+      "actions":[  
          {  
             "id":"ItemPostCommandActionID_1",
             "type":"ItemPostCommandAction",
-            "config":{  
+            "configuration":{  
                "itemName":"$updateItem",
                "command":"$updateCommand"
             }

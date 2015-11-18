@@ -16,15 +16,15 @@ In general this rule engine aims to support rules defined with syntax similar to
 ON item_id state changed IF item_id.state == desired_value THEN item_id2.state = desired_value2 
 ```
 
-Each rule can have some basic information like name,tags,description and three module sections (**on,if,then**)
+Each rule can have some basic information like name,tags,description and three module sections (**triggers,conditions,actions**)
 
 
-- The **'on'** section is the trigger (eventing) part. 
+- The **'triggers'** section is the trigger (eventing) part. 
 
 
-- The **'if'** section lists the conditions which act as a filter for the events - actions of the rule will be executed only if the conditions evaluating the event data are satisfied and return 'true'. In case there are multiple conditions in the 'if' section then all of them must be satisfied - logical AND is used 
+- The **'conditions'** section lists the conditions which act as a filter for the events - actions of the rule will be executed only if the conditions evaluating the event data are satisfied and return 'true'. In case there are multiple conditions in the 'if' section then all of them must be satisfied - logical AND is used 
 
-- The **'then'** section contains the actions which specify what should be executed when the event is received.
+- The **'actions'** section contains the actions which specify what should be executed when the event is received.
 
 
 One rule can invoke one and the same operation upon receiving each trigger event, or the operation can be dynamic using input parameters from the event itself or from the system objects
@@ -127,17 +127,17 @@ The types in the **Configuration** object are restricted to the following:
             "rule"
         ],
         "description":"Sample Rule definition.",
-        "on":[
+        "triggers":[
             {
                 "id":"SampleTriggerID",
                 "type":"SampleTrigger"
             }
         ],
-        "if":[
+        "conditions":[
             {
                 "id":"SampleConditionID",
                 "type":"SampleCondition",
-                "config":{
+                "configuration":{
                     "operator":"=",
                     "constraint":"dtag"
                 },
@@ -146,11 +146,11 @@ The types in the **Configuration** object are restricted to the following:
                 }
             }
         ],
-        "then":[
+        "actions":[
             {
                 "id":"SampleActionID",
                 "type":"SampleAction",
-                "config":{
+                "configuration":{
                     "message":">>> Hello World!!!"
                 }
             }
@@ -277,14 +277,14 @@ The types in the **Configuration** object are restricted to the following:
             {  
                "id":"SampleAction1",
                "type":"SampleAction",
-               "config":{  
+               "configuration":{  
                   "message":"$compositeMessage"
                }
             },
             {  
                "id":"SampleAction2",
                "type":"SampleAction",
-               "config":{  
+               "configuration":{  
                   "message":"$compositeActionInput"
                }
             }
@@ -400,7 +400,7 @@ Rule templates can simplify the definition of rules with similar behavior, by pr
       "rule",
       "template"
     ],
-    "config": {  
+    "configuration": {  
       "condition_operator": "!=",
       "condition_constraint": "template"
     }
@@ -417,7 +417,7 @@ Rule templates can simplify the definition of rules with similar behavior, by pr
       "rule",
       "template"
     ],
-    "config":{  
+    "configuration":{  
         "condition_operator": {
           "type": "TEXT",
           "description": "Valid operators are =,>,<,!=",
@@ -429,17 +429,17 @@ Rule templates can simplify the definition of rules with similar behavior, by pr
           "required": true
         }
     },
-    "on": [  
+    "triggers": [  
       {  
         "id": "CustomSampleTriggerTemplateID",
         "type": "SampleTrigger:CustomTrigger"
       }
     ],
-    "if": [
+    "conditions": [
       {
         "id": "SampleConditionTemplateID",
         "type": "SampleCondition",
-        "config": {
+        "configuration": {
           "operator": "$condition_operator",
           "constraint": "$condition_constraint"
         },
@@ -448,7 +448,7 @@ Rule templates can simplify the definition of rules with similar behavior, by pr
         }
       }
     ],
-    "then": [
+    "actions": [
       {  
         "id": "CustomActionTemplateID",
         "type": "SampleAction:CustomAction",
@@ -588,7 +588,7 @@ Another way to extend the supported module types is by defining composite module
             {  
                "id":"itemStateChangeTriggerID",
                "type":"GenericEventTrigger",
-               "config":{  
+               "configuration":{  
                   "eventSource":"$itemName",
                   "eventTopic":"smarthome/items/*",
                   "eventTypes":"ItemStateEvent"

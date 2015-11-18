@@ -7,17 +7,17 @@
             "rule"
         ],
         "description":"Sample Rule definition.",
-        "on":[
+        "triggers":[
             {
                 "id":"SampleTriggerID",
                 "type":"SampleTrigger"
             }
         ],
-        "if":[
+        "conditions":[
             {
                 "id":"SampleConditionID",
                 "type":"SampleCondition",
-                "config":{
+                "configuration":{
                     "operator":"=",
                     "constraint":"dtag"
                 },
@@ -26,11 +26,11 @@
                 }
             }
         ],
-        "then":[
+        "actions":[
             {
                 "id":"SampleActionID",
                 "type":"SampleAction",
-                "config":{
+                "configuration":{
                     "message":">>> Hello World!!!"
                 }
             }
@@ -44,17 +44,17 @@
             "rule"
         ],
         "description":"Sample Rule definition2.",
-        "on":[
+        "triggers":[
             {
                 "id":"CompositeSampleTriggerID",
                 "type":"CompositeSampleTrigger"
             }
         ],
-        "if":[
+        "conditions":[
             {
                 "id":"SampleConditionID2",
                 "type":"SampleCondition",
-                "config":{
+                "configuration":{
                     "operator":"!=",
                     "constraint":"dtag"
                 },
@@ -63,11 +63,11 @@
                 }
             }
         ],
-        "then":[
+        "actions":[
             {
                 "id":"SampleActionID2",
                 "type":"SampleAction",
-                "config":{
+                "configuration":{
                     "message":"<<< Hello World!!!"
                 }
             },

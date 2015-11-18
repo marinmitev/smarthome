@@ -3,32 +3,32 @@
     "uid": "javascript.rule1",
     "name": "DemoScriptRule",
     "description": "Sample rule based on scripts",
-    "on": [  
+    "triggers": [  
       {  
         "id": "trigger",
         "type": "GenericEventTrigger",
-                    "config":{
+                    "configuration":{
                         "eventSource":"MyTrigger",
                         "eventTopic":"smarthome/items/MyTrigger/state",
                         "eventTypes":"ItemStateEvent"
                     }
       }
     ],
-    "if": [
+    "conditions": [
       {  
         "id": "condition",
         "type": "ScriptCondition",
-        "config": {  
+        "configuration": {  
           "type": "application/javascript",
           "script": "trigger.event.itemState==ON"
         }
       }
     ],
-    "then": [
+    "actions": [
       {  
         "id": "action",
         "type": "ScriptAction",
-        "config": {  
+        "configuration": {  
           "type": "application/javascript",
           "script": "print(items.MyTrigger), print(things.getAll()), print(trigger.event), events.sendCommand('ScriptItem', 'ON')"
         }

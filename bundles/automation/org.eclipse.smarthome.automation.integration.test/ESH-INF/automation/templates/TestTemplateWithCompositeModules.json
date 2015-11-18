@@ -34,20 +34,20 @@
             "required":true
          }
       ],
-      "on":[  
+      "triggers":[  
          {  
             "id":"ItemUpdateTrigger_2",
             "type":"ItemStateChangeTrigger",
-            "config":{  
+            "configuration":{  
                "itemName":"$onItem"
             }
          }
       ],
-      "if":[  
+      "conditions":[  
          {  
             "id":"ItemStateConditionID_2",
             "type":"ItemStateEventCompareCondition",
-            "config":{  
+            "configuration":{  
                "itemName":"$onItem",
                "state":"$ifState"
             },
@@ -56,11 +56,11 @@
 			}
          }
       ],
-      "then":[  
+      "actions":[  
          {  
             "id":"ItemPostCommandActionID_1",
             "type":"ItemPostCommandAction",
-            "config":{  
+            "configuration":{  
                "itemName":"$updateItem",
                "command":"$updateCommand"
             }

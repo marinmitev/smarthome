@@ -109,14 +109,14 @@
             {  
                "id":"SampleAction1",
                "type":"SampleAction",
-               "config":{  
+               "configuration":{  
                   "message":"$compositeMessage"
                }
             },
             {  
                "id":"SampleAction2",
                "type":"SampleAction",
-               "config":{  
+               "configuration":{  
                   "message":"$compositeActionInput"
                }
             }

@@ -7,7 +7,7 @@
       "rule",
       "template"
     ],
-    "config": {  
+    "configuration": {  
       "condition_operator": "!=",
       "condition_constraint": "template"
     }

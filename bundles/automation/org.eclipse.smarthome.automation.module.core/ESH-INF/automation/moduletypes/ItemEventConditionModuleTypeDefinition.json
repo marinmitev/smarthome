@@ -34,7 +34,7 @@
             {  
                "id":"itemStateEventConditionID",
                "type":"EventCondition",
-               "config":{  
+               "configuration":{  
                   "eventSource":"$itemName",
                   "eventTopic":"smarthome/items/*",
                   "eventTypes":"ItemStateEvent",
@@ -73,7 +73,7 @@
             {  
                "id":"itemStateEventONConditionID",
                "type":"ItemStateEventCondition",
-               "config":{  
+               "configuration":{  
                   "itemName":"$itemName",
                   "state":"ON"
                },
@@ -110,7 +110,7 @@
             {  
                "id":"itemStateEventOFFConditionID",
                "type":"ItemStateEventCondition",
-               "config":{  
+               "configuration":{  
                   "itemName":"$itemName",
                   "state":"OFF"
                },

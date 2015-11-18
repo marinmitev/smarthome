@@ -22,8 +22,6 @@ import org.eclipse.smarthome.automation.Trigger;
 import org.eclipse.smarthome.automation.Visibility;
 import org.eclipse.smarthome.config.core.ConfigDescriptionParameter;
 
-import com.google.gson.annotations.SerializedName;
-
 /**
  * The templates define types of shared, ready to use rule definitions, which
  * can be instantiated and configured to produce {@link Rule} instances . Each
@@ -49,21 +47,18 @@ public class RuleTemplate implements Template {
      * This field holds a list with the unique {@link Trigger}s participating in the {@link Rule} and starting its
      * execution.
      */
-    @SerializedName("on")
     private List<Trigger> triggers;
 
     /**
      * This field holds a list with the unique {@link Condition}s participating in the {@link Rule} and determine the
      * completion of the execution.
      */
-    @SerializedName("if")
     private List<Condition> conditions;
 
     /**
      * This field holds a list with the unique {@link Action}s participating in the {@link Rule} and are the real work
      * that will be done by the rule.
      */
-    @SerializedName("then")
     private List<Action> actions;
 
     /**
