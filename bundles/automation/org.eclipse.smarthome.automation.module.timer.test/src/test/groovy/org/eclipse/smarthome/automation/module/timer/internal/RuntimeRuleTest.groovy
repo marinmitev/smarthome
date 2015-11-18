@@ -58,6 +58,7 @@ class RuntimeRuleTest extends OSGiTest{
 
     final Logger logger = LoggerFactory.getLogger(RuntimeRuleTest.class)
     VolatileStorageService volatileStorageService = new VolatileStorageService()
+    def RuleRegistry ruleRegistry
 
     @Before
     void before() {
@@ -71,7 +72,10 @@ class RuntimeRuleTest extends OSGiTest{
             allItemsChanged: {}] as ItemProvider
         registerService(itemProvider)
         registerService(volatileStorageService)
-
+        waitForAssert({
+            ruleRegistry = getService(RuleRegistry) as RuleRegistry
+            assertThat ruleRegistry, is(notNullValue())
+        }, 3000, 100)
         enableItemAutoUpdate()
     }
 
@@ -108,7 +112,6 @@ class RuntimeRuleTest extends OSGiTest{
             assertThat lampItem.state,is(OnOffType.OFF)
         })
         
-        def ruleRegistry = getService(RuleRegistry) as RuleRegistry
         ruleRegistry.add(rule)
         ruleRegistry.setEnabled(rule.UID, true)
         waitForAssert({
