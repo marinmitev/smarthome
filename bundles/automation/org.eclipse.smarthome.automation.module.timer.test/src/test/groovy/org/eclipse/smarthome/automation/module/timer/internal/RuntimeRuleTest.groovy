@@ -107,11 +107,12 @@ class RuntimeRuleTest extends OSGiTest{
         waitForAssert({
             assertThat lampItem.state,is(OnOffType.OFF)
         })
-
+        
         def ruleRegistry = getService(RuleRegistry) as RuleRegistry
         ruleRegistry.add(rule)
         ruleRegistry.setEnabled(rule.UID, true)
         waitForAssert({
+            println ruleRegistry.getStatus(rule.UID).statusDetail
             assertThat ruleRegistry.getStatus(rule.UID).status, is(RuleStatus.IDLE)
         })
 
