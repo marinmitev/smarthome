@@ -109,7 +109,7 @@
 							<autoStart>true</autoStart>
 						</bundle>
 						<bundle>
-							<id>org.eclipse.smarthome.automation.parser.json</id>
+							<id>org.eclipse.smarthome.automation.parser.gson</id>
 							<level>2</level>
 							<autoStart>true</autoStart>
 						</bundle>

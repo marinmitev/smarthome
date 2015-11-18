@@ -19,8 +19,6 @@
     <module>org.eclipse.smarthome.automation.api</module>
     <module>org.eclipse.smarthome.automation.commands</module>
     <module>org.eclipse.smarthome.automation.parser.gson</module>
-    <module>org.eclipse.smarthome.automation.parser.json</module>
-    <module>org.eclipse.smarthome.automation.parser.json.test</module>
     <module>org.eclipse.smarthome.automation.providers</module>
     <module>org.eclipse.smarthome.automation.core</module>
     <module>org.eclipse.smarthome.automation.core.test</module>
