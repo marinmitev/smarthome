@@ -15,7 +15,7 @@
       provider-name="Eclipse.org/SmartHome">
 
    <description>
-      This features defines all bundles that form the Eclipse SmartHome UI.
+      This feature defines all bundles that form the Eclipse SmartHome UI.
    </description>
 
    <copyright>
@@ -40,6 +40,13 @@
 
    <plugin
          id="org.eclipse.smarthome.ui.icon"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.smarthome.ui.iconset.classic"
          download-size="0"
          install-size="0"
          version="0.0.0"

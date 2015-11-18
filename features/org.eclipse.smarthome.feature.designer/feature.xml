@@ -16,7 +16,7 @@
       plugin="org.eclipse.smarthome.designer.core">
 
    <description>
-      This features defines all bundles that form the Eclipse SmartHome designer.
+      This feature defines all bundles that form the Eclipse SmartHome designer.
    </description>
 
    <copyright>
@@ -180,13 +180,6 @@
 
    <plugin
          id="org.eclipse.smarthome.core.transform"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.smarthome.core.scriptengine"
          download-size="0"
          install-size="0"
          version="0.0.0"

@@ -16,46 +16,81 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 
 import org.eclipse.smarthome.core.thing.ChannelUID;
 import org.eclipse.smarthome.core.thing.link.AbstractLink;
 import org.eclipse.smarthome.core.thing.link.ItemChannelLink;
 import org.eclipse.smarthome.core.thing.link.ItemChannelLinkRegistry;
-import org.eclipse.smarthome.core.thing.link.ManagedItemChannelLinkProvider;
+import org.eclipse.smarthome.core.thing.link.ItemThingLink;
+import org.eclipse.smarthome.core.thing.link.ItemThingLinkRegistry;
+import org.eclipse.smarthome.core.thing.link.dto.AbstractLinkDTO;
 import org.eclipse.smarthome.core.thing.link.dto.ItemChannelLinkDTO;
+import org.eclipse.smarthome.core.thing.link.dto.ItemThingLinkDTO;
 import org.eclipse.smarthome.io.rest.RESTResource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.common.collect.Iterables;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 /**
  * This class acts as a REST resource for links.
  *
  * @author Dennis Nobel - Initial contribution
+ * @author Yordan Zhelev - Added Swagger annotations
  */
-@Path("links")
+@Path(ItemChannelLinkResource.PATH_LLINKS)
+@Api
 public class ItemChannelLinkResource implements RESTResource {
 
+    private final Logger logger = LoggerFactory.getLogger(ItemChannelLinkResource.class);
+
+    /** The URI path to this resource */
+    public static final String PATH_LLINKS = "links";
+
     private ItemChannelLinkRegistry itemChannelLinkRegistry;
-    private ManagedItemChannelLinkProvider managedItemChannelLinkProvider;
+    private ItemThingLinkRegistry itemThingLinkRegistry;
+
+    @Context
+    UriInfo uriInfo;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "Gets all available links.", response = ItemChannelLinkDTO.class, responseContainer = "Collection")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK") })
     public Response getAll() {
-        Collection<ItemChannelLink> links = itemChannelLinkRegistry.getAll();
-        return Response.ok(toBeans(links)).build();
+        Collection<ItemChannelLink> channelLinks = itemChannelLinkRegistry.getAll();
+        Collection<ItemThingLink> thingLinks = itemThingLinkRegistry.getAll();
+        return Response.ok(toBeans(Iterables.concat(channelLinks, thingLinks))).build();
     }
 
     @PUT
     @Path("/{itemName}/{channelUID}")
-    public Response link(@PathParam("itemName") String itemName, @PathParam("channelUID") String channelUid) {
-        managedItemChannelLinkProvider.add(new ItemChannelLink(itemName, new ChannelUID(channelUid)));
+    @ApiOperation(value = "Links item to a channel.")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK"),
+            @ApiResponse(code = 400, message = "Item already linked to the channel.") })
+    public Response link(@PathParam("itemName") @ApiParam(value = "itemName") String itemName,
+            @PathParam("channelUID") @ApiParam(value = "channelUID") String channelUid) {
+        itemChannelLinkRegistry.add(new ItemChannelLink(itemName, new ChannelUID(channelUid)));
         return Response.ok().build();
     }
 
     @DELETE
     @Path("/{itemName}/{channelUID}")
-    public Response unlink(@PathParam("itemName") String itemName, @PathParam("channelUID") String channelUid) {
-        managedItemChannelLinkProvider.remove(AbstractLink.getIDFor(itemName, new ChannelUID(channelUid)));
+    @ApiOperation(value = "Unlinks item from a channel.")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK") })
+    public Response unlink(@PathParam("itemName") @ApiParam(value = "itemName") String itemName,
+            @PathParam("channelUID") @ApiParam(value = "channelUID") String channelUid) {
+        itemChannelLinkRegistry.remove(AbstractLink.getIDFor(itemName, new ChannelUID(channelUid)));
         return Response.ok().build();
     }
 
@@ -63,23 +98,29 @@ public class ItemChannelLinkResource implements RESTResource {
         this.itemChannelLinkRegistry = itemChannelLinkRegistry;
     }
 
-    protected void setManagedItemChannelLinkProvider(ManagedItemChannelLinkProvider managedItemChannelLinkProvider) {
-        this.managedItemChannelLinkProvider = managedItemChannelLinkProvider;
-    }
-
     protected void unsetItemChannelLinkRegistry(ItemChannelLinkRegistry itemChannelLinkRegistry) {
         this.itemChannelLinkRegistry = null;
     }
 
-    protected void unsetManagedItemChannelLinkProvider(ManagedItemChannelLinkProvider managedItemChannelLinkProvider) {
-        this.managedItemChannelLinkProvider = null;
+    protected void setItemThingLinkRegistry(ItemThingLinkRegistry itemThingLinkRegistry) {
+        this.itemThingLinkRegistry = itemThingLinkRegistry;
     }
 
-    private Collection<ItemChannelLinkDTO> toBeans(Collection<ItemChannelLink> links) {
-        Collection<ItemChannelLinkDTO> beans = new ArrayList<>();
-        for (ItemChannelLink link : links) {
-            ItemChannelLinkDTO bean = new ItemChannelLinkDTO(link.getItemName(), link.getUID().toString());
-            beans.add(bean);
+    protected void unsetItemThingLinkRegistry(ItemThingLinkRegistry itemThingLinkRegistry) {
+        this.itemThingLinkRegistry = null;
+    }
+
+    private Collection<AbstractLinkDTO> toBeans(Iterable<AbstractLink> links) {
+        Collection<AbstractLinkDTO> beans = new ArrayList<>();
+        for (AbstractLink link : links) {
+            if (link instanceof ItemChannelLink) {
+                ItemChannelLinkDTO bean = new ItemChannelLinkDTO(link.getItemName(), link.getUID().toString());
+                beans.add(bean);
+            } else {
+                ItemThingLinkDTO bean = new ItemThingLinkDTO(link.getItemName(), link.getUID().toString());
+                beans.add(bean);
+            }
+
         }
         return beans;
     }

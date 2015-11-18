@@ -18,27 +18,10 @@
   <modules>
     <module>org.eclipse.smarthome.binding.hue</module>
     <module>org.eclipse.smarthome.binding.hue.test</module>
-    <module>org.eclipse.smarthome.binding.yahooweather</module>
-    <module>org.eclipse.smarthome.binding.wemo</module>
     <module>org.eclipse.smarthome.binding.lifx</module>
+    <module>org.eclipse.smarthome.binding.ntp</module>
+    <module>org.eclipse.smarthome.binding.wemo</module>
+    <module>org.eclipse.smarthome.binding.yahooweather</module>
   </modules>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.eclipse.tycho</groupId>
-        <artifactId>tycho-source-plugin</artifactId>
-        <version>${tycho-version}</version>
-        <executions>
-          <execution>
-            <id>plugin-source</id>
-            <goals>
-              <goal>plugin-source</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
 
 </project>

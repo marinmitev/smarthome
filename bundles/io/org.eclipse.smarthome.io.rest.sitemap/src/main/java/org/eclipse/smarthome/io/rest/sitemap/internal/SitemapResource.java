@@ -38,10 +38,6 @@ import org.eclipse.smarthome.core.items.StateChangeListener;
 import org.eclipse.smarthome.core.types.State;
 import org.eclipse.smarthome.io.rest.RESTResource;
 import org.eclipse.smarthome.io.rest.core.item.EnrichedItemDTOMapper;
-import org.eclipse.smarthome.model.dto.MappingDTO;
-import org.eclipse.smarthome.model.dto.PageDTO;
-import org.eclipse.smarthome.model.dto.SitemapDTO;
-import org.eclipse.smarthome.model.dto.WidgetDTO;
 import org.eclipse.smarthome.model.sitemap.Chart;
 import org.eclipse.smarthome.model.sitemap.Frame;
 import org.eclipse.smarthome.model.sitemap.Image;
@@ -62,6 +58,12 @@ import org.eclipse.smarthome.ui.items.ItemUIRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+
 /**
  * <p>
  * This class acts as a REST resource for sitemaps and provides different methods to interact with them, like retrieving
@@ -70,8 +72,10 @@ import org.slf4j.LoggerFactory;
  *
  * @author Kai Kreuzer - Initial contribution and API
  * @author Chris Jackson
+ * @author Yordan Zhelev - Added Swagger annotations
  */
 @Path(SitemapResource.PATH_SITEMAPS)
+@Api
 public class SitemapResource implements RESTResource {
 
     private final Logger logger = LoggerFactory.getLogger(SitemapResource.class);
@@ -105,6 +109,8 @@ public class SitemapResource implements RESTResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "Get all available sitemaps.", response = SitemapDTO.class, responseContainer = "Collection")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK") })
     public Response getSitemaps() {
         logger.debug("Received HTTP GET request at '{}'", uriInfo.getPath());
         Object responseObject = getSitemapBeans(uriInfo.getAbsolutePathBuilder().build());
@@ -114,9 +120,13 @@ public class SitemapResource implements RESTResource {
     @GET
     @Path("/{sitemapname: [a-zA-Z_0-9]*}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getSitemapData(@Context HttpHeaders headers, @PathParam("sitemapname") String sitemapname,
+    @ApiOperation(value = "Get sitemap by name.", response = SitemapDTO.class)
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK") })
+    public Response getSitemapData(@Context HttpHeaders headers,
+            @PathParam("sitemapname") @ApiParam(value = "sitemap name") String sitemapname,
             @QueryParam("type") String type, @QueryParam("jsoncallback") @DefaultValue("callback") String callback) {
-        logger.debug("Received HTTP GET request at '{}' for media type '{}'.", new Object[] { uriInfo.getPath(), type });
+        logger.debug("Received HTTP GET request at '{}' for media type '{}'.",
+                new Object[] { uriInfo.getPath(), type });
         Object responseObject = getSitemapBean(sitemapname, uriInfo.getBaseUriBuilder().build());
         return Response.ok(responseObject).build();
     }
@@ -124,8 +134,12 @@ public class SitemapResource implements RESTResource {
     @GET
     @Path("/{sitemapname: [a-zA-Z_0-9]*}/{pageid: [a-zA-Z_0-9]*}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getPageData(@Context HttpHeaders headers, @PathParam("sitemapname") String sitemapname,
-            @PathParam("pageid") String pageId) {
+    @ApiOperation(value = "Polls the data for a sitemap.", response = PageDTO.class)
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK"),
+            @ApiResponse(code = 404, message = "Sitemap with requested name does not exist or page does not exist, or page refers to a non-linkable widget") })
+    public Response getPageData(@Context HttpHeaders headers,
+            @PathParam("sitemapname") @ApiParam(value = "sitemap name") String sitemapname,
+            @PathParam("pageid") @ApiParam(value = "page id") String pageId) {
         logger.debug("Received HTTP GET request at '{}'", uriInfo.getPath());
 
         if (headers.getRequestHeader("X-Atmosphere-Transport") != null) {
@@ -149,7 +163,7 @@ public class SitemapResource implements RESTResource {
                 if (pageWidget instanceof LinkableWidget) {
                     EList<Widget> children = itemUIRegistry.getChildren((LinkableWidget) pageWidget);
                     PageDTO pageBean = createPageBean(sitemapName, itemUIRegistry.getLabel(pageWidget),
-                            itemUIRegistry.getIcon(pageWidget), pageId, children, false, isLeaf(children), uri);
+                            itemUIRegistry.getCategory(pageWidget), pageId, children, false, isLeaf(children), uri);
                     EObject parentPage = pageWidget.eContainer();
                     while (parentPage instanceof Frame) {
                         parentPage = parentPage.eContainer();
@@ -167,10 +181,12 @@ public class SitemapResource implements RESTResource {
                 } else {
                     if (logger.isDebugEnabled()) {
                         if (pageWidget == null) {
-                            logger.debug("Received HTTP GET request at '{}' for the unknown page id '{}'.", uri, pageId);
+                            logger.debug("Received HTTP GET request at '{}' for the unknown page id '{}'.", uri,
+                                    pageId);
                         } else {
-                            logger.debug("Received HTTP GET request at '{}' for the page id '{}'. "
-                                    + "This id refers to a non-linkable widget and is therefore no valid page id.",
+                            logger.debug(
+                                    "Received HTTP GET request at '{}' for the page id '{}'. "
+                                            + "This id refers to a non-linkable widget and is therefore no valid page id.",
                                     uri, pageId);
                         }
                     }
@@ -186,7 +202,7 @@ public class SitemapResource implements RESTResource {
     public Collection<SitemapDTO> getSitemapBeans(URI uri) {
         Collection<SitemapDTO> beans = new LinkedList<SitemapDTO>();
         logger.debug("Received HTTP GET request at '{}'.", UriBuilder.fromUri(uri).build().toASCIIString());
-        for(SitemapProvider provider : sitemapProviders) {            
+        for (SitemapProvider provider : sitemapProviders) {
             for (String modelName : provider.getSitemapNames()) {
                 Sitemap sitemap = provider.getSitemap(modelName);
                 if (sitemap != null) {
@@ -228,8 +244,8 @@ public class SitemapResource implements RESTResource {
         return bean;
     }
 
-    private PageDTO createPageBean(String sitemapName, String title, String icon, String pageId,
-            EList<Widget> children, boolean drillDown, boolean isLeaf, URI uri) {
+    private PageDTO createPageBean(String sitemapName, String title, String icon, String pageId, EList<Widget> children,
+            boolean drillDown, boolean isLeaf, URI uri) {
         PageDTO bean = new PageDTO();
         bean.id = pageId;
         bean.title = title;
@@ -268,7 +284,7 @@ public class SitemapResource implements RESTResource {
             }
         }
         bean.widgetId = widgetId;
-        bean.icon = itemUIRegistry.getIcon(widget);
+        bean.icon = itemUIRegistry.getCategory(widget);
         bean.labelcolor = itemUIRegistry.getLabelColor(widget);
         bean.valuecolor = itemUIRegistry.getValueColor(widget);
         bean.label = itemUIRegistry.getLabel(widget);
@@ -289,7 +305,7 @@ public class SitemapResource implements RESTResource {
             } else if (children.size() > 0) {
                 String pageName = itemUIRegistry.getWidgetId(linkableWidget);
                 bean.linkedPage = createPageBean(sitemapName, itemUIRegistry.getLabel(widget),
-                        itemUIRegistry.getIcon(widget), pageName, drillDown ? children : null, drillDown,
+                        itemUIRegistry.getCategory(widget), pageName, drillDown ? children : null, drillDown,
                         isLeaf(children), uri);
             }
         }
@@ -364,8 +380,8 @@ public class SitemapResource implements RESTResource {
             bean.height = webViewWidget.getHeight();
         }
         if (widget instanceof Mapview) {
-        	Mapview mapViewWidget = (Mapview) widget;
-        	bean.height = mapViewWidget.getHeight();
+            Mapview mapViewWidget = (Mapview) widget;
+            bean.height = mapViewWidget.getHeight();
         }
         if (widget instanceof Chart) {
             Chart chartWidget = (Chart) widget;
@@ -427,10 +443,11 @@ public class SitemapResource implements RESTResource {
     }
 
     /**
-     * This method only returns when a change has occurred to any item on the page to display
-     * or if the timeout is reached
-     * 
-     * @param widgets the widgets of the page to observe
+     * This method only returns when a change has occurred to any item on the
+     * page to display or if the timeout is reached
+     *
+     * @param widgets
+     *            the widgets of the page to observe
      */
     private boolean waitForChanges(EList<Widget> widgets) {
         long startTime = (new Date()).getTime();
@@ -458,8 +475,9 @@ public class SitemapResource implements RESTResource {
 
     /**
      * Collects all items that are represented by a given list of widgets
-     * 
-     * @param widgets the widget list to get the items for
+     *
+     * @param widgets
+     *            the widget list to get the items for added to all bundles containing REST resources
      * @return all items that are represented by the list of widgets
      */
     private Set<GenericItem> getAllItems(EList<Widget> widgets) {
@@ -488,9 +506,9 @@ public class SitemapResource implements RESTResource {
     }
 
     /**
-     * This is a state change listener, which is merely used to determine, if a state
-     * change has occurred on one of a list of items.
-     * 
+     * This is a state change listener, which is merely used to determine, if a
+     * state change has occurred on one of a list of items.
+     *
      * @author Kai Kreuzer - Initial contribution and API
      *
      */
@@ -508,7 +526,7 @@ public class SitemapResource implements RESTResource {
 
         /**
          * determines, whether a state change has occurred since its creation
-         * 
+         *
          * @return true, if a state has changed
          */
         public boolean hasChangeOccurred() {
