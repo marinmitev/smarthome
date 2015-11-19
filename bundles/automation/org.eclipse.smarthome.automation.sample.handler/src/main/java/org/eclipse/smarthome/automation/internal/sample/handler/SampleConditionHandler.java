@@ -17,7 +17,7 @@ s * Copyright (c) 1997, 2015 by ProSyst Software GmbH
  *    ProSyst Software GmbH - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.smarthome.automation.internal.sample.handler.factories;
+package org.eclipse.smarthome.automation.internal.sample.handler;
 
 import java.util.Map;
 

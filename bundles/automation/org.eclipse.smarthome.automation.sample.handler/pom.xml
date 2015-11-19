@@ -10,15 +10,15 @@
   </parent>
 
   <properties>
-    <bundle.symbolicName>org.eclipse.smarthome.automation.sample.handler.factories</bundle.symbolicName>
-    <bundle.namespace>org.eclipse.smarthome.automation.sample.handler.factories</bundle.namespace>
+    <bundle.symbolicName>org.eclipse.smarthome.automation.sample.handler</bundle.symbolicName>
+    <bundle.namespace>org.eclipse.smarthome.automation.sample.handler</bundle.namespace>
   </properties>
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.eclipse.smarthome.automation</groupId>
-  <artifactId>org.eclipse.smarthome.automation.sample.handler.factories</artifactId>
+  <artifactId>org.eclipse.smarthome.automation.sample.handler</artifactId>
 
-  <name>Eclipse SmartHome Automation Sample Handler Factories</name>
+  <name>Eclipse SmartHome Automation Sample Handler</name>
 
   <packaging>eclipse-plugin</packaging>
 
