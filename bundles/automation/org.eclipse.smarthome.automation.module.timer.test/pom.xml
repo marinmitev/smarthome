@@ -110,12 +110,12 @@
 						</bundle>
 						<bundle>
 							<id>org.eclipse.smarthome.automation.module.core</id>
-							<level>4</level>
+							<level>3</level>
 							<autoStart>true</autoStart>
 						</bundle>
 						<bundle>
                             <id>org.eclipse.smarthome.automation.module.timer</id>
-                            <level>4</level>
+                            <level>3</level>
                             <autoStart>true</autoStart>
                         </bundle>
 						<bundle>
@@ -168,6 +168,11 @@
 							<level>2</level>
 							<autoStart>true</autoStart>
 						</bundle>
+						<bundle>
+                            <id>org.eclipse.smarthome.core.scheduler</id>
+                            <level>2</level>
+                            <autoStart>true</autoStart>
+                        </bundle>
 					</bundleStartLevel>
 				</configuration>
 			</plugin>
