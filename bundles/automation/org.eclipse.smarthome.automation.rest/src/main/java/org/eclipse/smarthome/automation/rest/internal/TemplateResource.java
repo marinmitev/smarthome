@@ -27,6 +27,11 @@ import org.eclipse.smarthome.io.rest.RESTResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+
 /**
  * This class acts as a REST resource for templates and is registered with the Jersey servlet.
  *
@@ -52,7 +57,9 @@ public class TemplateResource implements RESTResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getAll(@HeaderParam("Accept-Language") String language) {
+    @ApiOperation(value = "Get all available templates.", response = Template.class, responseContainer = "Collection")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK") })
+    public Response getAll(@HeaderParam("Accept-Language") @ApiParam(value = "language") String language) {
         Locale locale = LocaleUtil.getLocale(language);
         return Response.ok(templateRegistry.getAll(locale)).build();
     }
@@ -60,8 +67,11 @@ public class TemplateResource implements RESTResource {
     @GET
     @Path("/{templateUID}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getByUID(@HeaderParam("Accept-Language") String language,
-            @PathParam("templateUID") String templateUID) {
+    @ApiOperation(value = "Gets a template corresponding to the given UID.", response = Template.class)
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK"),
+            @ApiResponse(code = 404, message = "Template corresponding to the given UID does not found.") })
+    public Response getByUID(@HeaderParam("Accept-Language") @ApiParam(value = "language") String language,
+            @PathParam("templateUID") @ApiParam(value = "templateUID", required = true) String templateUID) {
         Locale locale = LocaleUtil.getLocale(language);
         Template template = templateRegistry.get(templateUID, locale);
         if (template != null) {

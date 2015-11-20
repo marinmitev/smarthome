@@ -37,12 +37,19 @@ import org.eclipse.smarthome.io.rest.RESTResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+
 /**
  * This class acts as a REST resource for module types and is registered with the Jersey servlet.
  *
  * @author Kai Kreuzer - Initial contribution
  */
 @Path("module-types")
+@Api
 public class ModuleTypeResource implements RESTResource {
 
     private final Logger logger = LoggerFactory.getLogger(ModuleTypeResource.class);
@@ -62,8 +69,11 @@ public class ModuleTypeResource implements RESTResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getAll(@HeaderParam("Accept-Language") String language, @QueryParam("tags") String tagList,
-            @QueryParam("type") String type) {
+    @ApiOperation(value = "Get all available module types.", response = ModuleType.class, responseContainer = "List")
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK") })
+    public Response getAll(@HeaderParam("Accept-Language") @ApiParam(value = "language") String language,
+            @QueryParam("tags") @ApiParam(value = "tags for filtering", required = false) String tagList,
+            @QueryParam("type") @ApiParam(value = "filtering by action, condition or trigger", required = false) String type) {
         Locale locale = LocaleUtil.getLocale(language);
         Set<String> tags = tagList != null ? new HashSet<String>(Arrays.asList(tagList.split(","))) : null;
         List<ModuleType> allModules = new ArrayList<ModuleType>();
@@ -95,8 +105,11 @@ public class ModuleTypeResource implements RESTResource {
     @GET
     @Path("/{moduleTypeUID}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getByUID(@HeaderParam("Accept-Language") String language,
-            @PathParam("moduleTypeUID") String moduleTypeUID) {
+    @ApiOperation(value = "Gets a module type corresponding to the given UID.", response = ModuleType.class)
+    @ApiResponses(value = { @ApiResponse(code = 200, message = "OK"),
+            @ApiResponse(code = 404, message = "Module Type corresponding to the given UID does not found.") })
+    public Response getByUID(@HeaderParam("Accept-Language") @ApiParam(value = "language") String language,
+            @PathParam("moduleTypeUID") @ApiParam(value = "moduleTypeUID", required = true) String moduleTypeUID) {
         Locale locale = LocaleUtil.getLocale(language);
         ModuleType moduleType = moduleTypeRegistry.get(moduleTypeUID, locale);
         if (moduleType != null) {
