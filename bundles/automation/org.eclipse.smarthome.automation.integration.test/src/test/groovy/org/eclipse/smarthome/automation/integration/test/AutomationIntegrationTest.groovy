@@ -130,6 +130,10 @@ class AutomationIntegrationTest extends OSGiTest{
         logger.info('@After');
     }
 
+    protected void registerVolatileStorageService() {
+        registerService(AutomationIntegrationJsonTest.VOLATILE_STORAGE_SERVICE);
+    }
+
     @Test
     public void 'assert that a rule can be added, updated and removed by the api' () {
         logger.info('assert that a rule can be added, updated and removed by the api');
@@ -553,7 +557,7 @@ class AutomationIntegrationTest extends OSGiTest{
         })
 
     }
-    
+
     @Test
     public void 'assert that a rule created from a more complex template is executed as expected' () {
         logger.info('assert that a rule created from a more complex template is executed as expected');

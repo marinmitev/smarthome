@@ -59,7 +59,7 @@ class AutomationIntegrationJsonTest extends OSGiTest{
     def ItemRegistry itemRegistry
     def RuleRegistry ruleRegistry
     def Event ruleEvent
-    static def VolatileStorageService volatileStorageService = new VolatileStorageService()//keep storage with rules imported from json files
+    public static def VolatileStorageService VOLATILE_STORAGE_SERVICE = new VolatileStorageService()//keep storage with rules imported from json files
 
     @Before
     void before() {
@@ -137,7 +137,7 @@ class AutomationIntegrationJsonTest extends OSGiTest{
 
 
     protected void registerVolatileStorageService() {
-        registerService(volatileStorageService);
+        registerService(VOLATILE_STORAGE_SERVICE);
     }
 
 
@@ -188,7 +188,7 @@ class AutomationIntegrationJsonTest extends OSGiTest{
             Rule r = ruleRegistry.get("ItemSampleRule")
             assertThat r, is(notNullValue())
             assertThat ruleRegistry.getStatus(r.UID).getStatus(), is(RuleStatus.IDLE)
-            
+
         }, 3000, 200)
         SwitchItem myPresenceItem = itemRegistry.getItem("myPresenceItem")
         eventPublisher.post(ItemEventFactory.createCommandEvent("myPresenceItem", OnOffType.ON))
