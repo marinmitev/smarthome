@@ -15,6 +15,8 @@ import org.eclipse.smarthome.automation.template.Template;
 import org.eclipse.smarthome.automation.template.TemplateRegistry;
 
 /**
+ * The implementation of {@link TemplateRegistry} that is registered as a service.
+ *
  * @author Yordan Mihaylov - Initial Contribution
  */
 public class TemplateRegistryImpl implements TemplateRegistry {

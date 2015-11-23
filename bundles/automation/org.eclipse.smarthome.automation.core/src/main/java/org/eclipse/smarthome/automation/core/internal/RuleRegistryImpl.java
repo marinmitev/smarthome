@@ -25,6 +25,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * This is the main implementation of the {@link RuleRegistry}, which is registered as a service.
+ *
  * @author Yordan Mihaylov - Initial Contribution
  * @author Ana Dimova - Persistence implementation
  * @author Kai Kreuzer - refactored (managed) provider and registry implementation and other fixes
@@ -202,6 +204,5 @@ public class RuleRegistryImpl extends AbstractRegistry<Rule, String>implements R
         return ruleEngine.hasRule(ruleUID) ? !ruleEngine.getRuleStatus(ruleUID).equals(RuleStatus.DISABLED) : null;
     }
 
-    public void dispose() {
-    }
+    public void dispose() {}
 }

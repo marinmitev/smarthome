@@ -17,8 +17,8 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Activator class for item based automation modules
- * 
- * @author Benedikt Niehues
+ *
+ * @author Benedikt Niehues - Initial contribution and API
  *
  */
 public class Activator implements BundleActivator {
@@ -26,18 +26,14 @@ public class Activator implements BundleActivator {
     private final Logger logger = LoggerFactory.getLogger(Activator.class);
     private BundleContext context;
     private BasicModuleHandlerFactory moduleHandlerFactory;
+    @SuppressWarnings("rawtypes")
     private ServiceRegistration factoryRegistration;
 
     public BundleContext getContext() {
         return context;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.
-     * BundleContext)
-     */
+    @Override
     public void start(BundleContext bundleContext) throws Exception {
         this.context = bundleContext;
         this.moduleHandlerFactory = new BasicModuleHandlerFactory(context);
@@ -46,12 +42,7 @@ public class Activator implements BundleActivator {
         logger.debug("started bundle automation.module");
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
-     */
+    @Override
     public void stop(BundleContext bundleContext) throws Exception {
         this.context = null;
         this.moduleHandlerFactory.dispose();

@@ -74,11 +74,12 @@ public class CompositeModuleHandlerFactory extends BaseModuleHandlerFactory impl
         return null;
     }
 
+    @SuppressWarnings({ "unchecked" })
     @Override
     public void ungetHandler(Module module, String ruleUID, ModuleHandler handler) {
         ModuleHandler handlerOfModule = handlers.get(ruleUID + module.getId());
         if (handlerOfModule instanceof AbstractCompositeModuleHandler) {
-            AbstractCompositeModuleHandler<Module, ?, ?> h = (AbstractCompositeModuleHandler) handlerOfModule;
+            AbstractCompositeModuleHandler<Module, ?, ?> h = (AbstractCompositeModuleHandler<Module, ?, ?>) handlerOfModule;
             Set<Module> modules = h.moduleHandlerMap.keySet();
             if (modules != null) {
                 for (Module child : modules) {
@@ -140,6 +141,7 @@ public class CompositeModuleHandlerFactory extends BaseModuleHandlerFactory impl
      * @return map of pairs of module and its handler. Return null when some of the child modules can not find its
      *         handler.
      */
+    @SuppressWarnings("unchecked")
     private <T extends Module, MT extends ModuleHandler> LinkedHashMap<T, MT> getChildHandlers(
             Map<String, Object> compositeConfig, List<T> childModules, String ruleUID) {
         LinkedHashMap<T, MT> mapModuleToHandler = new LinkedHashMap<T, MT>();

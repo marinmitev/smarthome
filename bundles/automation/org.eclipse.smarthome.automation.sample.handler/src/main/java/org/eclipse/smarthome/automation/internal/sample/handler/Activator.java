@@ -22,6 +22,7 @@ public class Activator implements BundleActivator {
     private BundleContext bc;
     private SampleHandlerFactory sampleHandlerFactory;
     private SampleHandlerFactoryCommands commands;
+    @SuppressWarnings("rawtypes")
     private ServiceRegistration factoryRegistration;
 
     @Override

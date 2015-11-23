@@ -2,7 +2,7 @@ Bundle-ManifestVersion: 2
 Bundle-SymbolicName: org.eclipse.smarthome.automation.sample.handler
 Bundle-Version: 0.8.0.qualifier
 Bundle-Vendor: Eclipse.org/SmartHome
-Bundle-Name: Automation sample.handler
+Bundle-Name: Automation Sample Handler
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: 
  org.eclipse.smarthome.automation,

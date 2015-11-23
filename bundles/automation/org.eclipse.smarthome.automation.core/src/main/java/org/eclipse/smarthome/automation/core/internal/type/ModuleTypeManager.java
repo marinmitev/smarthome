@@ -33,6 +33,8 @@ import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
 
 /**
+ * Internal implementation for handling module types that is independent of the Registry interface.
+ *
  * @author Yordan Mihaylov - Initial Contribution
  * @author Kai Kreuzer - refactored (managed) provider and registry implementation
  */

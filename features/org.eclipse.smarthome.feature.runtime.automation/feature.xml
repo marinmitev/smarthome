@@ -20,7 +20,7 @@ Automation support
    </description>
 
    <copyright>
-      Copyright (C) 2014 openHAB UG (haftungsbeschränkt) and others
+      Copyright (C) 2014-2015 openHAB UG (haftungsbeschränkt) and others
    </copyright>
 
    <license url="%licenseURL">
@@ -95,7 +95,7 @@ Automation support
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.smarthome.automation.sample.handler.factories"
+         id="org.eclipse.smarthome.automation.sample.handler"
          download-size="0"
          install-size="0"
          version="0.0.0"

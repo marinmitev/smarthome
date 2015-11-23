@@ -208,7 +208,6 @@ public class Output {
      * @param type is a fully qualified name of the java type.
      */
     private void setType(String type) {
-        // TODO verify type if it is a fully qualified class name
         this.type = type;
     }
 

@@ -34,171 +34,129 @@ public class BundleContextMockup implements BundleContext {
 
     @Override
     public String getProperty(String key) {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public Bundle getBundle() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public Bundle installBundle(String location, InputStream input) throws BundleException {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public Bundle installBundle(String location) throws BundleException {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public Bundle getBundle(long id) {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public Bundle[] getBundles() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public void addServiceListener(ServiceListener listener, String filter) throws InvalidSyntaxException {
-        // TODO Auto-generated method stub
-
-    }
+    public void addServiceListener(ServiceListener listener, String filter) throws InvalidSyntaxException {}
 
     @Override
-    public void addServiceListener(ServiceListener listener) {
-        // TODO Auto-generated method stub
-
-    }
+    public void addServiceListener(ServiceListener listener) {}
 
     @Override
-    public void removeServiceListener(ServiceListener listener) {
-        // TODO Auto-generated method stub
-
-    }
+    public void removeServiceListener(ServiceListener listener) {}
 
     @Override
-    public void addBundleListener(BundleListener listener) {
-        // TODO Auto-generated method stub
-
-    }
+    public void addBundleListener(BundleListener listener) {}
 
     @Override
-    public void removeBundleListener(BundleListener listener) {
-        // TODO Auto-generated method stub
-
-    }
+    public void removeBundleListener(BundleListener listener) {}
 
     @Override
-    public void addFrameworkListener(FrameworkListener listener) {
-        // TODO Auto-generated method stub
-
-    }
+    public void addFrameworkListener(FrameworkListener listener) {}
 
     @Override
-    public void removeFrameworkListener(FrameworkListener listener) {
-        // TODO Auto-generated method stub
-
-    }
+    public void removeFrameworkListener(FrameworkListener listener) {}
 
     @Override
     public ServiceRegistration<?> registerService(String[] clazzes, Object service, Dictionary<String, ?> properties) {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public ServiceRegistration<?> registerService(String clazz, Object service, Dictionary<String, ?> properties) {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public <S> ServiceRegistration<S> registerService(Class<S> clazz, S service, Dictionary<String, ?> properties) {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public <S> ServiceRegistration<S> registerService(Class<S> clazz, ServiceFactory<S> factory,
             Dictionary<String, ?> properties) {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public ServiceReference<?>[] getServiceReferences(String clazz, String filter) throws InvalidSyntaxException {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public ServiceReference<?>[] getAllServiceReferences(String clazz, String filter) throws InvalidSyntaxException {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public ServiceReference<?> getServiceReference(String clazz) {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public <S> ServiceReference<S> getServiceReference(Class<S> clazz) {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public <S> Collection<ServiceReference<S>> getServiceReferences(Class<S> clazz, String filter)
             throws InvalidSyntaxException {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public <S> S getService(ServiceReference<S> reference) {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public boolean ungetService(ServiceReference<?> reference) {
-        // TODO Auto-generated method stub
         return false;
     }
 
     @Override
     public <S> ServiceObjects<S> getServiceObjects(ServiceReference<S> reference) {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public File getDataFile(String filename) {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public Filter createFilter(String filter) throws InvalidSyntaxException {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public Bundle getBundle(String location) {
-        // TODO Auto-generated method stub
         return null;
     }
 

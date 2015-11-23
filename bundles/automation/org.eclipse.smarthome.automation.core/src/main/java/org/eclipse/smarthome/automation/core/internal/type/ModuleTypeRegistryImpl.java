@@ -15,6 +15,8 @@ import org.eclipse.smarthome.automation.type.ModuleType;
 import org.eclipse.smarthome.automation.type.ModuleTypeRegistry;
 
 /**
+ * The implementation of {@link ModuleTypeRegistry} that is registered as a service.
+ *
  * @author Yordan Mihaylov - Initial Contribution
  * @author Kai Kreuzer - refactored (managed) provider and registry implementation
  */

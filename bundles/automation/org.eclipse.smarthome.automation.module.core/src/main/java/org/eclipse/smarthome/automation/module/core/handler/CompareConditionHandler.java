@@ -17,27 +17,15 @@ import org.eclipse.smarthome.automation.Condition;
 import org.eclipse.smarthome.automation.handler.BaseModuleHandler;
 import org.eclipse.smarthome.automation.handler.ConditionHandler;
 import org.eclipse.smarthome.automation.module.core.handler.exception.UncomparableException;
-import org.eclipse.smarthome.core.library.types.DateTimeType;
-import org.eclipse.smarthome.core.library.types.HSBType;
-import org.eclipse.smarthome.core.library.types.OnOffType;
-import org.eclipse.smarthome.core.library.types.OpenClosedType;
-import org.eclipse.smarthome.core.library.types.PlayPauseType;
-import org.eclipse.smarthome.core.library.types.PointType;
-import org.eclipse.smarthome.core.library.types.RawType;
-import org.eclipse.smarthome.core.library.types.RewindFastforwardType;
-import org.eclipse.smarthome.core.library.types.StringType;
-import org.eclipse.smarthome.core.library.types.UpDownType;
 import org.eclipse.smarthome.core.types.State;
 import org.eclipse.smarthome.core.types.TypeParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.Lists;
-
 /**
  * Generic Comparation Condition
- * 
- * @author Benedikt Niehues
+ *
+ * @author Benedikt Niehues - Initial contribution and API
  *
  */
 public class CompareConditionHandler extends BaseModuleHandler<Condition>implements ConditionHandler {
@@ -55,11 +43,6 @@ public class CompareConditionHandler extends BaseModuleHandler<Condition>impleme
         super(module);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.smarthome.automation.handler.ConditionHandler#isSatisfied(java.util.Map)
-     */
     @Override
     public boolean isSatisfied(Map<String, ?> context) {
         Object operatorObj = this.module.getConfiguration().get(OPERATOR);
@@ -140,7 +123,7 @@ public class CompareConditionHandler extends BaseModuleHandler<Condition>impleme
     private int compare(Object a, Object b) throws UncomparableException {
         if (Comparable.class.isAssignableFrom(a.getClass()) && a.getClass().equals(b.getClass())) {
             try {
-                return ((Comparable) a).compareTo((Comparable) b);
+                return ((Comparable) a).compareTo(b);
             } catch (ClassCastException e) {
                 // should never happen but to be save here!
                 throw new UncomparableException();
@@ -148,11 +131,6 @@ public class CompareConditionHandler extends BaseModuleHandler<Condition>impleme
         }
         throw new UncomparableException();
     }
-
-    @SuppressWarnings("unchecked")
-    private static final List<Class<? extends State>> stateTypes = Lists.newArrayList(DateTimeType.class, HSBType.class,
-            OnOffType.class, OpenClosedType.class, PlayPauseType.class, PointType.class, RawType.class,
-            RewindFastforwardType.class, StringType.class, UpDownType.class);
 
     private Object getRightOperandValue(String rightOperandString2, Object toCompare) {
         if (rightOperandString2.equals("null")) {
@@ -175,7 +153,7 @@ public class CompareConditionHandler extends BaseModuleHandler<Condition>impleme
     }
 
     private Object getCompareValue(Object leftObj, String leftObjFieldName) {
-        if (leftObj==null || leftObjFieldName == null || leftObjFieldName.isEmpty() || leftObj instanceof String
+        if (leftObj == null || leftObjFieldName == null || leftObjFieldName.isEmpty() || leftObj instanceof String
                 || leftObj instanceof Integer || leftObj instanceof Long || leftObj instanceof Double) {
             return leftObj;
         } else {

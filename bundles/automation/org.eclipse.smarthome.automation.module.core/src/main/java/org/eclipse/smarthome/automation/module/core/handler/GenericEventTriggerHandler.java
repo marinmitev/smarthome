@@ -36,7 +36,7 @@ import com.google.common.collect.Maps;
  * EventSubscriber, so the dispose method must be called for unregistering the
  * service.
  *
- * @author Benedikt Niehues
+ * @author Benedikt Niehues - Initial contribution and API
  * @author Kai Kreuzer - refactored and simplified customized module handling
  *
  */
@@ -67,7 +67,8 @@ public class GenericEventTriggerHandler extends BaseModuleHandler<Trigger>implem
         this.bundleContext = bundleContext;
         Dictionary<String, Object> properties = new Hashtable<String, Object>();
         properties.put("event.topics", topic);
-        eventSubscriberRegistration = this.bundleContext.registerService(EventSubscriber.class.getName(), this, properties);
+        eventSubscriberRegistration = this.bundleContext.registerService(EventSubscriber.class.getName(), this,
+                properties);
         logger.trace("Registered EventSubscriber: Topic: {} Type: {} Source: {}", topic, types, source);
     }
 

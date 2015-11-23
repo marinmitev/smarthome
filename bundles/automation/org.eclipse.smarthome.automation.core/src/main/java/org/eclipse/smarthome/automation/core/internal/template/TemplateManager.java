@@ -23,6 +23,8 @@ import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
 
 /**
+ * Internal implementation for handling templates that is independent of the Registry interface.
+ *
  * @author Yordan Mihaylov - Initial Contribution
  */
 @SuppressWarnings("rawtypes")

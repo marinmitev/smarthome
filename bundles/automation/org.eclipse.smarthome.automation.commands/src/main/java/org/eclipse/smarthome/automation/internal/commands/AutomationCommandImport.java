@@ -143,7 +143,6 @@ public class AutomationCommandImport extends AutomationCommand {
      */
     @Override
     protected String parseOptionsAndParameters(String[] parameterValues) {
-        String command = this.command;
         boolean getUrl = true;
         for (int i = 0; i < parameterValues.length; i++) {
             if (null == parameterValues[i]) {

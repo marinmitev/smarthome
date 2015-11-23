@@ -24,8 +24,6 @@ import org.eclipse.smarthome.automation.template.Template;
 import org.eclipse.smarthome.automation.template.TemplateRegistry;
 import org.eclipse.smarthome.io.rest.LocaleUtil;
 import org.eclipse.smarthome.io.rest.RESTResource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -39,8 +37,6 @@ import io.swagger.annotations.ApiResponses;
  */
 @Path("templates")
 public class TemplateResource implements RESTResource {
-
-    private final Logger logger = LoggerFactory.getLogger(TemplateResource.class);
 
     private TemplateRegistry templateRegistry;
 

@@ -179,7 +179,6 @@ public class AutomationCommandExport extends AutomationCommand {
      */
     @Override
     protected String parseOptionsAndParameters(String[] parameterValues) {
-        String command = this.command;
         boolean getFile = true;
         for (int i = 0; i < parameterValues.length; i++) {
             if (null == parameterValues[i]) {

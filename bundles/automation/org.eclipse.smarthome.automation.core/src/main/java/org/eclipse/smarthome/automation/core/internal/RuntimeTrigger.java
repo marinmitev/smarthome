@@ -14,6 +14,8 @@ import org.eclipse.smarthome.automation.Trigger;
 import org.eclipse.smarthome.automation.handler.TriggerHandler;
 
 /**
+ * This class is implementation of {@link Trigger} modules used in the {@link RuleEngine}s.
+ *
  * @author Yordan Mihaylov - Initial Contribution
  */
 public class RuntimeTrigger extends Trigger {

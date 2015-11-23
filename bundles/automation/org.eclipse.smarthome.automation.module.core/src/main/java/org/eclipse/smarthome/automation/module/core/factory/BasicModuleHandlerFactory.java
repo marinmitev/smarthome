@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
  * This HandlerFactory creates ModuleHandlers to control items within the
  * RuleEngine. It contains basic Triggers, Conditions and Actions.
  *
- * @author Benedikt Niehues
+ * @author Benedikt Niehues - Initial contribution and API
  * @author Kai Kreuzer - refactored and simplified customized module handling
  *
  */
@@ -74,7 +74,7 @@ public class BasicModuleHandlerFactory extends BaseModuleHandlerFactory {
                     @Override
                     public void modifiedService(ServiceReference reference, Object service) {
 
-                    }
+            }
 
                     @Override
                     public void removedService(ServiceReference reference, Object service) {
@@ -95,7 +95,7 @@ public class BasicModuleHandlerFactory extends BaseModuleHandlerFactory {
                     @Override
                     public void modifiedService(ServiceReference reference, Object service) {
 
-                    }
+            }
 
                     @Override
                     public void removedService(ServiceReference reference, Object service) {

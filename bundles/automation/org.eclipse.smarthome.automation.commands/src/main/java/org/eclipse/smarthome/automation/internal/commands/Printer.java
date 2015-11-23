@@ -609,7 +609,7 @@ public class Printer {
         String res = "[";
         Iterator<?> i = map.entrySet().iterator();
         while (i.hasNext()) {
-            Map.Entry element = (Entry) i.next();
+            Entry<?, ?> element = (Entry<?, ?>) i.next();
             if (i.hasNext()) {
                 res = "\n" + str + str + element.getKey() + " = " + element.getValue();
             } else {

@@ -13,6 +13,7 @@ import org.eclipse.smarthome.core.common.registry.DefaultAbstractManagedProvider
 import org.eclipse.smarthome.core.storage.StorageService;
 
 /**
+ * Implementation of a rule provider that uses the storage service for persistence
  *
  * @author Yordan Mihaylov - Initial Contribution
  * @author Ana Dimova - Persistence implementation

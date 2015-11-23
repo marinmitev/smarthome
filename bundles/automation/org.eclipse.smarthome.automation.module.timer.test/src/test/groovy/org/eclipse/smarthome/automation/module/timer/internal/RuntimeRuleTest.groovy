@@ -51,6 +51,7 @@ import com.google.common.collect.Sets
 
 /**
  * this tests the Timer Trigger
+ * 
  * @author Christoph Knauf - initial contribution
  *
  */

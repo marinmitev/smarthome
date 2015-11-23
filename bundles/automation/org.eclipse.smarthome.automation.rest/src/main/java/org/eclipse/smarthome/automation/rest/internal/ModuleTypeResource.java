@@ -34,8 +34,6 @@ import org.eclipse.smarthome.automation.type.ModuleTypeRegistry;
 import org.eclipse.smarthome.automation.type.TriggerType;
 import org.eclipse.smarthome.io.rest.LocaleUtil;
 import org.eclipse.smarthome.io.rest.RESTResource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -51,8 +49,6 @@ import io.swagger.annotations.ApiResponses;
 @Path("module-types")
 @Api
 public class ModuleTypeResource implements RESTResource {
-
-    private final Logger logger = LoggerFactory.getLogger(ModuleTypeResource.class);
 
     private ModuleTypeRegistry moduleTypeRegistry;
 

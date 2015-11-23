@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
  * This is an implementation of an ActionHandler. It posts command events on
  * items to change their state.
  *
- * @author Benedikt Niehues
+ * @author Benedikt Niehues - Initial contribution and API
  * @author Kai Kreuzer - refactored and simplified customized module handling
  *
  */

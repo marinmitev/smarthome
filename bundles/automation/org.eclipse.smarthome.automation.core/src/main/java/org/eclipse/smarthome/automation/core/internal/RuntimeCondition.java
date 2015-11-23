@@ -14,12 +14,11 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.smarthome.automation.Condition;
-import org.eclipse.smarthome.automation.Rule;
 import org.eclipse.smarthome.automation.handler.ConditionHandler;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class is implementation of {@link Condition} modules used in {@link Rule}s.
+ * This class is implementation of {@link Condition} modules used in the {@link RuleEngine}s.
  *
  * @author Yordan Mihaylov - Initial Contribution
  */

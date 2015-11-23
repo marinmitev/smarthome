@@ -9,10 +9,12 @@ package org.eclipse.smarthome.automation.module.core.handler.exception;
 
 /**
  * This Exception is used as an indicator for not matching types during comparation
- * 
- * @author Benedikt Niehues
+ *
+ * @author Benedikt Niehues - Initial contribution and API
  *
  */
 public class UncomparableException extends Exception {
+
+    private static final long serialVersionUID = 4891205711357448390L;
 
 }

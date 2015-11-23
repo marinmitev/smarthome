@@ -15,8 +15,6 @@ import java.util.concurrent.Future;
 import org.eclipse.smarthome.automation.Rule;
 import org.eclipse.smarthome.automation.Trigger;
 import org.eclipse.smarthome.automation.handler.RuleEngineCallback;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * This class is implementation of {@link RuleEngineCallback} used by the {@link Trigger}s to notify rule engine about
@@ -33,8 +31,6 @@ public class RuleEngineCallbackImpl implements RuleEngineCallback {
 
     private Future<?> feature;
 
-    private final Logger log = LoggerFactory.getLogger(RuleEngineCallback.class);
-
     private RuleEngine re;
 
     protected RuleEngineCallbackImpl(RuleEngine re, RuntimeRule r) {
@@ -45,12 +41,7 @@ public class RuleEngineCallbackImpl implements RuleEngineCallback {
 
     @Override
     public void triggered(Trigger trigger, Map<String, ?> outputs) {
-        // if (trigger instanceof SourceModule) {
         feature = executor.submit(new TriggerData(trigger, outputs));
-        // } else {
-        // log.error("The trigger " + trigger.getId() + " is not data source!");
-        // }
-
     }
 
     public Rule getRule() {

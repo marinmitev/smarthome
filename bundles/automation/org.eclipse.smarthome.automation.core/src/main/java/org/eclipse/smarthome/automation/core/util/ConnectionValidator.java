@@ -31,7 +31,7 @@ import org.eclipse.smarthome.automation.type.TriggerType;
  * This class contains utility methods for comparison of data types between connected inputs and outputs of modules
  * participating in a rule.
  *
- * @author Ana Dimova
+ * @author Ana Dimova - Initial contribution and API
  * @author Kai Kreuzer - refactored (managed) provider and registry implementation
  * @author Benedikt Niehues - validation of connection-types respects inheriting types
  *
@@ -234,21 +234,21 @@ public class ConnectionValidator {
                             try {
                                 Class<?> outputType = Class.forName(output.getType());
                                 Class<?> inputType = Class.forName(input.getType());
-                                if (inputType.isAssignableFrom(outputType)){
+                                if (inputType.isAssignableFrom(outputType)) {
                                     break;
-                                }else{
-                                    throw new IllegalArgumentException(msg + " Incompatible types : \"" + output.getType()
-                                    + "\" and \"" + input.getType() + "\".");
+                                } else {
+                                    throw new IllegalArgumentException(msg + " Incompatible types : \""
+                                            + output.getType() + "\" and \"" + input.getType() + "\".");
                                 }
                             } catch (ClassNotFoundException e) {
                                 if (output.getType().equals(input.getType())) {
                                     break;
                                 } else {
-                                    throw new IllegalArgumentException(msg + " Incompatible types : \"" + output.getType()
-                                            + "\" and \"" + input.getType() + "\".");
+                                    throw new IllegalArgumentException(msg + " Incompatible types : \""
+                                            + output.getType() + "\" and \"" + input.getType() + "\".");
                                 }
                             }
-                           
+
                         }
                     }
                 }

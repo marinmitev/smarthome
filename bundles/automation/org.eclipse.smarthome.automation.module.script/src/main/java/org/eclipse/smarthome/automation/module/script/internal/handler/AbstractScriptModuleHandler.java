@@ -54,7 +54,7 @@ abstract public class AbstractScriptModuleHandler<T extends Module> extends Base
         // add the rule context to the script engine (only for this execution)
         for (Entry<String, ?> entry : context.entrySet()) {
 
-            final HashMap jsonObj = new HashMap();
+            final HashMap<String, Object> jsonObj = new HashMap<String, Object>();
             Object value = entry.getValue();
             String key = entry.getKey();
             int dotIndex = key.indexOf('.');

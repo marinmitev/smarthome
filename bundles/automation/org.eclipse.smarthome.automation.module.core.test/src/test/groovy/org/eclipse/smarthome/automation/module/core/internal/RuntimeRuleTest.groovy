@@ -50,6 +50,7 @@ import com.google.common.collect.Sets
 
 /**
  * this tests the RuleEngine
+ * 
  * @author Benedikt Niehues - initial contribution
  *
  */
