@@ -101,14 +101,14 @@ class RuleEventTest extends OSGiTest{
         //Creation of RULE
         def triggerConfig = [eventSource:"myMotionItem2", eventTopic:"smarthome/*", eventTypes:"ItemStateEvent"]
         def condition1Config = [operator:"=", itemName:"myPresenceItem2", state:"ON"]
-        def condition2Config = [operator:"=", itemName:"myMotionItem2", state:"ON"]
+        def condition2Config = [itemName:"myMotionItem2"]
         def actionConfig = [itemName:"myLampItem2", command:"ON"]
         def triggers = [
             new Trigger("ItemStateChangeTrigger2", "GenericEventTrigger", triggerConfig)
         ]
         def conditions = [
             new Condition("ItemStateCondition3", "ItemStateCondition", condition1Config, null),
-            new Condition("ItemStateCondition4", "ItemStateCondition", condition2Config, null)
+            new Condition("ItemStateCondition4", "ItemStateEvent_ON_Condition", condition2Config, [event:"ItemStateChangeTrigger2.event"])
         ]
         def actions = [
             new Action("ItemPostCommandAction2", "ItemPostCommandAction", actionConfig, null)

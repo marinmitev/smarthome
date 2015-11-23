@@ -128,10 +128,10 @@ class RuntimeRuleTest extends OSGiTest{
         //Creation of RULE
         def triggerConfig = [eventSource:"myMotionItem2", eventTopic:"smarthome/*", eventTypes:"ItemStateEvent"]
         def condition1Config = [operator:"=", itemName:"myPresenceItem2", state:"ON"]
-        def condition2Config = [operator:"=", itemName:"myMotionItem2", state:"ON"]
+        def condition2Config = [itemName:"myMotionItem2"]
         def actionConfig = [itemName:"myLampItem2", command:"ON"]
         def triggers = [new Trigger("ItemStateChangeTrigger2", "GenericEventTrigger", triggerConfig)]
-        def conditions = [new Condition("ItemStateCondition3", "ItemStateCondition", condition1Config, null), new Condition("ItemStateCondition4", "ItemStateCondition", condition2Config, null)]
+        def conditions = [new Condition("ItemStateCondition3", "ItemStateCondition", condition1Config, null), new Condition("ItemStateCondition4", "ItemStateEvent_ON_Condition", condition2Config, [event:"ItemStateChangeTrigger2.event"])]
         def actions = [new Action("ItemPostCommandAction2", "ItemPostCommandAction", actionConfig, null)]
 
         def rule = new Rule("myRule21"+new Random().nextInt(),triggers, conditions, actions, null, null)
@@ -152,9 +152,8 @@ class RuntimeRuleTest extends OSGiTest{
         def EventPublisher eventPublisher = getService(EventPublisher)
         def ItemRegistry itemRegistry = getService(ItemRegistry)
         SwitchItem myMotionItem = itemRegistry.getItem("myMotionItem2")
-        Command commandObj = TypeParser.parseCommand(myMotionItem.getAcceptedCommandTypes(), "ON")
-        eventPublisher.post(ItemEventFactory.createCommandEvent("myPresenceItem2", commandObj))
-        //      eventPublisher.post(ItemEventFactory.createStateEvent("myPresenceItem2", OnOffType.ON))
+        SwitchItem myPresenceItem = itemRegistry.getItem("myPresenceItem2")
+        myPresenceItem.send(OnOffType.ON)
 
         Event itemEvent = null
 
@@ -175,9 +174,7 @@ class RuntimeRuleTest extends OSGiTest{
         ] as EventSubscriber
 
         registerService(itemEventHandler)
-        commandObj = TypeParser.parseCommand(itemRegistry.getItem("myMotionItem2").getAcceptedCommandTypes(),"ON")
-        eventPublisher.post(ItemEventFactory.createCommandEvent("myMotionItem2", commandObj))
-        //      eventPublisher.post(ItemEventFactory.createStateEvent("myMotionItem2", OnOffType.ON))
+        myMotionItem.send(OnOffType.ON)
         waitForAssert ({ assertThat itemEvent, is(notNullValue())} , 3000, 100)
         assertThat itemEvent.topic, is(equalTo("smarthome/items/myLampItem2/state"))
         assertThat (((ItemStateEvent)itemEvent).itemState, is(OnOffType.ON))
@@ -272,10 +269,10 @@ class RuntimeRuleTest extends OSGiTest{
         //Test the creation of a rule out of
         def triggerConfig = [itemName:"myMotionItem3"]
         def condition1Config = [operator:"=", itemName:"myPresenceItem3", state:"ON"]
-        def condition2Config = [operator:"=", itemName:"myMotionItem3", state:"ON"]
+        def condition2Config = [itemName:"myMotionItem3"]
         def actionConfig = [itemName:"myLampItem3", command:"ON"]
         def triggers = [new Trigger("ItemStateChangeTrigger3", "ItemStateChangeTrigger", triggerConfig)]
-        def conditions = [new Condition("ItemStateCondition5", "ItemStateCondition", condition1Config, null), new Condition("ItemStateCondition6", "ItemStateCondition", condition2Config, null)]
+        def conditions = [new Condition("ItemStateCondition5", "ItemStateCondition", condition1Config, null), new Condition("ItemStateCondition6", "ItemStateEvent_ON_Condition", condition2Config, [event:"ItemStateChangeTrigger3.event"])]
         def actions = [new Action("ItemPostCommandAction3", "ItemPostCommandAction", actionConfig, null)]
 
         def rule = new Rule("myRule21"+new Random().nextInt()+ "_COMPOSITE", triggers, conditions, actions, null, null)
