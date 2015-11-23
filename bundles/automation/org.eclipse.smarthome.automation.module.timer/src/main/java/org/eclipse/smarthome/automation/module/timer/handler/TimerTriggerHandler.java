@@ -40,6 +40,7 @@ public class TimerTriggerHandler extends BaseModuleHandler<Trigger>implements Tr
     private JobDetail job;
     private CronTrigger trigger;
     private Scheduler scheduler;
+    private String expression;
 
     public static final String MODULE_TYPE_ID = "TimerTrigger";
     public static final String CALLBACK_CONTEXT_NAME = "CALLBACK";
@@ -49,9 +50,15 @@ public class TimerTriggerHandler extends BaseModuleHandler<Trigger>implements Tr
 
     public TimerTriggerHandler(Trigger module) {
         super(module);
-        String cronExpression = (String) module.getConfiguration().get(CFG_CRON_EXPRESSION);
+        this.expression = (String) module.getConfiguration().get(CFG_CRON_EXPRESSION);
         this.trigger = TriggerBuilder.newTrigger().withIdentity(MODULE_TYPE_ID + UUID.randomUUID().toString())
-                .withSchedule(CronScheduleBuilder.cronSchedule(cronExpression)).build();
+                .withSchedule(CronScheduleBuilder.cronSchedule(this.expression)).build();
+        try {
+            this.scheduler = StdSchedulerFactory.getDefaultScheduler();
+            scheduler.start();
+        } catch (SchedulerException e) {
+            logger.error("Error while initializing Scheduler: {}", e.getMessage());
+        }
     }
 
     @Override
@@ -59,11 +66,9 @@ public class TimerTriggerHandler extends BaseModuleHandler<Trigger>implements Tr
         this.callback = ruleCallback;
         this.job = JobBuilder.newJob(CallbackJob.class).withIdentity(MODULE_TYPE_ID + UUID.randomUUID().toString())
                 .build();
+        job.getJobDataMap().put(CALLBACK_CONTEXT_NAME, this.callback);
+        job.getJobDataMap().put(MODULE_CONTEXT_NAME, this.module);
         try {
-            this.scheduler = new StdSchedulerFactory().getScheduler();
-            scheduler.start();
-            scheduler.getContext().put(CALLBACK_CONTEXT_NAME, this.callback);
-            scheduler.getContext().put(MODULE_CONTEXT_NAME, this.module);
             scheduler.scheduleJob(job, trigger);
         } catch (SchedulerException e) {
             logger.error("Error while scheduling Job: {}", e.getMessage());
@@ -76,6 +81,7 @@ public class TimerTriggerHandler extends BaseModuleHandler<Trigger>implements Tr
             if (scheduler != null && job != null) {
                 scheduler.deleteJob(job.getKey());
             }
+            scheduler.shutdown();
             scheduler = null;
             trigger = null;
             job = null;
